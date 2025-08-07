@@ -61,4 +61,5 @@ test-output/
 docker-compose.override.yml
 *.local.yml
 
-/src/main/resources/properties/env.properties
+#환경변수
+src/main/resources/properties/env.properties
