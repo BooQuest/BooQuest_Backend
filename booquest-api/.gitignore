@@ -60,3 +60,5 @@ test-output/
 # Docker
 docker-compose.override.yml
 *.local.yml
+
+/src/main/resources/properties/env.properties
