@@ -10,6 +10,8 @@ public class DummyOAuthClient implements OAuthClientPort {
     @Override
     public SocialUser fetchUserInfo(String accessToken) {
         // accessToken은 무시하고 그냥 더미 데이터 반환
-        return new SocialUser("test@booquest.com", "더미유저", "KAKAO");
+        if (accessToken.equals("exist-user"))
+            return new SocialUser("test@booquest.com", "회원가입한 유저", "KAKAO", "exist-user");
+        return new SocialUser("test@booquest.com", "회원가입하지 않은 유저", "KAKAO", "not-exist-user");
     }
 }

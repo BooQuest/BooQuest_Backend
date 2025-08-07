@@ -1,7 +1,8 @@
 package com.booquest.booquest_api.auth.adapter.in.web;
 
+import com.booquest.booquest_api.auth.adapter.in.web.dto.SocialLoginRequest;
+import com.booquest.booquest_api.auth.adapter.in.web.dto.SocialLoginResponse;
 import com.booquest.booquest_api.auth.application.port.in.SocialLoginUseCase;
-import com.booquest.booquest_api.auth.domain.model.SocialUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,9 +17,10 @@ public class SocialLoginController {
 
     private final SocialLoginUseCase socialLoginUseCase;
 
-    @PostMapping("/social-login")
-    public ResponseEntity<SocialUser> socialLogin(@RequestBody String token) {
-        SocialUser user = socialLoginUseCase.login(token);
-        return ResponseEntity.ok(user);
+    @PostMapping("/login")
+    public ResponseEntity<SocialLoginResponse> socialLogin(@RequestBody SocialLoginRequest request) {
+        SocialLoginResponse response = socialLoginUseCase.login(request.accessToken());
+
+        return ResponseEntity.ok(response);
     }
 }

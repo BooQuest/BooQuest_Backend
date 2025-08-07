@@ -1,7 +1,7 @@
 package com.booquest.booquest_api.auth.application.port.in;
 
-import com.booquest.booquest_api.auth.domain.model.SocialUser;
+import com.booquest.booquest_api.auth.adapter.in.web.dto.SocialLoginResponse;
 
 public interface SocialLoginUseCase {
-    SocialUser login(String accessToken);
+    SocialLoginResponse login(String accessToken);
 }
