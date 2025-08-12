@@ -14,7 +14,7 @@ env:
   CONTAINER_NAME: booquest-api
   APP_PORT: "8080"
   CONFIG_DIR: "/opt/booquest/config"
-  DEPLOY_TAG: dev
+  DEPLOY_TAG: latest
 
 jobs:
   build-and-push:
