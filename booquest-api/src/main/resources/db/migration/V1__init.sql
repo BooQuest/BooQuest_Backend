@@ -86,10 +86,9 @@ CREATE TABLE step_progress (
                                CONSTRAINT ck_difficulty_rate_range CHECK (
                                    difficulty_rate IS NULL OR (difficulty_rate BETWEEN 1 AND 5)
                                    )
-    -- 교차 무결성(같은 유저의 스텝인지)은 애플리케이션에서 검증 필요
 );
 
--- user_characters (게이미피케이션 프로필)
+-- user_characters
 CREATE TABLE user_characters (
                                  user_id    BIGINT PRIMARY KEY REFERENCES users(id) ON DELETE RESTRICT,
                                  name       VARCHAR(100),
