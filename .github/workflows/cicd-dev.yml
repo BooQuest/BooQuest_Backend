@@ -9,6 +9,10 @@ concurrency:
   group: cicd-dev-${{ github.ref }}
   cancel-in-progress: true
 
+defaults:
+  run:
+    working-directory: booquest-api
+
 env:
   IMAGE_NAME: booquest-dev-api
   CONTAINER_NAME: booquest-api
