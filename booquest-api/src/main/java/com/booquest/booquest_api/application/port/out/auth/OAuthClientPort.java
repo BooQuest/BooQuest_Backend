@@ -1,4 +1,4 @@
-package com.booquest.booquest_api.application.port.out;
+package com.booquest.booquest_api.application.port.out.auth;
 
 import com.booquest.booquest_api.domain.user.model.SocialUser;
 

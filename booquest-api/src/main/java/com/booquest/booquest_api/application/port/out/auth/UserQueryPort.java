@@ -1,4 +1,4 @@
-package com.booquest.booquest_api.application.port.out;
+package com.booquest.booquest_api.application.port.out.auth;
 
 public interface UserQueryPort {
     boolean existsByProviderAndProviderId(String provider, String providerId);

@@ -1,7 +1,7 @@
-package com.booquest.booquest_api.adapter.out.jwt;
+package com.booquest.booquest_api.adapter.out.auth.jwt;
 
 
-import com.booquest.booquest_api.application.port.out.JwtTokenPort;
+import com.booquest.booquest_api.application.port.out.auth.JwtTokenPort;
 import org.springframework.stereotype.Component;
 
 @Component

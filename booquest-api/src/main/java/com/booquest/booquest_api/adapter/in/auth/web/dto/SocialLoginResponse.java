@@ -1,4 +1,4 @@
-package com.booquest.booquest_api.adapter.in.web.dto;
+package com.booquest.booquest_api.adapter.in.auth.web.dto;
 
 import com.booquest.booquest_api.domain.user.model.SocialUser;
 
