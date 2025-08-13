@@ -1,7 +1,7 @@
 package com.booquest.booquest_api.adapter.in.onboarding.web;
 
 import com.booquest.booquest_api.adapter.in.onboarding.web.dto.OnboardingDataRequest;
-import com.booquest.booquest_api.application.port.onboarding.SubmitOnboardingUseCase;
+import com.booquest.booquest_api.application.port.in.onboarding.SubmitOnboardingUseCase;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

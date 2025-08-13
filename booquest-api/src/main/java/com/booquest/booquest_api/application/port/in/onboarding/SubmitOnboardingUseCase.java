@@ -1,4 +1,4 @@
-package com.booquest.booquest_api.application.port.onboarding;
+package com.booquest.booquest_api.application.port.in.onboarding;
 
 import java.util.List;
 

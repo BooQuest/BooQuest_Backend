@@ -1,10 +1,9 @@
 package com.booquest.booquest_api.application.service.onboarding;
 
-import com.booquest.booquest_api.application.port.onboarding.SubmitOnboardingUseCase;
+import com.booquest.booquest_api.application.port.in.onboarding.SubmitOnboardingUseCase;
 import com.booquest.booquest_api.application.port.out.onboarding.OnboardingProfileRepository;
 import com.booquest.booquest_api.application.port.out.user.UserRepository;
 import com.booquest.booquest_api.domain.onboarding.model.OnboardingProfile;
-import com.booquest.booquest_api.domain.user.model.User;
 import jakarta.transaction.Transactional;
 import java.util.HashMap;
 import java.util.List;
