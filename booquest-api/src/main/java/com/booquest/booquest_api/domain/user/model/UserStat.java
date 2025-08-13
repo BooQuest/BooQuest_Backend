@@ -6,7 +6,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import java.math.BigDecimal;
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -33,5 +33,5 @@ public class UserStat extends AuditableEntity {
     private BigDecimal completionRate = BigDecimal.ZERO;
 
     @Column(name = "last_active_at")
-    private OffsetDateTime lastActiveAt;
+    private LocalDateTime lastActiveAt;
 }
