@@ -34,7 +34,7 @@ CREATE TABLE side_jobs (
                            title       VARCHAR(200) NOT NULL,
                            description TEXT,
                            prompt_meta JSONB,
-                           is_active   BOOLEAN NOT NULL DEFAULT FALSE,
+                           is_selected   BOOLEAN NOT NULL DEFAULT FALSE,
                            started_at  TIMESTAMPTZ,
                            ended_at    TIMESTAMPTZ,
                            created_at  TIMESTAMPTZ NOT NULL DEFAULT NOW(),
