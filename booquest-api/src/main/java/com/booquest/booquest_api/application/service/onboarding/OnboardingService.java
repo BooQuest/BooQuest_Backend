@@ -27,7 +27,7 @@ public class OnboardingService implements SubmitOnboardingUseCase {
         Long userId = userRepository.findUserIdByProviderUserId(providerUserId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
 
-        if (onboardingProfileRepository.existsById(userId)) {
+        if (onboardingProfileRepository.existsByUserId(userId)) {
             throw new IllegalStateException("이미 온보딩 정보가 존재합니다.");
         }
 
