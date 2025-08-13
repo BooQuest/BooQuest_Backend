@@ -92,10 +92,13 @@ jobs:
             docker rm -f "$CONTAINER" 2>/dev/null || true
 
             docker run -d \
-              --name "$CONTAINER" \
-              --restart unless-stopped \
-              -p "${APP_PORT}:${APP_PORT}" \
-              -v "${CONFIG_DIR}:/app/config" \
-              "$IMG"
+            --name "$CONTAINER" \
+            --restart unless-stopped \
+            -p "${APP_PORT}:${APP_PORT}" \
+            -v "${CONFIG_DIR}:/app/config" \
+            --entrypoint java \
+            "$IMG" \
+            -cp "/app/app.jar:/app/config" \
+            org.springframework.boot.loader.launch.JarLauncher
 
             docker image prune -f
