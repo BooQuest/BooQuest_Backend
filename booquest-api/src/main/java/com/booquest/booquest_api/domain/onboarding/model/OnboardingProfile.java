@@ -7,8 +7,10 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import java.util.Map;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Type;
@@ -17,6 +19,7 @@ import org.hibernate.annotations.Type;
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "onboarding_profiles")
+@Builder
 @Getter
 public class OnboardingProfile extends AuditableEntity {
     @Id @GeneratedValue
@@ -27,5 +30,5 @@ public class OnboardingProfile extends AuditableEntity {
 
     @Type(JsonType.class)
     @Column(columnDefinition = "jsonb")
-    private String metadata;
+    private Map<String, Object> metadata;
 }
