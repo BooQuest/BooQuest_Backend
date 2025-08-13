@@ -96,6 +96,7 @@ CREATE TABLE user_characters (
                                  level      INT NOT NULL DEFAULT 1,
                                  exp        INT NOT NULL DEFAULT 0,
                                  avatar_url VARCHAR(255),
+                                 created_at      TIMESTAMPTZ NOT NULL DEFAULT NOW(),
                                  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
@@ -106,5 +107,6 @@ CREATE TABLE user_stats (
                             completed_missions INT NOT NULL DEFAULT 0,
                             completion_rate    NUMERIC(5,2) NOT NULL DEFAULT 0.00,
                             last_active_at     TIMESTAMPTZ,
+                            created_at      TIMESTAMPTZ NOT NULL DEFAULT NOW(),
                             updated_at         TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
