@@ -1,7 +1,7 @@
-package com.booquest.booquest_api.auth.adapter.out.persistence;
+package com.booquest.booquest_api.adapter.out.persistence;
 
 
-import com.booquest.booquest_api.auth.application.port.out.UserQueryPort;
+import com.booquest.booquest_api.application.port.out.UserQueryPort;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

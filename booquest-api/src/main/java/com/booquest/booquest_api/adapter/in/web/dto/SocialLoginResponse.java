@@ -1,6 +1,6 @@
-package com.booquest.booquest_api.auth.adapter.in.web.dto;
+package com.booquest.booquest_api.adapter.in.web.dto;
 
-import com.booquest.booquest_api.auth.domain.model.SocialUser;
+import com.booquest.booquest_api.domain.user.model.SocialUser;
 
 public record SocialLoginResponse(
         boolean registered,

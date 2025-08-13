@@ -1,11 +1,11 @@
-package com.booquest.booquest_api.auth.application.service;
+package com.booquest.booquest_api.application.service;
 
-import com.booquest.booquest_api.auth.adapter.in.web.dto.SocialLoginResponse;
-import com.booquest.booquest_api.auth.application.port.in.SocialLoginUseCase;
-import com.booquest.booquest_api.auth.application.port.out.JwtTokenPort;
-import com.booquest.booquest_api.auth.application.port.out.OAuthClientPort;
-import com.booquest.booquest_api.auth.application.port.out.UserQueryPort;
-import com.booquest.booquest_api.auth.domain.model.SocialUser;
+import com.booquest.booquest_api.adapter.in.web.dto.SocialLoginResponse;
+import com.booquest.booquest_api.application.port.in.SocialLoginUseCase;
+import com.booquest.booquest_api.application.port.out.JwtTokenPort;
+import com.booquest.booquest_api.application.port.out.OAuthClientPort;
+import com.booquest.booquest_api.application.port.out.UserQueryPort;
+import com.booquest.booquest_api.domain.user.model.SocialUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

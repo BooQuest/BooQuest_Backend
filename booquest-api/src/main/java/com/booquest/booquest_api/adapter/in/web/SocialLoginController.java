@@ -1,8 +1,8 @@
-package com.booquest.booquest_api.auth.adapter.in.web;
+package com.booquest.booquest_api.adapter.in.web;
 
-import com.booquest.booquest_api.auth.adapter.in.web.dto.SocialLoginRequest;
-import com.booquest.booquest_api.auth.adapter.in.web.dto.SocialLoginResponse;
-import com.booquest.booquest_api.auth.application.port.in.SocialLoginUseCase;
+import com.booquest.booquest_api.adapter.in.web.dto.SocialLoginRequest;
+import com.booquest.booquest_api.adapter.in.web.dto.SocialLoginResponse;
+import com.booquest.booquest_api.application.port.in.SocialLoginUseCase;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;

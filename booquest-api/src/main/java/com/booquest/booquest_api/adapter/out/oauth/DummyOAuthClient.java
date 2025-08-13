@@ -1,7 +1,7 @@
-package com.booquest.booquest_api.auth.adapter.out.oauth;
+package com.booquest.booquest_api.adapter.out.oauth;
 
-import com.booquest.booquest_api.auth.application.port.out.OAuthClientPort;
-import com.booquest.booquest_api.auth.domain.model.SocialUser;
+import com.booquest.booquest_api.application.port.out.OAuthClientPort;
+import com.booquest.booquest_api.domain.user.model.SocialUser;
 import org.springframework.stereotype.Component;
 
 @Component

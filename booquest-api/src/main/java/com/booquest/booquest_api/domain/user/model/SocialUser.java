@@ -1,4 +1,4 @@
-package com.booquest.booquest_api.auth.domain.model;
+package com.booquest.booquest_api.domain.user.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
