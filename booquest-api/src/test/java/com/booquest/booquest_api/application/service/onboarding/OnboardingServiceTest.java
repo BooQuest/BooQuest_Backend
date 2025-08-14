@@ -51,7 +51,7 @@ class OnboardingServiceTest {
         ArgumentCaptor<OnboardingProfile> captor = ArgumentCaptor.forClass(OnboardingProfile.class);
 
         // when
-        service.submit(providerUserId, "개발자", List.of("독서", "축구"));
+        service.submit(userId, "개발자", List.of("독서", "축구"));
 
         // then
         verify(onboardingProfileRepository).save(captor.capture());
@@ -79,7 +79,7 @@ class OnboardingServiceTest {
 
         // when & then
         assertThatThrownBy(() ->
-                service.submit(providerUserId, "디자이너", List.of("요리"))
+                service.submit(userId, "디자이너", List.of("요리"))
         )
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("존재하지 않는 회원입니다.");
@@ -99,7 +99,7 @@ class OnboardingServiceTest {
 
         // when & then
         assertThatThrownBy(() ->
-                service.submit(providerUserId, "마케터", List.of("등산"))
+                service.submit(userId, "마케터", List.of("등산"))
         )
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessage("이미 온보딩 정보가 존재합니다.");

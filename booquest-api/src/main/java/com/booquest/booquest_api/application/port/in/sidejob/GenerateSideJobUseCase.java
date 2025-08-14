@@ -1,8 +1,9 @@
 package com.booquest.booquest_api.application.port.in.sidejob;
 
+import com.booquest.booquest_api.domain.sidejob.model.SideJob;
 import java.util.List;
 
 public interface GenerateSideJobUseCase {
 
-    long generateSideJob(String userId, String job, List<String> hobbies);
+    List<SideJob> generateSideJob(long userId, String job, List<String> hobbies);
 }

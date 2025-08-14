@@ -6,7 +6,7 @@ import jakarta.validation.constraints.Size;
 import java.util.List;
 
 public record OnboardingDataRequest(
-        @NotBlank String userId,
+        long userId,
         @NotBlank String job,
         @NotNull @Size(min = 1) List<@NotBlank String> hobbies,
         String desiredSideJob) {

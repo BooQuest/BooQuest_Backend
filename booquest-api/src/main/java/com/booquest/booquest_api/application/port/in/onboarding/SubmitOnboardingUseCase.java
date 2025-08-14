@@ -4,5 +4,5 @@ import java.util.List;
 
 public interface SubmitOnboardingUseCase {
 
-    void submit(String providerUserId, String job, List<String> hobbies);
+    void submit(long userId, String job, List<String> hobbies);
 }

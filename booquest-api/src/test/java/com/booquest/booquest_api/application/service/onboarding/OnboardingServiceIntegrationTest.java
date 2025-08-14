@@ -79,7 +79,7 @@ class OnboardingServiceIntegrationTest {
     @DisplayName("회원의 최초 온보딩만 정상적으로 저장된다.")
     void submitOnboardingSuccess() {
         // when
-        onboardingService.submit(providerUserId, "개발자", List.of("독서", "축구"));
+        onboardingService.submit(123, "개발자", List.of("독서", "축구"));
 
         // then
         Long userId = userRepository.findUserIdByProviderUserId(providerUserId).orElseThrow();
@@ -99,11 +99,11 @@ class OnboardingServiceIntegrationTest {
     @Test
     @DisplayName("온보딩을 이미 진행한 회원은 예외가 발생하고 데이터를 저장하지 않는다.")
     void alreadyOnboardedUserThrowException() {
-        onboardingService.submit(providerUserId, "개발자", List.of("독서"));
+        onboardingService.submit(123, "개발자", List.of("독서"));
         onboardingProfileRepository.flush();
 
         assertThatThrownBy(() ->
-                onboardingService.submit(providerUserId, "디자이너", List.of("요리"))
+                onboardingService.submit(123, "디자이너", List.of("요리"))
         )
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessage("이미 온보딩 정보가 존재합니다.");
@@ -112,7 +112,7 @@ class OnboardingServiceIntegrationTest {
     @Test
     @DisplayName("존재하지 않는 회원이면 예외가 발생한다.")
     void onboardingIfNotUserThrowException() {
-        String unknown = "kakao-999";
+        long unknown = 999;
 
         assertThatThrownBy(() ->
                 onboardingService.submit(unknown, "개발자", List.of("독서"))

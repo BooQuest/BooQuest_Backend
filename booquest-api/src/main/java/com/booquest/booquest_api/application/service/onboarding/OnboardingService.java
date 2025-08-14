@@ -22,9 +22,10 @@ public class OnboardingService implements SubmitOnboardingUseCase {
     //온보딩 데이터는 하나만 허용
     @Transactional
     @Override
-    public void submit(String providerUserId, String job, List<String> hobbies) {
-        Long userId = userRepository.findUserIdByProviderUserId(providerUserId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
+    public void submit(long userId, String job, List<String> hobbies) {
+        if (!userRepository.existsById(userId)){
+            throw new IllegalArgumentException("존재하지 않는 회원입니다.");
+        }
 
         if (onboardingProfileRepository.existsByUserId(userId)) {
             throw new IllegalStateException("이미 온보딩 정보가 존재합니다.");
