@@ -11,6 +11,7 @@ import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Type;
@@ -19,6 +20,7 @@ import org.hibernate.annotations.Type;
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "side_jobs")
+@Builder
 @Getter
 public class SideJob extends AuditableEntity {
 
@@ -33,8 +35,7 @@ public class SideJob extends AuditableEntity {
 
     private String description;
 
-    @Type(JsonType.class)
-    @Column(name = "prompt_meta", columnDefinition = "jsonb")
+    @Column(name = "prompt_meta", columnDefinition = "TEXT")
     private String promptMeta;
 
     @Column(name = "is_selected", nullable = false)
