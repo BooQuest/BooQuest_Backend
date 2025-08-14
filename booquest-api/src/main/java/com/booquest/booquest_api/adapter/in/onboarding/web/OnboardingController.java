@@ -1,9 +1,12 @@
 package com.booquest.booquest_api.adapter.in.onboarding.web;
 
 import com.booquest.booquest_api.adapter.in.onboarding.web.dto.OnboardingDataRequest;
+import com.booquest.booquest_api.adapter.in.onboarding.web.dto.SideJobResponseDto;
 import com.booquest.booquest_api.application.port.in.onboarding.SubmitOnboardingUseCase;
 import com.booquest.booquest_api.application.port.in.sidejob.GenerateSideJobUseCase;
+import com.booquest.booquest_api.domain.sidejob.model.SideJob;
 import jakarta.validation.Valid;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,11 +23,16 @@ public class OnboardingController {
     private final GenerateSideJobUseCase generateSideJobUseCase;
 
     @PostMapping
-    public ResponseEntity<?> generateSideJobFromOnboarding(
+    public ResponseEntity<List<SideJobResponseDto>> generateSideJobFromOnboarding(
             @Valid @RequestBody OnboardingDataRequest request) {
 
         submitOnboardingUseCase.submit(request.userId(), request.job(), request.hobbies());
-        generateSideJobUseCase.generateSideJob(request.userId(), request.job(), request.hobbies());
-        return null;
+        List<SideJob> sideJobs = generateSideJobUseCase.generateSideJob(request.userId(), request.job(), request.hobbies());
+
+        List<SideJobResponseDto> response = sideJobs.stream()
+                .map(SideJobResponseDto::fromEntity)
+                .toList();
+
+        return ResponseEntity.ok(response);
     }
 }

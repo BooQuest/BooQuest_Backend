@@ -1,9 +1,12 @@
 package com.booquest.booquest_api.application.service.sidejob;
 
 import com.booquest.booquest_api.application.dto.SideJobGenerationResult;
+import com.booquest.booquest_api.application.dto.SideJobItem;
 import com.booquest.booquest_api.application.port.in.sidejob.GenerateSideJobUseCase;
 import com.booquest.booquest_api.application.port.out.ai.AiClientSideJobPort;
 import com.booquest.booquest_api.application.port.out.sidejob.SideJobRepository;
+import com.booquest.booquest_api.domain.sidejob.model.SideJob;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,9 +21,23 @@ public class SideJobService implements GenerateSideJobUseCase {
 
     @Transactional
     @Override
-    public long generateSideJob(String userId, String job, List<String> hobbies) {
+    public List<SideJob> generateSideJob(long userId, String job, List<String> hobbies) {
         SideJobGenerationResult result = aiClientPort.generateSideJob(job, hobbies);
 
-        return 0;
+        List<SideJob> savedJobs = new ArrayList<>();
+        List<SideJobItem> tasks = result.tasks();
+        for (SideJobItem task : tasks) {
+            SideJob sideJob = SideJob.builder()
+                    .userId(userId)
+                    .title(task.title())
+                    .description(task.description())
+                    .promptMeta(result.prompt())
+                    .isSelected(false)
+                    .build();
+
+            savedJobs.add(sideJobRepository.save(sideJob));
+        }
+
+        return savedJobs;
     }
 }
