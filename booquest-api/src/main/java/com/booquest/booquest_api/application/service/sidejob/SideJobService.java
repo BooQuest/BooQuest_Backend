@@ -21,8 +21,8 @@ public class SideJobService implements GenerateSideJobUseCase {
 
     @Transactional
     @Override
-    public List<SideJob> generateSideJob(long userId, String job, List<String> hobbies) {
-        SideJobGenerationResult result = aiClientPort.generateSideJob(job, hobbies);
+    public List<SideJob> generateSideJob(long userId, String job, List<String> hobbies, String desiredSideJob) {
+        SideJobGenerationResult result = aiClientPort.generateSideJob(job, hobbies, desiredSideJob);
 
         List<SideJob> savedJobs = new ArrayList<>();
         List<SideJobItem> tasks = result.tasks();

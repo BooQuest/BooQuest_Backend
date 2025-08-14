@@ -17,13 +17,12 @@ public class SyncAiClient implements AiClientSideJobPort {
     private static final String API_URL = "/ai/generate-side-job";
     private final @Qualifier("aiWebClient") WebClient webClient;
 
-    record OnboardingProfileRequest(String job, List<String> hobbies) {}
+    record OnboardingProfileRequest(String job, List<String> hobbies, String desiredSideJob) {}
 
     @Override
-    public SideJobGenerationResult generateSideJob(String job, List<String> hobbies) {
+    public SideJobGenerationResult generateSideJob(String job, List<String> hobbies, String desiredSideJob) {
         OnboardingProfileRequest requestBody = new OnboardingProfileRequest(
-                job,
-                hobbies
+                job, hobbies, desiredSideJob
         );
 
         try {

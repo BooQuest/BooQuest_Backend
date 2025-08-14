@@ -5,5 +5,5 @@ import java.util.List;
 
 public interface GenerateSideJobUseCase {
 
-    List<SideJob> generateSideJob(long userId, String job, List<String> hobbies);
+    List<SideJob> generateSideJob(long userId, String job, List<String> hobbies, String desiredSideJob);
 }

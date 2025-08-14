@@ -4,5 +4,5 @@ import com.booquest.booquest_api.application.dto.SideJobGenerationResult;
 import java.util.List;
 
 public interface AiClientSideJobPort {
-    SideJobGenerationResult generateSideJob(String job, List<String> hobbies);
+    SideJobGenerationResult generateSideJob(String job, List<String> hobbies, String desiredSideJob);
 }
