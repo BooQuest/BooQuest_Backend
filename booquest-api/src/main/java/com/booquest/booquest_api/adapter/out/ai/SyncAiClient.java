@@ -4,7 +4,7 @@ import com.booquest.booquest_api.application.dto.SideJobGenerationResult;
 import com.booquest.booquest_api.application.port.out.ai.AiClientSideJobPort;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpHeaders;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -14,25 +14,23 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 @RequiredArgsConstructor
 public class SyncAiClient implements AiClientSideJobPort {
 
-    private static final String FAST_API_URL = "http://0.0.0.0:8000/ai/generate-side-job";
+    private static final String API_URL = "/ai/generate-side-job";
+    private final @Qualifier("aiWebClient") WebClient webClient;
 
-    private final WebClient webClient = WebClient.builder()
-            .baseUrl(FAST_API_URL)
-            .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-            .build();
-
-    record OnboardingProfileRequest(String job, List<String> hobbies, String personality) {}
+    record OnboardingProfileRequest(String job, List<String> hobbies) {}
 
     @Override
     public SideJobGenerationResult generateSideJob(String job, List<String> hobbies) {
         OnboardingProfileRequest requestBody = new OnboardingProfileRequest(
                 job,
-                hobbies,
-                "진지하고 분석적인 성격" // 필요 시 동적으로 변경
+                hobbies
         );
 
         try {
             return webClient.post()
+                    .uri(API_URL)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .accept(MediaType.APPLICATION_JSON)
                     .bodyValue(requestBody)
                     .retrieve()
                     .bodyToMono(SideJobGenerationResult.class)
