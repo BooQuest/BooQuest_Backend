@@ -4,10 +4,12 @@ import com.booquest.booquest_api.adapter.in.onboarding.web.dto.OnboardingDataReq
 import com.booquest.booquest_api.adapter.in.onboarding.web.dto.SideJobResponseDto;
 import com.booquest.booquest_api.application.port.in.onboarding.SubmitOnboardingUseCase;
 import com.booquest.booquest_api.application.port.in.sidejob.GenerateSideJobUseCase;
+import com.booquest.booquest_api.common.response.ApiResponse;
 import com.booquest.booquest_api.domain.sidejob.model.SideJob;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,16 +25,18 @@ public class OnboardingController {
     private final GenerateSideJobUseCase generateSideJobUseCase;
 
     @PostMapping
-    public ResponseEntity<List<SideJobResponseDto>> generateSideJobFromOnboarding(
+    public ApiResponse<List<SideJobResponseDto>> generateSideJobFromOnboarding(
             @Valid @RequestBody OnboardingDataRequest request) {
 
+        //온보딩 데이터 DB 저장
         submitOnboardingUseCase.submit(request.userId(), request.job(), request.hobbies());
+
         List<SideJob> sideJobs = generateSideJobUseCase.generateSideJob(request.userId(), request.job(), request.hobbies());
 
         List<SideJobResponseDto> response = sideJobs.stream()
                 .map(SideJobResponseDto::fromEntity)
                 .toList();
 
-        return ResponseEntity.ok(response);
+        return ApiResponse.success("부업이 생성되었습니다.", response);
     }
 }
