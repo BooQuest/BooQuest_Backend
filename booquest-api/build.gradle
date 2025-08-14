@@ -17,6 +17,21 @@ configurations {
 	compileOnly {
 		extendsFrom annotationProcessor
 	}
+
+	testRuntimeClasspath
+}
+
+tasks.test {
+	jvmArgs '-XX:+EnableDynamicAgentLoading'
+
+	doFirst {
+		def agent = configurations.testRuntimeClasspath
+				.resolve()
+				.find { it.name.startsWith('byte-buddy-agent') && it.name.endsWith('.jar') }
+		if (agent != null) {
+			jvmArgs "-javaagent:${agent.absolutePath}"
+		}
+	}
 }
 
 repositories {
@@ -31,6 +46,7 @@ dependencies {
 //	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-webflux'
 	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0'
 
 	//flyway

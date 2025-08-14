@@ -22,8 +22,18 @@ spring:
     baseline-on-migrate: true
     locations: classpath:db/migration
 
+  # (선택) 외부 프로퍼티 파일을 '있으면' 불러오기
+  # 기존 @PropertySource 대체 — 파일 없으면 무시하므로 부팅 실패 없음
+  config:
+    import: optional:classpath:properties/env.properties
+
 server:
-  port: 8080
+  port: ${SERVER_PORT:8080}
+
+# --- AI 서버 설정 ---
+ai:
+  base-url: ${AI_BASE_URL:http://localhost:8000}
+  timeout-ms: ${AI_TIMEOUT_MS:5000}
 
 logging:
   level:
