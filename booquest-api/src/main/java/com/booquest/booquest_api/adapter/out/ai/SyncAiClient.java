@@ -1,5 +1,6 @@
 package com.booquest.booquest_api.adapter.out.ai;
 
+import com.booquest.booquest_api.adapter.in.onboarding.web.dto.OnboardingDataRequest;
 import com.booquest.booquest_api.application.dto.SideJobGenerationResult;
 import com.booquest.booquest_api.application.port.out.ai.AiClientSideJobPort;
 import java.util.List;
@@ -17,20 +18,14 @@ public class SyncAiClient implements AiClientSideJobPort {
     private static final String API_URL = "/ai/generate-side-job";
     private final @Qualifier("aiWebClient") WebClient webClient;
 
-    record OnboardingProfileRequest(String job, List<String> hobbies, String desiredSideJob) {}
-
     @Override
-    public SideJobGenerationResult generateSideJob(String job, List<String> hobbies, String desiredSideJob) {
-        OnboardingProfileRequest requestBody = new OnboardingProfileRequest(
-                job, hobbies, desiredSideJob
-        );
-
+    public SideJobGenerationResult generateSideJob(OnboardingDataRequest request) {
         try {
             return webClient.post()
                     .uri(API_URL)
                     .contentType(MediaType.APPLICATION_JSON)
                     .accept(MediaType.APPLICATION_JSON)
-                    .bodyValue(requestBody)
+                    .bodyValue(request)
                     .retrieve()
                     .bodyToMono(SideJobGenerationResult.class)
                     .block();
