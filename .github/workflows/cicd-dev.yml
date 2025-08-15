@@ -94,6 +94,7 @@ jobs:
             docker run -d \
             --name "$CONTAINER" \
             --restart unless-stopped \
+            --network booquest-net \
             -p "${APP_PORT}:${APP_PORT}" \
             -v "${CONFIG_DIR}:/app/config" \
             --entrypoint java \
