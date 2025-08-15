@@ -1,9 +1,34 @@
 package com.booquest.booquest_api.adapter.in.auth.web.dto;
 
-import com.booquest.booquest_api.domain.user.model.SocialUser;
+import lombok.*;
 
-public record SocialLoginResponse(
-        boolean registered,
-        String token, // 회원이면 포함
-        SocialUser userInfo // 둘 다 포함
-) {}
+@Getter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class SocialLoginResponse {
+    private TokenInfo tokenInfo;
+    private UserInfo userInfo;
+
+    @Getter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class TokenInfo {
+        private String accessToken;
+        private String refreshToken;
+        private String tokenType;
+        private Long expiresIn;
+    }
+
+    @Getter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class UserInfo {
+        private Long userId;
+        private String email;
+        private String nickname;
+        private String profileImageUrl;
+    }
+}

@@ -41,3 +41,12 @@ logging:
     org.springframework.web: debug
     org.hibernate.SQL: debug
     org.hibernate.type.descriptor.sql: trace  # 쿼리 파라미터 출력
+
+kakao:
+  api:
+    user-info-url: https://kapi.kakao.com/v2/user/me
+
+jwt:
+  secret: ${JWT_SECRET}
+  access-token-ttl-seconds: 3600
+  refresh-token-ttl-seconds: 2592000

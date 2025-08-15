@@ -19,8 +19,7 @@ public class SocialLoginController {
 
     @PostMapping("/login")
     public ResponseEntity<SocialLoginResponse> socialLogin(@RequestBody SocialLoginRequest request) {
-        SocialLoginResponse response = socialLoginUseCase.login(request.accessToken());
-
+        SocialLoginResponse response = socialLoginUseCase.login(request.getAccessToken(), request.getProvider());
         return ResponseEntity.ok(response);
     }
 }

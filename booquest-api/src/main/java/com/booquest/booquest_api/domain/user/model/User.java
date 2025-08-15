@@ -33,4 +33,16 @@ public class User extends AuditableEntity {
     private String email;
 
     private String nickname;
+
+    private String socialNickname;
+    private String profileImageUrl;
+
+    public void updateProfile(String newSocialNickname, String newProfileImageUrl) {
+        if (newSocialNickname != null && !newSocialNickname.isBlank()) {
+            this.socialNickname = newSocialNickname;
+        }
+        if (newProfileImageUrl != null && !newProfileImageUrl.isBlank()) {
+            this.profileImageUrl = newProfileImageUrl;
+        }
+    }
 }

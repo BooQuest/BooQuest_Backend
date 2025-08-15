@@ -1,5 +1,9 @@
 package com.booquest.booquest_api.application.port.out.auth;
 
+import com.booquest.booquest_api.application.port.out.auth.dto.TokenInfo;
+
 public interface JwtTokenPort {
-    String generateToken(String provider, String providerId);
+    TokenInfo generateToken(Long userId, String email);
+    boolean validateToken(String token);
+    Long getUserIdFromToken(String token);
 }
