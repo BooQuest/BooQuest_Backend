@@ -11,9 +11,8 @@ import com.booquest.booquest_api.domain.onboarding.enums.SubCategoryType;
 import com.booquest.booquest_api.domain.onboarding.model.OnboardingCategory;
 import com.booquest.booquest_api.domain.onboarding.model.OnboardingProfile;
 import jakarta.transaction.Transactional;
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -41,20 +40,23 @@ public class OnboardingService implements SubmitOnboardingUseCase {
         OnboardingProfile profile = buildOnboardingProfile(request);
         onboardingProfileRepository.save(profile);
 
-        buildAndSaveOnboardingCategory(request, profile);
+        List<OnboardingCategory> onboardingCategories = buildAndSaveOnboardingCategory(request, profile);
+        onboardingCategoryRepository.saveAll(onboardingCategories);
     }
 
-    private void buildAndSaveOnboardingCategory(OnboardingDataRequest request, OnboardingProfile profile) {
+    private List<OnboardingCategory> buildAndSaveOnboardingCategory(OnboardingDataRequest request, OnboardingProfile profile) {
+        List<OnboardingCategory> onboardingCategories = new ArrayList<>();
+
         for (String hobby : request.hobbies()) {
-            SubCategoryType subCategoryType = SubCategoryType.from(hobby);
-            onboardingCategoryRepository.save(
-                    OnboardingCategory.builder()
-                            .profileId(profile.getId())
-                            .category(subCategoryType.getParentCategory())
-                            .subCategory(subCategoryType)
-                            .build()
-            );
+            OnboardingCategory onboardingCategory = OnboardingCategory.builder()
+                    .profileId(profile.getId())
+                    .category(SubCategoryType.from(hobby).getParentCategory())
+                    .subCategory(hobby)
+                    .build();
+
+            onboardingCategories.add(onboardingCategory);
         }
+        return onboardingCategories;
     }
 
     private OnboardingProfile buildOnboardingProfile(OnboardingDataRequest request) {

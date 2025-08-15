@@ -25,7 +25,6 @@ public class OnboardingCategory extends CreatedOnlyEntity {
     @Column(name = "category", nullable = false)
     private CategoryType category;
 
-    @Enumerated(EnumType.STRING)
     @Column(name = "sub_category", nullable = false)
-    private SubCategoryType subCategory;
+    private String subCategory;
 }

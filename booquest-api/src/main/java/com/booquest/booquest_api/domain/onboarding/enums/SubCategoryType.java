@@ -75,7 +75,9 @@ public enum SubCategoryType {
     HISTORY(CategoryType.ETC, "역사"),
     DIY(CategoryType.ETC, "취미 DIY"),
     ENVIRONMENT(CategoryType.ETC, "환경"),
-    CLIMATE(CategoryType.ETC, "기후변화");
+    CLIMATE(CategoryType.ETC, "기후변화"),
+
+    CUSTOM(CategoryType.ETC, "사용자 입력 값");
 
     private final CategoryType parentCategory;
     private final String displayName;
@@ -86,6 +88,6 @@ public enum SubCategoryType {
                 return type;
             }
         }
-        throw new IllegalArgumentException("존재하지 않는 서브 카테고리입니다.: " + displayName);
+        return CUSTOM;
     }
 }
