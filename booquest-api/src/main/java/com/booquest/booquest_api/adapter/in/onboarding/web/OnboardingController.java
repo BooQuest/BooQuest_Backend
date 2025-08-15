@@ -29,7 +29,7 @@ public class OnboardingController {
             @Valid @RequestBody OnboardingDataRequest request) {
 
         //온보딩 데이터 DB 저장
-        submitOnboardingUseCase.submit(request.userId(), request.job(), request.hobbies());
+        submitOnboardingUseCase.submit(request);
 
         //ai에게 부업 생성 요청
         List<SideJob> sideJobs = generateSideJobUseCase.generateSideJob(

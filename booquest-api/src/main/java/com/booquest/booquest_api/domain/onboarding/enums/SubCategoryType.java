@@ -2,8 +2,10 @@ package com.booquest.booquest_api.domain.onboarding.enums;
 
 
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 @Getter
+@RequiredArgsConstructor
 public enum SubCategoryType {
 
     // ECONOMY
@@ -78,8 +80,12 @@ public enum SubCategoryType {
     private final CategoryType parentCategory;
     private final String displayName;
 
-    SubCategoryType(CategoryType parentCategory, String displayName) {
-        this.parentCategory = parentCategory;
-        this.displayName = displayName;
+    public static SubCategoryType from(String displayName) {
+        for (SubCategoryType type : SubCategoryType.values()) {
+            if (type.displayName.equals(displayName)) {
+                return type;
+            }
+        }
+        throw new IllegalArgumentException("존재하지 않는 서브 카테고리입니다.: " + displayName);
     }
 }
