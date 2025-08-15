@@ -11,7 +11,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -52,8 +52,8 @@ public class StepProgress extends CreatedOnlyEntity {
     private String extra;
 
     @Column(name = "started_at")
-    private OffsetDateTime startedAt;
+    private LocalDateTime startedAt;
 
     @Column(name = "completed_at")
-    private OffsetDateTime completedAt;
+    private LocalDateTime completedAt;
 }
