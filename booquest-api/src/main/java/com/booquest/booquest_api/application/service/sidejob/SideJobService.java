@@ -1,5 +1,6 @@
 package com.booquest.booquest_api.application.service.sidejob;
 
+import com.booquest.booquest_api.adapter.in.onboarding.web.dto.OnboardingDataRequest;
 import com.booquest.booquest_api.application.dto.SideJobGenerationResult;
 import com.booquest.booquest_api.application.dto.SideJobItem;
 import com.booquest.booquest_api.application.port.in.sidejob.GenerateSideJobUseCase;
@@ -21,14 +22,14 @@ public class SideJobService implements GenerateSideJobUseCase {
 
     @Transactional
     @Override
-    public List<SideJob> generateSideJob(long userId, String job, List<String> hobbies, String desiredSideJob) {
-        SideJobGenerationResult result = aiClientPort.generateSideJob(job, hobbies, desiredSideJob);
+    public List<SideJob> generateSideJob(OnboardingDataRequest request) {
+        SideJobGenerationResult result = aiClientPort.generateSideJob(request);
 
         List<SideJob> savedJobs = new ArrayList<>();
         List<SideJobItem> tasks = result.tasks();
         for (SideJobItem task : tasks) {
             SideJob sideJob = SideJob.builder()
-                    .userId(userId)
+                    .userId(request.userId())
                     .title(task.title())
                     .description(task.description())
                     .promptMeta(result.prompt())

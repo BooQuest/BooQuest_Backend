@@ -10,6 +10,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 
+import com.booquest.booquest_api.adapter.in.onboarding.web.dto.OnboardingDataRequest;
+import com.booquest.booquest_api.application.port.out.onboarding.OnboardingCategoryRepository;
 import com.booquest.booquest_api.application.port.out.onboarding.OnboardingProfileRepository;
 import com.booquest.booquest_api.application.port.out.user.UserRepository;
 import com.booquest.booquest_api.domain.onboarding.model.OnboardingProfile;
@@ -31,6 +33,9 @@ class OnboardingServiceTest {
     OnboardingProfileRepository onboardingProfileRepository;
 
     @Mock
+    OnboardingCategoryRepository onboardingCategoryRepository;
+
+    @Mock
     UserRepository userRepository;
 
     @InjectMocks
@@ -43,67 +48,72 @@ class OnboardingServiceTest {
     @DisplayName("회원의 최초 온보딤만 정상적으로 데이터가 저장된다")
     void submitOnboardingSuccess() {
         // given
-        given(userRepository.findUserIdByProviderUserId(providerUserId))
-                .willReturn(Optional.of(userId));
+        given(userRepository.existsById(userId))
+                .willReturn(true);
         given(onboardingProfileRepository.existsByUserId(userId))
                 .willReturn(false);
 
         ArgumentCaptor<OnboardingProfile> captor = ArgumentCaptor.forClass(OnboardingProfile.class);
 
+        OnboardingDataRequest onboardingDataRequest = new OnboardingDataRequest(
+                userId, "개발자", List.of("경제", "노래"), "글", "창작하기", "유튜버");
+
         // when
-        service.submit(userId, "개발자", List.of("독서", "축구"));
+        service.submit(onboardingDataRequest);
 
         // then
         verify(onboardingProfileRepository).save(captor.capture());
         OnboardingProfile saved = captor.getValue();
 
-        assertThat(saved.getUserId()).isEqualTo(userId);
-        assertThat(saved.getMetadata()).isInstanceOf(Map.class);
-        @SuppressWarnings("unchecked")
-        Map<String, Object> meta = saved.getMetadata();
-        assertThat(meta)
-                .containsEntry("job", "개발자")
-                .containsEntry("hobbies", List.of("독서", "축구"));
 
-        verify(userRepository, times(1)).findUserIdByProviderUserId(providerUserId);
+        assertThat(saved.getUserId()).isEqualTo(userId);
+        assertThat(saved.getJob()).isEqualTo("개발자");
+        assertThat(saved.getExpressionStyle().getDisplayName()).isEqualTo("글");
+        assertThat(saved.getStrengthType().getDisplayName()).isEqualTo("창작하기");
+
+        verify(userRepository, times(1)).existsById(userId);
         verify(onboardingProfileRepository, times(1)).existsByUserId(userId);
         verifyNoMoreInteractions(userRepository, onboardingProfileRepository);
     }
 
     @Test
-    @DisplayName("존재하지 않는 회원이면 예외가 발생한다.")
-    void onboardingIfNotUserThrowException() {
+    @DisplayName("존재하지 않는 회원이면 예외 발생")
+    void onboardingIfNotUserThrowsException() {
         // given
-        given(userRepository.findUserIdByProviderUserId(providerUserId))
-                .willReturn(Optional.empty());
+        given(userRepository.existsById(userId)).willReturn(false);
+
+        OnboardingDataRequest request = new OnboardingDataRequest(
+                userId, "디자이너", List.of("요리"), "그림", "일상 공유하기", ""
+        );
 
         // when & then
-        assertThatThrownBy(() ->
-                service.submit(userId, "디자이너", List.of("요리"))
-        )
+        assertThatThrownBy(() -> service.submit(request))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("존재하지 않는 회원입니다.");
 
-        verify(userRepository, times(1)).findUserIdByProviderUserId(providerUserId);
-        verifyNoInteractions(onboardingProfileRepository); // 저장 시도 안 함
+        verify(userRepository).existsById(userId);
+        verifyNoInteractions(onboardingProfileRepository, onboardingCategoryRepository);
     }
 
     @Test
-    @DisplayName("온보딩을 이미 진행한 회원은 예외가 발생하고 데이터를 저장하지 않는다.")
-    void alreadyOnboardedUserThrowException() {
+    @DisplayName("온보딩을 이미 진행한 회원은 예외 발생")
+    void alreadyOnboardedUserThrowsException() {
         // given
-        given(userRepository.findUserIdByProviderUserId(providerUserId))
-                .willReturn(Optional.of(userId));
-        given(onboardingProfileRepository.existsByUserId(userId))
-                .willReturn(true);
+        given(userRepository.existsById(userId)).willReturn(true);
+        given(onboardingProfileRepository.existsByUserId(userId)).willReturn(true);
+
+        OnboardingDataRequest request = new OnboardingDataRequest(
+                userId, "마케터", List.of("등산"), "글", "트렌드 파악하기", ""
+        );
 
         // when & then
-        assertThatThrownBy(() ->
-                service.submit(userId, "마케터", List.of("등산"))
-        )
+        assertThatThrownBy(() -> service.submit(request))
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessage("이미 온보딩 정보가 존재합니다.");
 
-        verify(onboardingProfileRepository, never()).save(any());
+        verify(userRepository).existsById(userId);
+        verify(onboardingProfileRepository).existsByUserId(userId);
+        verifyNoMoreInteractions(userRepository, onboardingProfileRepository);
+        verifyNoInteractions(onboardingCategoryRepository);
     }
 }

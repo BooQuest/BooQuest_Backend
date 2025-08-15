@@ -3,13 +3,12 @@ package com.booquest.booquest_api.application.service.onboarding;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import com.booquest.booquest_api.adapter.in.onboarding.web.dto.OnboardingDataRequest;
 import com.booquest.booquest_api.application.port.out.onboarding.OnboardingProfileRepository;
 import com.booquest.booquest_api.application.port.out.user.UserRepository;
 import com.booquest.booquest_api.domain.onboarding.model.OnboardingProfile;
 import com.booquest.booquest_api.domain.user.model.User;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -32,7 +31,6 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 @Testcontainers
 class OnboardingServiceIntegrationTest {
 
-    // Testcontainers Postgres
     @Container
     static final PostgreSQLContainer<?> POSTGRES =
             new PostgreSQLContainer<>("postgres:16-alpine")
@@ -40,15 +38,13 @@ class OnboardingServiceIntegrationTest {
                     .withUsername("test")
                     .withPassword("test");
 
-    //컨테이너 값들을 Spring 환경 속성으로 주입
     @DynamicPropertySource
     static void registerDatasourceProps(DynamicPropertyRegistry registry) {
-        registry.add("spring.datasource.url",      POSTGRES::getJdbcUrl);
+        registry.add("spring.datasource.url", POSTGRES::getJdbcUrl);
         registry.add("spring.datasource.username", POSTGRES::getUsername);
         registry.add("spring.datasource.password", POSTGRES::getPassword);
-
-         registry.add("spring.flyway.enabled", () -> true);
-         registry.add("spring.jpa.hibernate.ddl-auto", () -> "none");
+        registry.add("spring.flyway.enabled", () -> true);
+        registry.add("spring.jpa.hibernate.ddl-auto", () -> "none");
     }
 
     @Autowired
@@ -59,52 +55,72 @@ class OnboardingServiceIntegrationTest {
     UserRepository userRepository;
 
     private final String providerUserId = "kakao-123";
+    private Long userId;
 
     @BeforeEach
     void setUpUser() {
-        Optional<Long> maybeId = userRepository.findUserIdByProviderUserId(providerUserId);
-        if (maybeId.isEmpty()) {
+        userId = userRepository.findUserIdByProviderUserId(providerUserId).orElseGet(() -> {
             User user = User.builder()
                     .provider("kakao")
                     .providerUserId(providerUserId)
                     .email("t@example.com")
                     .nickname("tester")
                     .build();
-
-            userRepository.save(user);
-        }
+            return userRepository.save(user).getId();
+        });
     }
 
     @Test
     @DisplayName("회원의 최초 온보딩만 정상적으로 저장된다.")
     void submitOnboardingSuccess() {
+        // given
+        OnboardingDataRequest request = new OnboardingDataRequest(
+                userId,
+                "개발자",
+                List.of("노래", "다이어트"),
+                "글",
+                "정리·전달하기",
+                "사이드잡 준비중"
+        );
+
         // when
-        onboardingService.submit(123, "개발자", List.of("독서", "축구"));
+        onboardingService.submit(request);
 
         // then
-        Long userId = userRepository.findUserIdByProviderUserId(providerUserId).orElseThrow();
-        OnboardingProfile saved = onboardingProfileRepository.findByUserId(userId).orElseThrow();
+        OnboardingProfile saved = onboardingProfileRepository.findByUserId(userId)
+                .orElseThrow();
 
         assertThat(saved.getUserId()).isEqualTo(userId);
-        assertThat(saved.getMetadata()).isInstanceOf(Map.class);
-
-        @SuppressWarnings("unchecked")
-        Map<String, Object> meta = saved.getMetadata();
-        assertThat(meta)
-                .containsEntry("job", "개발자")
-                .containsEntry("hobbies", List.of("독서", "축구"));
+        assertThat(saved.getJob()).isEqualTo("개발자");
+        assertThat(saved.getExpressionStyle().getDisplayName()).isEqualTo("글");
+        assertThat(saved.getStrengthType().getDisplayName()).isEqualTo("정리·전달하기");
     }
-
 
     @Test
     @DisplayName("온보딩을 이미 진행한 회원은 예외가 발생하고 데이터를 저장하지 않는다.")
     void alreadyOnboardedUserThrowException() {
-        onboardingService.submit(123, "개발자", List.of("독서"));
+        OnboardingDataRequest request1 = new OnboardingDataRequest(
+                userId,
+                "개발자",
+                List.of("요리"),
+                "영상",
+                "창작하기",
+                ""
+        );
+        onboardingService.submit(request1);
+
         onboardingProfileRepository.flush();
 
-        assertThatThrownBy(() ->
-                onboardingService.submit(123, "디자이너", List.of("요리"))
-        )
+        OnboardingDataRequest request2 = new OnboardingDataRequest(
+                userId,
+                "마케터",
+                List.of("운동"),
+                "그림",
+                "트렌드 파악하기",
+                ""
+        );
+
+        assertThatThrownBy(() -> onboardingService.submit(request2))
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessage("이미 온보딩 정보가 존재합니다.");
     }
@@ -112,11 +128,18 @@ class OnboardingServiceIntegrationTest {
     @Test
     @DisplayName("존재하지 않는 회원이면 예외가 발생한다.")
     void onboardingIfNotUserThrowException() {
-        long unknown = 999;
+        long unknownUserId = 99999L;
 
-        assertThatThrownBy(() ->
-                onboardingService.submit(unknown, "개발자", List.of("독서"))
-        )
+        OnboardingDataRequest request = new OnboardingDataRequest(
+                unknownUserId,
+                "디자이너",
+                List.of("음악"),
+                "영상",
+                "일상 공유하기",
+                ""
+        );
+
+        assertThatThrownBy(() -> onboardingService.submit(request))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("존재하지 않는 회원입니다.");
     }
