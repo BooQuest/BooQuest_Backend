@@ -1,4 +1,4 @@
-package com.booquest.booquest_api.application.dto;
+package com.booquest.booquest_api.application.port.in.sidejob;
 
 
 public record SideJobItem (
