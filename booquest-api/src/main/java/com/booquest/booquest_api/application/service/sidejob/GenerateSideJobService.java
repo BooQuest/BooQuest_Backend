@@ -1,29 +1,32 @@
 package com.booquest.booquest_api.application.service.sidejob;
 
 import com.booquest.booquest_api.adapter.in.onboarding.web.dto.OnboardingDataRequest;
-import com.booquest.booquest_api.application.dto.SideJobGenerationResult;
-import com.booquest.booquest_api.application.dto.SideJobItem;
 import com.booquest.booquest_api.application.port.in.sidejob.GenerateSideJobUseCase;
-import com.booquest.booquest_api.application.port.out.ai.AiClientSideJobPort;
-import com.booquest.booquest_api.application.port.out.sidejob.SideJobRepository;
+import com.booquest.booquest_api.application.port.in.sidejob.SideJobGenerationResult;
+import com.booquest.booquest_api.application.port.in.sidejob.SideJobItem;
+import com.booquest.booquest_api.application.port.out.sidejob.GenerateSideJobPort;
+import com.booquest.booquest_api.application.port.out.sidejob.SideJobRepositoryPort;
 import com.booquest.booquest_api.domain.sidejob.model.SideJob;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-public class SideJobService implements GenerateSideJobUseCase {
+public class GenerateSideJobService implements GenerateSideJobUseCase {
 
-    private final SideJobRepository sideJobRepository;
-    private final AiClientSideJobPort aiClientPort;
+    @Autowired
+    private final SideJobRepositoryPort sideJobRepository;
+
+    private final GenerateSideJobPort sideJobGenerator;
 
     @Transactional
     @Override
     public List<SideJob> generateSideJob(OnboardingDataRequest request) {
-        SideJobGenerationResult result = aiClientPort.generateSideJob(request);
+        SideJobGenerationResult result = sideJobGenerator.generateSideJob(request);
 
         List<SideJob> savedJobs = new ArrayList<>();
         List<SideJobItem> tasks = result.tasks();

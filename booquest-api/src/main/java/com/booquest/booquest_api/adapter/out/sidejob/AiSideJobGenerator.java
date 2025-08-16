@@ -1,9 +1,8 @@
-package com.booquest.booquest_api.adapter.out.ai;
+package com.booquest.booquest_api.adapter.out.sidejob;
 
 import com.booquest.booquest_api.adapter.in.onboarding.web.dto.OnboardingDataRequest;
-import com.booquest.booquest_api.application.dto.SideJobGenerationResult;
-import com.booquest.booquest_api.application.port.out.ai.AiClientSideJobPort;
-import java.util.List;
+import com.booquest.booquest_api.application.port.in.sidejob.SideJobGenerationResult;
+import com.booquest.booquest_api.application.port.out.sidejob.GenerateSideJobPort;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.MediaType;
@@ -13,7 +12,7 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 
 @Service
 @RequiredArgsConstructor
-public class SyncAiClient implements AiClientSideJobPort {
+public class AiSideJobGenerator implements GenerateSideJobPort {
 
     private static final String API_URL = "/ai/generate-side-job";
     private final @Qualifier("aiWebClient") WebClient webClient;
