@@ -3,6 +3,7 @@ package com.booquest.booquest_api.application.service.onboarding;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import com.booquest.booquest_api.adapter.in.onboarding.web.OnboardingController.SubmitOnboardingData;
 import com.booquest.booquest_api.adapter.in.onboarding.web.dto.OnboardingDataRequest;
 import com.booquest.booquest_api.application.port.out.onboarding.OnboardingProfileRepository;
 import com.booquest.booquest_api.application.port.out.user.UserRepository;
@@ -74,13 +75,12 @@ class OnboardingServiceIntegrationTest {
     @DisplayName("회원의 최초 온보딩만 정상적으로 저장된다.")
     void submitOnboardingSuccess() {
         // given
-        OnboardingDataRequest request = new OnboardingDataRequest(
+        SubmitOnboardingData request = new SubmitOnboardingData(
                 userId,
                 "개발자",
                 List.of("노래", "다이어트"),
                 "글",
-                "정리·전달하기",
-                "사이드잡 준비중"
+                "정리·전달하기"
         );
 
         // when
@@ -99,25 +99,23 @@ class OnboardingServiceIntegrationTest {
     @Test
     @DisplayName("온보딩을 이미 진행한 회원은 예외가 발생하고 데이터를 저장하지 않는다.")
     void alreadyOnboardedUserThrowException() {
-        OnboardingDataRequest request1 = new OnboardingDataRequest(
+        SubmitOnboardingData request1 = new SubmitOnboardingData(
                 userId,
                 "개발자",
                 List.of("요리"),
                 "영상",
-                "창작하기",
-                ""
+                "창작하기"
         );
         onboardingService.submit(request1);
 
         onboardingProfileRepository.flush();
 
-        OnboardingDataRequest request2 = new OnboardingDataRequest(
+        SubmitOnboardingData request2 = new SubmitOnboardingData(
                 userId,
                 "마케터",
                 List.of("운동"),
                 "그림",
-                "트렌드 파악하기",
-                ""
+                "트렌드 파악하기"
         );
 
         assertThatThrownBy(() -> onboardingService.submit(request2))
@@ -130,13 +128,12 @@ class OnboardingServiceIntegrationTest {
     void onboardingIfNotUserThrowException() {
         long unknownUserId = 99999L;
 
-        OnboardingDataRequest request = new OnboardingDataRequest(
+        SubmitOnboardingData request = new SubmitOnboardingData(
                 unknownUserId,
                 "디자이너",
                 List.of("음악"),
                 "영상",
-                "일상 공유하기",
-                ""
+                "일상 공유하기"
         );
 
         assertThatThrownBy(() -> onboardingService.submit(request))

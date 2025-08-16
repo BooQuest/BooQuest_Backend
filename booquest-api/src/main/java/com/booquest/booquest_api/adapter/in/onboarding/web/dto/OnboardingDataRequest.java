@@ -9,11 +9,11 @@ import java.util.List;
 
 public record OnboardingDataRequest(
         long userId,
+        @NotBlank String nickname,
         @NotBlank String job,
         @NotNull @Size(min = 1) List<@NotBlank String> hobbies, //subcategory
-        @NotBlank
-        String expressionStyle,
-        @NotBlank
-        String strengthType,
+        @NotBlank String expressionStyle,
+        @NotBlank String strengthType,
+        @NotBlank String characterName,
         String desiredSideJob) {
 }
