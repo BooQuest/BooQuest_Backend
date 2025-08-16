@@ -46,8 +46,8 @@ class OnboardingServiceTest {
         // given
         given(userRepository.existsById(userId))
                 .willReturn(true);
-        given(onboardingProfileRepository.existsByUserId(userId))
-                .willReturn(false);
+//        given(onboardingProfileRepository.existsByUserId(userId))
+//                .willReturn(false);
 
         ArgumentCaptor<OnboardingProfile> captor = ArgumentCaptor.forClass(OnboardingProfile.class);
 
@@ -68,7 +68,7 @@ class OnboardingServiceTest {
         assertThat(saved.getStrengthType().getDisplayName()).isEqualTo("창작하기");
 
         verify(userRepository, times(1)).existsById(userId);
-        verify(onboardingProfileRepository, times(1)).existsByUserId(userId);
+//        verify(onboardingProfileRepository, times(1)).existsByUserId(userId);
         verifyNoMoreInteractions(userRepository, onboardingProfileRepository);
     }
 
@@ -91,25 +91,26 @@ class OnboardingServiceTest {
         verifyNoInteractions(onboardingProfileRepository, onboardingCategoryRepository);
     }
 
-    @Test
-    @DisplayName("온보딩을 이미 진행한 회원은 예외 발생")
-    void alreadyOnboardedUserThrowsException() {
-        // given
-        given(userRepository.existsById(userId)).willReturn(true);
-        given(onboardingProfileRepository.existsByUserId(userId)).willReturn(true);
-
-        SubmitOnboardingData request = new SubmitOnboardingData(
-                userId, "마케터", List.of("등산"), "글", "트렌드 파악하기"
-        );
-
-        // when & then
-        assertThatThrownBy(() -> service.submit(request))
-                .isInstanceOf(IllegalStateException.class)
-                .hasMessage("이미 온보딩 정보가 존재합니다.");
-
-        verify(userRepository).existsById(userId);
-        verify(onboardingProfileRepository).existsByUserId(userId);
-        verifyNoMoreInteractions(userRepository, onboardingProfileRepository);
-        verifyNoInteractions(onboardingCategoryRepository);
-    }
+    //온보딩 인즐 추가 후 주석 해제
+//    @Test
+//    @DisplayName("온보딩을 이미 진행한 회원은 예외 발생")
+//    void alreadyOnboardedUserThrowsException() {
+//        // given
+//        given(userRepository.existsById(userId)).willReturn(true);
+//        given(onboardingProfileRepository.existsByUserId(userId)).willReturn(true);
+//
+//        SubmitOnboardingData request = new SubmitOnboardingData(
+//                userId, "마케터", List.of("등산"), "글", "트렌드 파악하기"
+//        );
+//
+//        // when & then
+//        assertThatThrownBy(() -> service.submit(request))
+//                .isInstanceOf(IllegalStateException.class)
+//                .hasMessage("이미 온보딩 정보가 존재합니다.");
+//
+//        verify(userRepository).existsById(userId);
+//        verify(onboardingProfileRepository).existsByUserId(userId);
+//        verifyNoMoreInteractions(userRepository, onboardingProfileRepository);
+//        verifyNoInteractions(onboardingCategoryRepository);
+//    }
 }

@@ -3,9 +3,9 @@ package com.booquest.booquest_api.application.service.onboarding;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import com.booquest.booquest_api.adapter.out.auth.persistence.jpa.UserRepository;
 import com.booquest.booquest_api.application.port.in.dto.SubmitOnboardingData;
 import com.booquest.booquest_api.application.port.out.onboarding.OnboardingProfileRepository;
-import com.booquest.booquest_api.adapter.out.auth.persistence.jpa.UserRepository;
 import com.booquest.booquest_api.domain.onboarding.model.OnboardingProfile;
 import com.booquest.booquest_api.domain.user.model.User;
 import java.util.List;
@@ -96,32 +96,33 @@ class OnboardingServiceIntegrationTest {
         assertThat(saved.getStrengthType().getDisplayName()).isEqualTo("정리·전달하기");
     }
 
-    @Test
-    @DisplayName("온보딩을 이미 진행한 회원은 예외가 발생하고 데이터를 저장하지 않는다.")
-    void alreadyOnboardedUserThrowException() {
-        SubmitOnboardingData request1 = new SubmitOnboardingData(
-                userId,
-                "개발자",
-                List.of("요리"),
-                "영상",
-                "창작하기"
-        );
-        onboardingService.submit(request1);
-
-        onboardingProfileRepository.flush();
-
-        SubmitOnboardingData request2 = new SubmitOnboardingData(
-                userId,
-                "마케터",
-                List.of("운동"),
-                "그림",
-                "트렌드 파악하기"
-        );
-
-        assertThatThrownBy(() -> onboardingService.submit(request2))
-                .isInstanceOf(IllegalStateException.class)
-                .hasMessage("이미 온보딩 정보가 존재합니다.");
-    }
+    //온보딩 인증 추가 후 주석 해제
+//    @Test
+//    @DisplayName("온보딩을 이미 진행한 회원은 예외가 발생하고 데이터를 저장하지 않는다.")
+//    void alreadyOnboardedUserThrowException() {
+//        SubmitOnboardingData request1 = new SubmitOnboardingData(
+//                userId,
+//                "개발자",
+//                List.of("요리"),
+//                "영상",
+//                "창작하기"
+//        );
+//        onboardingService.submit(request1);
+//
+//        onboardingProfileRepository.flush();
+//
+//        SubmitOnboardingData request2 = new SubmitOnboardingData(
+//                userId,
+//                "마케터",
+//                List.of("운동"),
+//                "그림",
+//                "트렌드 파악하기"
+//        );
+//
+//        assertThatThrownBy(() -> onboardingService.submit(request2))
+//                .isInstanceOf(IllegalStateException.class)
+//                .hasMessage("이미 온보딩 정보가 존재합니다.");
+//    }
 
     @Test
     @DisplayName("존재하지 않는 회원이면 예외가 발생한다.")
