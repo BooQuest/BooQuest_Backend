@@ -58,26 +58,8 @@ public class JwtTokenProvider implements JwtTokenPort {
     }
 
     @Override
-    public boolean validateToken(String token) {
-        try {
-            SecretKey key = Keys.hmacShaKeyFor(jwtSecret.getBytes());
-            Jwts.parser().verifyWith(key).build().parseSignedClaims(token);
-            return true;
-        } catch (JwtException | IllegalArgumentException e) {
-            log.warn("Invalid JWT token: {}", e.getMessage());
-            return false;
-        }
-    }
-
-    @Override
-    public Long getUserIdFromToken(String token) {
-        try {
-            SecretKey key = Keys.hmacShaKeyFor(jwtSecret.getBytes());
-            Claims claims = Jwts.parser().verifyWith(key).build().parseSignedClaims(token).getPayload();
-            return Long.parseLong(claims.getSubject());
-        } catch (JwtException | IllegalArgumentException e) {
-            log.warn("Failed to get user ID from token: {}", e.getMessage());
-            throw new RuntimeException("Invalid token", e);
-        }
+    public Jws<Claims> parse(String token) {
+        SecretKey key = Keys.hmacShaKeyFor(jwtSecret.getBytes());
+        return Jwts.parser().verifyWith(key).build().parseSignedClaims(token);
     }
 }
