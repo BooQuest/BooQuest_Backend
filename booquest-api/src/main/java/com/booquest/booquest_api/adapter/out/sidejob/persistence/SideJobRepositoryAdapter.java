@@ -19,7 +19,7 @@ public class SideJobRepositoryAdapter implements SideJobRepositoryPort {
     }
 
     @Override
-    public int updateSelectedFalse(Long id) {
-        return sideJobRepository.updateSelectedFalse(id);
+    public int updateSelectedTrue(Long id) {
+        return sideJobRepository.updateSelectedTrue(id);
     }
 }

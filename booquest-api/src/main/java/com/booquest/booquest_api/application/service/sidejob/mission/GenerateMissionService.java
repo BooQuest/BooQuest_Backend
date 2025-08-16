@@ -29,7 +29,7 @@ public class GenerateMissionService implements GenerateMissionUseCase {
         var userId = generateDto.userId();
 
         // side job is_select false 로 update
-        sideJobRepository.updateSelectedFalse(sideJobSelectedId);
+        sideJobRepository.updateSelectedTrue(sideJobSelectedId);
 
         //  ai 서버로 미션생성 요청
         GenerateMissionResult result = missionGenerator.generateMission(generateDto);

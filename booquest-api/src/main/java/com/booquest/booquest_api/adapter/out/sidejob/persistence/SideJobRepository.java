@@ -12,6 +12,6 @@ import org.springframework.stereotype.Repository;
 public interface SideJobRepository extends JpaRepository<SideJob, Long> {
 
     @Modifying(clearAutomatically = true)
-    @Query("UPDATE SideJob s SET s.isSelected = false WHERE s.id = :id")
-    int updateSelectedFalse(@Param("id") Long id);
+    @Query("UPDATE SideJob s SET s.isSelected = true WHERE s.id = :id")
+    int updateSelectedTrue(@Param("id") Long id);
 }
