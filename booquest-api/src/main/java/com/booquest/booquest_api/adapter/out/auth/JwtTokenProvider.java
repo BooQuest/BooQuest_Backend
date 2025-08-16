@@ -53,7 +53,7 @@ public class JwtTokenProvider implements JwtTokenPort {
             .accessToken(accessToken)
             .refreshToken(refreshToken)
             .tokenType("Bearer")
-            .expiresIn(accessTokenExpiration / 1000) // Convert to seconds
+            .expiresIn(accessTokenExpiration / 3600)
             .build();
     }
 
