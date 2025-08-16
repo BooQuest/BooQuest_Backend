@@ -65,6 +65,7 @@ class OnboardingServiceIntegrationTest {
                     .providerUserId(providerUserId)
                     .email("t@example.com")
                     .nickname("tester")
+                    .profileImageUrl("image")
                     .build();
             return userRepository.save(user).getId();
         });

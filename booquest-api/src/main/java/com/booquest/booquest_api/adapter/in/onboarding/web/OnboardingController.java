@@ -6,6 +6,7 @@ import com.booquest.booquest_api.application.port.in.dto.GenerateSideJobRequest;
 import com.booquest.booquest_api.application.port.in.dto.SubmitOnboardingData;
 import com.booquest.booquest_api.application.port.in.onboarding.SubmitOnboardingUseCase;
 import com.booquest.booquest_api.application.port.in.sidejob.GenerateSideJobUseCase;
+import com.booquest.booquest_api.application.port.in.user.UpdateUserProfileUseCase;
 import com.booquest.booquest_api.common.response.ApiResponse;
 import com.booquest.booquest_api.domain.sidejob.model.SideJob;
 import jakarta.validation.Valid;
@@ -23,12 +24,14 @@ public class OnboardingController {
 
     private final SubmitOnboardingUseCase submitOnboardingUseCase;
     private final GenerateSideJobUseCase generateSideJobUseCase;
+    private final UpdateUserProfileUseCase updateUserProfileUseCase;
 
     @PostMapping
     public ApiResponse<List<SideJobResponseDto>> generateSideJobFromOnboarding(
             @Valid @RequestBody OnboardingDataRequest request) {
 
         saveOnboardingProfile(request);
+        updateUserProfileUseCase.updateNickname(request.userId(), request.nickname());
 
         List<SideJob> sideJobs = generateSideJobToAi(request);
 
