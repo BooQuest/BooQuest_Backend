@@ -11,7 +11,7 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import com.booquest.booquest_api.application.port.in.dto.SubmitOnboardingData;
 import com.booquest.booquest_api.application.port.out.onboarding.OnboardingCategoryRepository;
 import com.booquest.booquest_api.application.port.out.onboarding.OnboardingProfileRepository;
-import com.booquest.booquest_api.application.port.out.user.UserRepository;
+import com.booquest.booquest_api.adapter.out.auth.persistence.jpa.UserRepository;
 import com.booquest.booquest_api.domain.onboarding.model.OnboardingProfile;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;

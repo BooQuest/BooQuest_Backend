@@ -45,4 +45,8 @@ public class User extends AuditableEntity {
             this.profileImageUrl = newProfileImageUrl;
         }
     }
+
+    public void updateNickname(String nickname) {
+        this.nickname = nickname;
+    }
 }

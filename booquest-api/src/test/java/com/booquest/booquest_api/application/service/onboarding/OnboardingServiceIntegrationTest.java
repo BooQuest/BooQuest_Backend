@@ -3,10 +3,9 @@ package com.booquest.booquest_api.application.service.onboarding;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import com.booquest.booquest_api.adapter.in.onboarding.web.OnboardingController.SubmitOnboardingData;
-import com.booquest.booquest_api.adapter.in.onboarding.web.dto.OnboardingDataRequest;
+import com.booquest.booquest_api.application.port.in.dto.SubmitOnboardingData;
 import com.booquest.booquest_api.application.port.out.onboarding.OnboardingProfileRepository;
-import com.booquest.booquest_api.application.port.out.user.UserRepository;
+import com.booquest.booquest_api.adapter.out.auth.persistence.jpa.UserRepository;
 import com.booquest.booquest_api.domain.onboarding.model.OnboardingProfile;
 import com.booquest.booquest_api.domain.user.model.User;
 import java.util.List;

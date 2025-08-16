@@ -1,4 +1,4 @@
-package com.booquest.booquest_api.application.port.out.auth;
+package com.booquest.booquest_api.application.port.out.user;
 
 import com.booquest.booquest_api.domain.user.model.User;
 
@@ -8,4 +8,6 @@ public interface UserQueryPort {
     Optional<User> findByProviderAndProviderUserId(String provider, String providerId);
     User save(User user);
     User update(User user);
+
+    Optional<User> findById(long id);
 }

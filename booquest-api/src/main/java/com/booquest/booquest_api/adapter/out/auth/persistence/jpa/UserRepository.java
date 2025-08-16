@@ -1,4 +1,4 @@
-package com.booquest.booquest_api.application.port.out.user;
+package com.booquest.booquest_api.adapter.out.auth.persistence.jpa;
 
 import com.booquest.booquest_api.domain.user.model.User;
 import java.util.Optional;

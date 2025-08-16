@@ -5,6 +5,7 @@ import com.booquest.booquest_api.adapter.out.auth.oauth.KakaoOAuthClient;
 import com.booquest.booquest_api.application.port.in.auth.SocialLoginUseCase;
 import com.booquest.booquest_api.application.port.out.auth.*;
 import com.booquest.booquest_api.application.port.out.auth.dto.TokenInfo;
+import com.booquest.booquest_api.application.port.out.user.UserQueryPort;
 import com.booquest.booquest_api.domain.user.model.SocialUser;
 import com.booquest.booquest_api.domain.user.model.User;
 import lombok.RequiredArgsConstructor;
