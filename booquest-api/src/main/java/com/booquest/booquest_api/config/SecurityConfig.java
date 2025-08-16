@@ -27,9 +27,10 @@ public class SecurityConfig {
                                 "/swagger-ui/**",
                                 "/v3/api-docs/**"
                         ).permitAll()
-                        .anyRequest().authenticated()
+//                        .anyRequest().authenticated()
+                        .anyRequest().permitAll()
                 )
-                .addFilterBefore(new JwtAuthFilter(jwtTokenPort), UsernamePasswordAuthenticationFilter.class)
+//                .addFilterBefore(new JwtAuthFilter(jwtTokenPort), UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling(ex -> ex
                         .authenticationEntryPoint((req, res, e) -> res.sendError(401, "Unauthorized"))
                         .accessDeniedHandler((req, res, e) -> res.sendError(403, "Forbidden"))
