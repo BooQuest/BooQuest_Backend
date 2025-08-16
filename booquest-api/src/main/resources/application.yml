@@ -27,6 +27,9 @@ spring:
   config:
     import: optional:classpath:properties/env.properties
 
+  profiles:
+    active: dev
+
 server:
   port: ${SERVER_PORT:8080}
 
