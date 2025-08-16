@@ -6,5 +6,6 @@ import io.jsonwebtoken.Jws;
 
 public interface JwtTokenPort {
     TokenInfo generateToken(Long userId, String email);
+    TokenInfo generateTestToken();
     Jws<Claims> parse(String token);
 }

@@ -20,7 +20,7 @@ public class SocialLoginService implements SocialLoginUseCase {
 //    private final OAuthClientPort oAuthClient;
     private final KakaoOAuthClient kakaoOAuthClient;
     private final UserQueryPort userQueryPort; // User 정보 확인용
-    private final JwtTokenPort jwtTokenPort;   // JWT 생성용
+    private final TokenService tokenService;
 
     @Override
     public SocialLoginResponse login(String accessToken, String provider) {
@@ -30,7 +30,7 @@ public class SocialLoginService implements SocialLoginUseCase {
                 .map(u -> updateExistingUserProfile(u, socialUser))
                 .orElseGet(() -> registerNewUser(provider, socialUser));
 
-        TokenInfo tokenInfo = issueToken(user);
+        TokenInfo tokenInfo = tokenService.issueToken(user);
 
         return buildResponse(tokenInfo, user);
     }
@@ -62,10 +62,6 @@ public class SocialLoginService implements SocialLoginUseCase {
                 .profileImageUrl(socialUser.getProfileImageUrl())
                 .build();
         return userQueryPort.save(user);
-    }
-
-    private TokenInfo issueToken(User user) {
-        return jwtTokenPort.generateToken(user.getId(), user.getEmail());
     }
 
     private SocialLoginResponse buildResponse(TokenInfo tokenInfo, User user) {

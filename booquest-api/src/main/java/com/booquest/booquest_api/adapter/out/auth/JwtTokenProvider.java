@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
 import java.util.Date;
+import java.util.UUID;
 
 @Slf4j
 @Component
@@ -24,6 +25,9 @@ public class JwtTokenProvider implements JwtTokenPort {
     @Value("${jwt.refresh-token-ttl-seconds:2592000}") // 30 days
     private long refreshTokenExpiration;
 
+    @Value("${jwt.access-test-token-ttl-seconds:21600}") // 6 hours
+    private long accessTestTokenExpiration;
+
     @Override
     public TokenInfo generateToken(Long userId, String email) {
         Date now = new Date();
@@ -32,22 +36,8 @@ public class JwtTokenProvider implements JwtTokenPort {
 
         SecretKey key = Keys.hmacShaKeyFor(jwtSecret.getBytes());
 
-        String accessToken = Jwts.builder()
-            .subject(String.valueOf(userId))
-            .claim("email", email)
-            .claim("type", "ACCESS")
-            .issuedAt(now)
-            .expiration(accessExpiryDate)
-            .signWith(key)
-            .compact();
-
-        String refreshToken = Jwts.builder()
-                .subject(String.valueOf(userId))
-                .claim("type", "REFRESH")
-                .issuedAt(now)
-                .expiration(refreshExpiryDate)
-                .signWith(key)
-                .compact();
+        String accessToken = getAccessToken(userId, email, now, accessExpiryDate, key);
+        String refreshToken = getRefreshToken(userId, now, refreshExpiryDate, key);
 
         return TokenInfo.builder()
             .accessToken(accessToken)
@@ -55,6 +45,47 @@ public class JwtTokenProvider implements JwtTokenPort {
             .tokenType("Bearer")
             .expiresIn(accessTokenExpiration / 3600)
             .build();
+    }
+
+    private String getAccessToken(Long userId, String email, Date now, Date accessExpiryDate, SecretKey key) {
+        return Jwts.builder()
+                .subject(String.valueOf(userId))
+                .claim("email", email)
+                .claim("type", "ACCESS")
+                .issuedAt(now)
+                .expiration(accessExpiryDate)
+                .signWith(key)
+                .compact();
+    }
+
+    private String getRefreshToken(Long userId, Date now, Date refreshExpiryDate, SecretKey key) {
+        return Jwts.builder()
+                .subject(String.valueOf(userId))
+                .claim("type", "REFRESH")
+                .issuedAt(now)
+                .expiration(refreshExpiryDate)
+                .signWith(key)
+                .compact();
+    }
+
+    @Override
+    public TokenInfo generateTestToken() {
+        long fakeUserId = Math.abs(UUID.randomUUID().getMostSignificantBits());
+        String fakeEmail = "tester-" + fakeUserId + "@example.test";
+
+        Date now = new Date();
+        Date accessExpiryDate = new Date(now.getTime() + accessTestTokenExpiration);
+
+        SecretKey key = Keys.hmacShaKeyFor(jwtSecret.getBytes());
+
+        String accessToken = getAccessToken(fakeUserId, fakeEmail, now, accessExpiryDate, key);
+
+        return TokenInfo.builder()
+                .accessToken(accessToken)
+                .refreshToken(null)
+                .tokenType("Bearer")
+                .expiresIn(accessTestTokenExpiration / 3600)
+                .build();
     }
 
     @Override
