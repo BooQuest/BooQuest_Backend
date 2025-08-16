@@ -33,9 +33,9 @@ public class OnboardingService implements SubmitOnboardingUseCase {
             throw new IllegalArgumentException("존재하지 않는 회원입니다.");
         }
 
-        if (onboardingProfileRepository.existsByUserId(onboardingData.userId())) {
-            throw new IllegalStateException("이미 온보딩 정보가 존재합니다.");
-        }
+//        if (onboardingProfileRepository.existsByUserId(onboardingData.userId())) {
+//            throw new IllegalStateException("이미 온보딩 정보가 존재합니다.");
+//        }
 
         OnboardingProfile profile = buildOnboardingProfile(onboardingData);
         onboardingProfileRepository.save(profile);

@@ -2,12 +2,14 @@ package com.booquest.booquest_api.adapter.in.onboarding.web;
 
 import com.booquest.booquest_api.adapter.in.onboarding.web.dto.OnboardingDataRequest;
 import com.booquest.booquest_api.adapter.in.onboarding.web.dto.SideJobResponseDto;
+import com.booquest.booquest_api.application.port.in.character.CreateCharacterUseCase;
 import com.booquest.booquest_api.application.port.in.dto.GenerateSideJobRequest;
 import com.booquest.booquest_api.application.port.in.dto.SubmitOnboardingData;
 import com.booquest.booquest_api.application.port.in.onboarding.SubmitOnboardingUseCase;
 import com.booquest.booquest_api.application.port.in.sidejob.GenerateSideJobUseCase;
 import com.booquest.booquest_api.application.port.in.user.UpdateUserProfileUseCase;
 import com.booquest.booquest_api.common.response.ApiResponse;
+import com.booquest.booquest_api.domain.character.enums.CharacterType;
 import com.booquest.booquest_api.domain.sidejob.model.SideJob;
 import jakarta.validation.Valid;
 import java.util.List;
@@ -25,6 +27,7 @@ public class OnboardingController {
     private final SubmitOnboardingUseCase submitOnboardingUseCase;
     private final GenerateSideJobUseCase generateSideJobUseCase;
     private final UpdateUserProfileUseCase updateUserProfileUseCase;
+    private final CreateCharacterUseCase createCharacterUseCase;
 
     @PostMapping
     public ApiResponse<List<SideJobResponseDto>> generateSideJobFromOnboarding(
@@ -32,6 +35,9 @@ public class OnboardingController {
 
         saveOnboardingProfile(request);
         updateUserProfileUseCase.updateNickname(request.userId(), request.nickname());
+
+        CharacterType characterType = CharacterType.valueOf(request.characterType());
+        createCharacterUseCase.createCharacter(request.userId(), characterType, request.characterName());
 
         List<SideJob> sideJobs = generateSideJobToAi(request);
 
