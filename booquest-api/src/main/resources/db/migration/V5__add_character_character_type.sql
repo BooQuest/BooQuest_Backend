@@ -1,1 +1,1 @@
-ALTER TABLE user_characters ADD COLUMN character_type CHAR(10);
+ALTER TABLE user_characters ADD COLUMN IF NOT EXISTS character_type CHAR(10);
