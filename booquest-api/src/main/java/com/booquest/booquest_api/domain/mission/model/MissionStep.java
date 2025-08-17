@@ -2,6 +2,7 @@ package com.booquest.booquest_api.domain.mission.model;
 
 import com.booquest.booquest_api.common.entity.AuditableEntity;
 import com.booquest.booquest_api.domain.sidejob.enums.StepStatus;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.vladmihalcea.hibernate.type.json.JsonType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -11,16 +12,16 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.Type;
+import org.hibernate.type.SqlTypes;
 
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "mission_steps")
+@Builder
 @Getter
 public class MissionStep extends AuditableEntity {
 
@@ -37,9 +38,11 @@ public class MissionStep extends AuditableEntity {
     private String title;
 
     @Enumerated(EnumType.STRING)
+    @JdbcTypeCode(SqlTypes.NAMED_ENUM)
+    @Column(columnDefinition = "status")
     private StepStatus status = StepStatus.PLANNED;
 
     @Type(JsonType.class)
     @Column(columnDefinition = "jsonb")
-    private String detail;
+    private JsonNode detail;
 }
