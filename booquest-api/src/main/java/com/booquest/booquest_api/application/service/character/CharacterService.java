@@ -16,10 +16,10 @@ public class CharacterService implements CreateCharacterUseCase {
 
     @Override
     @Transactional
-    public void createCharacter(long userId, CharacterType type, String nickname) {
+    public void createCharacter(long userId, CharacterType type) {
         UserCharacter character = UserCharacter.builder()
                 .userId(userId)
-                .name(nickname)
+                .name("부냥이")
                 .characterType(type)
                 .avatarUrl("fake-url")
                 .level(1)
