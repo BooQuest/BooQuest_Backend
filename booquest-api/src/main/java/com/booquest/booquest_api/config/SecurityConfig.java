@@ -1,6 +1,5 @@
 package com.booquest.booquest_api.config;
 
-import com.booquest.booquest_api.adapter.in.auth.JwtAuthFilter;
 import com.booquest.booquest_api.application.port.out.auth.JwtTokenPort;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,7 +9,6 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
