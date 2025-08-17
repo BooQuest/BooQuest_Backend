@@ -5,6 +5,8 @@ import com.booquest.booquest_api.adapter.out.auth.oauth.KakaoOAuthClient;
 import com.booquest.booquest_api.application.port.in.auth.SocialLoginUseCase;
 import com.booquest.booquest_api.application.port.out.auth.*;
 import com.booquest.booquest_api.application.port.out.auth.dto.TokenInfo;
+import com.booquest.booquest_api.application.port.out.user.UserCommandPort;
+import com.booquest.booquest_api.application.port.out.user.UserQueryPort;
 import com.booquest.booquest_api.domain.user.model.SocialUser;
 import com.booquest.booquest_api.domain.user.model.User;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +23,7 @@ public class SocialLoginService implements SocialLoginUseCase {
     private final KakaoOAuthClient kakaoOAuthClient;
     private final UserQueryPort userQueryPort; // User 정보 확인용
     private final TokenService tokenService;
+    private final UserCommandPort userCommandPort;
 
     @Override
     public SocialLoginResponse login(String accessToken, String provider) {
@@ -49,7 +52,7 @@ public class SocialLoginService implements SocialLoginUseCase {
 
     private User updateExistingUserProfile(User user, SocialUser socialUser) {
         user.updateProfile(socialUser.getNickname(), socialUser.getProfileImageUrl());
-        return userQueryPort.update(user);
+        return userCommandPort.update(user);
     }
 
     private User registerNewUser(String provider, SocialUser socialUser) {
@@ -61,7 +64,7 @@ public class SocialLoginService implements SocialLoginUseCase {
                 .socialNickname(socialUser.getNickname())    // 소셜 로그인 닉네임
                 .profileImageUrl(socialUser.getProfileImageUrl())
                 .build();
-        return userQueryPort.save(user);
+        return userCommandPort.save(user);
     }
 
     private SocialLoginResponse buildResponse(TokenInfo tokenInfo, User user) {

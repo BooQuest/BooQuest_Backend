@@ -1,6 +1,6 @@
 package com.booquest.booquest_api.adapter.out.sidejob;
 
-import com.booquest.booquest_api.adapter.in.onboarding.web.dto.OnboardingDataRequest;
+import com.booquest.booquest_api.application.port.in.dto.GenerateSideJobRequest;
 import com.booquest.booquest_api.application.port.in.sidejob.SideJobGenerationResult;
 import com.booquest.booquest_api.application.port.out.sidejob.GenerateSideJobPort;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +18,7 @@ public class AiSideJobGenerator implements GenerateSideJobPort {
     private final @Qualifier("aiWebClient") WebClient webClient;
 
     @Override
-    public SideJobGenerationResult generateSideJob(OnboardingDataRequest request) {
+    public SideJobGenerationResult generateSideJob(GenerateSideJobRequest request) {
         try {
             return webClient.post()
                     .uri(API_URL)

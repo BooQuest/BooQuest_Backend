@@ -1,7 +1,8 @@
 package com.booquest.booquest_api.adapter.out.auth.persistence;
 
-import com.booquest.booquest_api.application.port.out.auth.UserQueryPort;
-import com.booquest.booquest_api.application.port.out.user.UserRepository;
+import com.booquest.booquest_api.application.port.out.user.UserCommandPort;
+import com.booquest.booquest_api.application.port.out.user.UserQueryPort;
+import com.booquest.booquest_api.adapter.out.auth.persistence.jpa.UserRepository;
 import com.booquest.booquest_api.domain.user.model.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -10,7 +11,7 @@ import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
-public class UserQueryAdapter implements UserQueryPort {
+public class UserQueryAdapter implements UserQueryPort, UserCommandPort {
 
     private final UserRepository userRepository;
 
@@ -27,5 +28,10 @@ public class UserQueryAdapter implements UserQueryPort {
     @Override
     public User update(User user) {
         return userRepository.save(user);
+    }
+
+    @Override
+    public Optional<User> findById(long id) {
+        return userRepository.findById(id);
     }
 }
