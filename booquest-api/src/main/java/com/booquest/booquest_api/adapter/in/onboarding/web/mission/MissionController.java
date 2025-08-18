@@ -1,14 +1,13 @@
 package com.booquest.booquest_api.adapter.in.onboarding.web.mission;
 
-import com.booquest.booquest_api.adapter.in.onboarding.web.dto.SideJobResponseDto;
+import com.booquest.booquest_api.adapter.in.onboarding.web.mission.dto.MissionDetailResponseDto;
 import com.booquest.booquest_api.adapter.in.onboarding.web.mission.dto.MissionGenerateRequestDto;
-import com.booquest.booquest_api.adapter.in.onboarding.web.mission.dto.MissionGenerateResponseDto;
+import com.booquest.booquest_api.adapter.in.onboarding.web.mission.dto.MissionResponseDto;
 import com.booquest.booquest_api.application.port.in.sidejob.mission.GenerateMissionUseCase;
+import com.booquest.booquest_api.application.port.in.sidejob.mission.SelectMissionUseCase;
 import com.booquest.booquest_api.common.response.ApiResponse;
 import com.booquest.booquest_api.domain.mission.model.Mission;
-import com.booquest.booquest_api.domain.sidejob.model.SideJob;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,17 +18,28 @@ import java.util.List;
 public class MissionController {
 
     private final GenerateMissionUseCase generateMissionUseCase;
+    private final SelectMissionUseCase selectMissionUseCase;
 
-    @PostMapping("/generate")
-    public ApiResponse<List<MissionGenerateResponseDto>> generate(
+    @PostMapping()
+    public ApiResponse<List<MissionResponseDto>> generate(
             @RequestBody MissionGenerateRequestDto requestDto
     ) {
         List<Mission> missions = generateMissionUseCase.generateMission(requestDto);
 
-        List<MissionGenerateResponseDto> response = missions.stream()
-                .map(MissionGenerateResponseDto::fromEntity)
+        List<MissionResponseDto> response = missions.stream()
+                .map(MissionResponseDto::fromEntity)
                 .toList();
 
         return ApiResponse.success("미션이 생성되었습니다.", response);
+    }
+
+    @GetMapping("/{missionId}")
+    public ApiResponse<MissionDetailResponseDto> select(
+            @PathVariable Long missionId
+    ) {
+        var mission = selectMissionUseCase.selectMission(missionId);
+        var response = MissionDetailResponseDto.fromEntity(mission);
+
+        return ApiResponse.success("미션을 조회합니다.", response);
     }
 }

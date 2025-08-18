@@ -5,26 +5,30 @@ import com.booquest.booquest_api.application.port.in.sidejob.mission.GenerateMis
 import com.booquest.booquest_api.application.port.in.sidejob.mission.GenerateMissionUseCase;
 import com.booquest.booquest_api.application.port.out.sidejob.SideJobRepositoryPort;
 import com.booquest.booquest_api.application.port.out.sidejob.mission.GenerateMissionPort;
+import com.booquest.booquest_api.application.port.out.sidejob.mission.MissionRepositoryPort;
 import com.booquest.booquest_api.domain.mission.model.Mission;
 import com.booquest.booquest_api.domain.sidejob.enums.MissionStatus;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
 public class GenerateMissionService implements GenerateMissionUseCase {
 
     private final SideJobRepositoryPort sideJobRepository;
-    // private final MissionRepository missionRepository; // 아직은 사용 X
+     private final MissionRepositoryPort missionRepository;
     private final GenerateMissionPort missionGenerator;
 
     @Transactional
     @Override
     public List<Mission> generateMission(MissionGenerateRequestDto generateDto) {
-
+        ObjectMapper mapper = new ObjectMapper();
         var sideJobSelectedId = generateDto.sideJobId();
         var userId = generateDto.userId();
 
@@ -34,18 +38,22 @@ public class GenerateMissionService implements GenerateMissionUseCase {
         //  ai 서버로 미션생성 요청
         GenerateMissionResult result = missionGenerator.generateMission(generateDto);
 
-        return result.tasks().stream()
-                .map(t -> Mission.builder()
-                        .sidejobId(sideJobSelectedId)
-                        .userId(userId)
-                        .title(t.title())
-                        .status(MissionStatus.PLANNED)
-                        .orderNo(t.orderNo())
-                        .designNotes(t.notes())
-                        .build())
-                .toList();
+        var missions = result.tasks().stream()
+                .map(t -> {
+                    try {
+                        return Mission.builder()
+                                .sidejobId(sideJobSelectedId)
+                                .userId(userId)
+                                .title(t.title())
+                                .status(MissionStatus.PLANNED)
+                                .orderNo(t.orderNo())
+                                .designNotes(mapper.readTree(t.notes()))
+                                .build();
+                    } catch (JsonProcessingException e) {
+                        throw new RuntimeException(e);
+                    }
+                }).toList();
 
-        // 미션 저장 후 반환 [to-do]
-        // return missionRepository.saveAll(missions);
+         return missionRepository.saveAll(missions);
     }
 }

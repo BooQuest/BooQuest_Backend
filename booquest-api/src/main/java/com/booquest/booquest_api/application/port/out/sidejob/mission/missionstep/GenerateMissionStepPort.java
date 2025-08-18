@@ -1,0 +1,8 @@
+package com.booquest.booquest_api.application.port.out.sidejob.mission.missionstep;
+
+import com.booquest.booquest_api.adapter.in.onboarding.web.mission.missionstep.dto.MissionStepGenerateRequestDto;
+import com.booquest.booquest_api.application.port.in.sidejob.mission.missionstep.GenerateMissionStepResult;
+
+public interface GenerateMissionStepPort {
+    GenerateMissionStepResult generateMissionStep(MissionStepGenerateRequestDto requestDto);
+}
