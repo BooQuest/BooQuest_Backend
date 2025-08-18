@@ -20,7 +20,6 @@ import org.springframework.context.annotation.Configuration;
 public class SwaggerConfig {
         @Bean
         public OpenAPI openAPI() {
-                // Bearer JWT (Authorization 헤더)
                 SecurityScheme bearerAuth = new SecurityScheme()
                         .name("Authorization")
                         .type(SecurityScheme.Type.HTTP)
@@ -28,13 +27,11 @@ public class SwaggerConfig {
                         .bearerFormat("JWT")
                         .in(SecurityScheme.In.HEADER);
 
-                // (선택) RefreshToken 헤더용 스키마 - 헤더로 refreshToken을 받는 방식일 경우 사용, 쿠키(HttpOnly) 기반일 경우 미사용
                 SecurityScheme refreshAuth = new SecurityScheme()
                         .name("X-Refresh-Token")
-                        .type(SecurityScheme.Type.APIKEY)     // 헤더 단순 키 전송
+                        .type(SecurityScheme.Type.APIKEY)
                         .in(SecurityScheme.In.HEADER);
 
-                // 기본적으로 모든 API에 Bearer 인증 요구
                 SecurityRequirement globalRequirement = new SecurityRequirement().addList("bearerAuth");
 
                 return new OpenAPI()
