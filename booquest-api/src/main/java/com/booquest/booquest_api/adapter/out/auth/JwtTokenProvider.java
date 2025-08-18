@@ -31,8 +31,10 @@ public class JwtTokenProvider implements JwtTokenPort {
     @Override
     public TokenInfo generateToken(Long userId, String email) {
         Date now = new Date();
-        Date accessExpiryDate = new Date(now.getTime() + accessTokenExpiration);
-        Date refreshExpiryDate = new Date(now.getTime() + refreshTokenExpiration);
+        long accessTtlMs = accessTokenExpiration * 1000L;
+        long refreshTtlMs = refreshTokenExpiration * 1000L;
+        Date accessExpiryDate = new Date(now.getTime() + accessTtlMs);
+        Date refreshExpiryDate = new Date(now.getTime() + refreshTtlMs);
 
         SecretKey key = Keys.hmacShaKeyFor(jwtSecret.getBytes());
 
@@ -74,7 +76,8 @@ public class JwtTokenProvider implements JwtTokenPort {
         String fakeEmail = "tester-" + fakeUserId + "@example.test";
 
         Date now = new Date();
-        Date accessExpiryDate = new Date(now.getTime() + accessTestTokenExpiration);
+        long accessTestTtlMs = accessTestTokenExpiration * 1000L;
+        Date accessExpiryDate = new Date(now.getTime() + accessTestTtlMs);
 
         SecretKey key = Keys.hmacShaKeyFor(jwtSecret.getBytes());
 
