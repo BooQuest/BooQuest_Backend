@@ -37,7 +37,7 @@ public class OnboardingController {
         saveOnboardingProfile(request);
         updateUserProfileUseCase.updateNickname(request.userId(), request.nickname());
 
-        CharacterType characterType = CharacterType.valueOf(request.characterType());
+        CharacterType characterType = CharacterType.from(request.characterType());
         createCharacterUseCase.createCharacter(request.userId(), characterType);
 
         List<SideJob> sideJobs = generateSideJobToAi(request);
