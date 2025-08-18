@@ -23,6 +23,6 @@ public class UserController {
     public ApiResponse<UserResponse> getUserFromAuth() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         UserResponse response = getUserUseCase.getUserFromAuth(auth);
-        return ApiResponse.success("사용자 조회에 성공했습니다.", response);
+        return ApiResponse.success("사용자 정보가 조회되었습니다.", response);
     }
 }
