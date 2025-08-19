@@ -29,15 +29,21 @@ public class TokenService implements TokenUseCase {
     @Value("${jwt.access-token-ttl-seconds:3600}") // 1 hour
     private long accessTokenExpiration;
 
+    @Value("${jwt.refresh-token-ttl-seconds:2592000}") // 30 days
+    private long refreshTokenExpiration;
+
     @Override
     public TokenInfo issueToken(User user) {
         TokenInfo tokenInfo = jwtTokenPort.generateToken(user.getId(), user.getEmail());
 
         String newRefreshTokenHash = sha256Base64(tokenInfo.getRefreshToken());
+
+        long refreshTtlMs = refreshTokenExpiration * 1000L;
         LocalDateTime expiresAt = LocalDateTime.ofInstant(
-            new Date(System.currentTimeMillis() + (2592000 * 1000L)).toInstant(),
+            new Date(System.currentTimeMillis() + refreshTtlMs).toInstant(),
             ZoneId.systemDefault()
         );
+
         tokenRepository.upsertByUserId(user.getId(), newRefreshTokenHash, expiresAt);
 
         return tokenInfo;
@@ -66,8 +72,9 @@ public class TokenService implements TokenUseCase {
         String newRefreshToken = newToken.getRefreshToken();
         String newRefreshTokenHash = sha256Base64(newRefreshToken);
 
+        long refreshTtlMs = refreshTokenExpiration * 1000L;
         LocalDateTime newRefreshExpiresAt = LocalDateTime.ofInstant(
-                new Date(System.currentTimeMillis() + (2592000 * 1000L)).toInstant(),
+                new Date(System.currentTimeMillis() + refreshTtlMs).toInstant(),
                 ZoneId.systemDefault()
         );
 
