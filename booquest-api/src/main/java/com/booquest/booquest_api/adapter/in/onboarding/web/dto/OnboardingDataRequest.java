@@ -14,7 +14,5 @@ public record OnboardingDataRequest(
         @NotNull @Size(min = 1) List<@NotBlank String> hobbies, //subcategory
         @NotBlank String expressionStyle,
         @NotBlank String strengthType,
-        @NotBlank String characterType,
-        @NotBlank String characterName,
-        String desiredSideJob) {
+        @NotBlank String characterType) {
 }

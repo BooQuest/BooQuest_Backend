@@ -14,9 +14,9 @@ public enum StrengthType {
 
     private final String displayName;
 
-    public static StrengthType from(String displayName) {
+    public static StrengthType from(String input) {
         for (StrengthType value : StrengthType.values()) {
-            if (value.displayName.equals(displayName)) {
+            if (value.displayName.equals(input) || value.name().equalsIgnoreCase(input)) {
                 return value;
             }
         }

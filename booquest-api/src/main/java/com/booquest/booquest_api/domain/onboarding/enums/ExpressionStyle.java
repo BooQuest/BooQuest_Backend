@@ -10,9 +10,9 @@ public enum ExpressionStyle {
 
     private final String displayName;
 
-    public static ExpressionStyle from(String displayName) {
+    public static ExpressionStyle from(String input) {
         for (ExpressionStyle value : ExpressionStyle.values()) {
-            if (value.displayName.equals(displayName)) {
+            if (value.displayName.equals(input) || value.name().equalsIgnoreCase(input)) {
                 return value;
             }
         }

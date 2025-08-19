@@ -29,4 +29,9 @@ public class SideJobRepositoryAdapter implements SideJobRepositoryPort {
     public Optional<SideJob> findByIdWithMissionsAndSteps(Long id) {
         return sideJobRepository.findByIdWithMissionsAndSteps(id);
     }
+
+    @Override
+    public boolean isExistByUserId(Long userId) {
+        return sideJobRepository.existsByUserId(userId);
+    }
 }

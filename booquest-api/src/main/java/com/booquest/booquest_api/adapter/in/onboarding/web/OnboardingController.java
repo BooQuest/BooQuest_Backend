@@ -37,8 +37,8 @@ public class OnboardingController {
         saveOnboardingProfile(request);
         updateUserProfileUseCase.updateNickname(request.userId(), request.nickname());
 
-        CharacterType characterType = CharacterType.valueOf(request.characterType());
-        createCharacterUseCase.createCharacter(request.userId(), characterType, request.characterName());
+        CharacterType characterType = CharacterType.from(request.characterType());
+        createCharacterUseCase.createCharacter(request.userId(), characterType);
 
         List<SideJob> sideJobs = generateSideJobToAi(request);
 
@@ -59,7 +59,7 @@ public class OnboardingController {
 
     private List<SideJob> generateSideJobToAi(OnboardingDataRequest request) {
         GenerateSideJobRequest sideJobData = new GenerateSideJobRequest(request.userId(), request.job(),
-                request.hobbies(), request.expressionStyle(), request.strengthType(), request.desiredSideJob());
+                request.hobbies(), request.expressionStyle(), request.strengthType());
         //ai에게 부업 생성 요청
         return generateSideJobUseCase.generateSideJob(sideJobData);
     }

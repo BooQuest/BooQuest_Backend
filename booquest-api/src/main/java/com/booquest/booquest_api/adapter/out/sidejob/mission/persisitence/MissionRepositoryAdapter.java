@@ -1,15 +1,12 @@
 package com.booquest.booquest_api.adapter.out.sidejob.mission.persisitence;
 
-import com.booquest.booquest_api.application.port.out.sidejob.SideJobRepositoryPort;
 import com.booquest.booquest_api.application.port.out.sidejob.mission.MissionRepositoryPort;
 import com.booquest.booquest_api.domain.mission.model.Mission;
-import com.booquest.booquest_api.domain.sidejob.model.SideJob;
-import lombok.RequiredArgsConstructor;
-import org.springframework.data.repository.query.Param;
-import org.springframework.stereotype.Component;
-
+import com.booquest.booquest_api.domain.sidejob.enums.MissionStatus;
 import java.util.List;
 import java.util.Optional;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 
 
 @Component
@@ -26,5 +23,15 @@ public class MissionRepositoryAdapter implements MissionRepositoryPort {
     @Override
     public Optional<Mission> findByIdWithSteps(Long missionId){
         return missionRepository.findByIdWithSteps(missionId);
+    }
+
+    @Override
+    public boolean isExistByUserId(Long userId) {
+        return missionRepository.existsByUserId(userId);
+    }
+
+    @Override
+    public boolean existsByUserIdAndStatusNot(Long userId, MissionStatus missionStatus) {
+        return missionRepository.existsByUserIdAndStatusNot(userId, missionStatus);
     }
 }
