@@ -2,6 +2,8 @@ package com.booquest.booquest_api.config;
 
 import com.booquest.booquest_api.adapter.in.auth.JwtAuthFilter;
 import com.booquest.booquest_api.application.port.out.auth.JwtTokenPort;
+import com.booquest.booquest_api.adapter.out.auth.persistence.jpa.TokenRepository;
+import com.booquest.booquest_api.application.port.in.auth.TokenUseCase;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -17,7 +19,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     @Bean
-    SecurityFilterChain filterChain(HttpSecurity http, JwtTokenPort jwtTokenPort) throws Exception {
+    SecurityFilterChain filterChain(HttpSecurity http, JwtTokenPort jwtTokenPort, 
+                                   TokenRepository tokenRepository, TokenUseCase tokenUseCase) throws Exception {
         http
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -30,7 +33,7 @@ public class SecurityConfig {
                         .anyRequest().authenticated()
 //                        .anyRequest().permitAll()
                 )
-                .addFilterBefore(new JwtAuthFilter(jwtTokenPort), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new JwtAuthFilter(jwtTokenPort, tokenUseCase), UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling(ex -> ex
                         .authenticationEntryPoint((req, res, e) -> res.sendError(401, "Unauthorized"))
                         .accessDeniedHandler((req, res, e) -> res.sendError(403, "Forbidden"))
