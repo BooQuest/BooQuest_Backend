@@ -10,6 +10,7 @@ import com.booquest.booquest_api.common.exception.TokenException;
 import com.booquest.booquest_api.domain.auth.model.Token;
 import com.booquest.booquest_api.domain.user.model.User;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,6 +25,9 @@ public class TokenService implements TokenUseCase {
     private final JwtTokenPort jwtTokenPort;
     private final TokenRepository tokenRepository;
     private final UserQueryPort userQueryPort;
+
+    @Value("${jwt.access-token-ttl-seconds:3600}") // 1 hour
+    private long accessTokenExpiration;
 
     @Override
     public TokenInfo issueToken(User user) {
@@ -74,7 +78,7 @@ public class TokenService implements TokenUseCase {
                 .accessToken(newAccessToken)
                 .refreshToken(newRefreshToken)
                 .tokenType("Bearer")
-                .expiresIn(3600L / 3600)
+                .expiresIn(accessTokenExpiration)
                 .build();
     }
 
