@@ -9,4 +9,6 @@ public interface SideJobRepositoryPort {
     SideJob save(SideJob sideJob);
     int updateSelectedTrue(Long id);
     Optional<SideJob> findByIdWithMissionsAndSteps(Long id);
+
+    boolean isExistByUserId(Long userId);
 }

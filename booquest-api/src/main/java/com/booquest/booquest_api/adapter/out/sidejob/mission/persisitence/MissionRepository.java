@@ -2,6 +2,7 @@ package com.booquest.booquest_api.adapter.out.sidejob.mission.persisitence;
 
 
 import com.booquest.booquest_api.domain.mission.model.Mission;
+import com.booquest.booquest_api.domain.sidejob.enums.MissionStatus;
 import com.booquest.booquest_api.domain.sidejob.model.SideJob;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -20,4 +21,8 @@ public interface MissionRepository extends JpaRepository<Mission, Long> {
 
     @Query("SELECT DISTINCT m FROM Mission m LEFT JOIN FETCH m.steps WHERE m.id = :missionId")
     Optional<Mission> findByIdWithSteps(@Param("missionId") Long missionId);
+
+    boolean existsByUserId(Long userId);
+
+    boolean existsByUserIdAndStatusNot(Long userId, MissionStatus missionStatus);
 }

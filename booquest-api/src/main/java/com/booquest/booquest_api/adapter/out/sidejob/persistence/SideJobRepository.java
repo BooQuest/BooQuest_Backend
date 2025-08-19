@@ -25,4 +25,6 @@ public interface SideJobRepository extends JpaRepository<SideJob, Long> {
     WHERE s.id = :id
 """)
     Optional<SideJob> findByIdWithMissionsAndSteps(@Param("id") Long id);
+
+    boolean existsByUserId(Long userId);
 }

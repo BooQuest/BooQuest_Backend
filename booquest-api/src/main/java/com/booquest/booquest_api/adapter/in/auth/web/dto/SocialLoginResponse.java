@@ -1,5 +1,6 @@
 package com.booquest.booquest_api.adapter.in.auth.web.dto;
 
+import com.booquest.booquest_api.adapter.in.onboarding.web.dto.OnboardingProgressInfo;
 import lombok.*;
 
 @Getter
@@ -9,6 +10,7 @@ import lombok.*;
 public class SocialLoginResponse {
     private TokenInfo tokenInfo;
     private UserInfo userInfo;
+    private OnboardingProgressInfo onboardingProgressInfo;
 
     @Getter
     @Builder
@@ -30,5 +32,14 @@ public class SocialLoginResponse {
         private String email;
         private String nickname;
         private String profileImageUrl;
+    }
+
+    public static SocialLoginResponse of(TokenInfo tokenInfo, UserInfo userInfo,
+                                         OnboardingProgressInfo onboardingProgressInfo) {
+        return SocialLoginResponse.builder()
+                .tokenInfo(tokenInfo)
+                .userInfo(userInfo)
+                .onboardingProgressInfo(onboardingProgressInfo)
+                .build();
     }
 }
