@@ -2,7 +2,6 @@ package com.booquest.booquest_api.adapter.in.auth;
 
 import com.booquest.booquest_api.application.port.in.auth.TokenUseCase;
 import com.booquest.booquest_api.application.port.out.auth.JwtTokenPort;
-import com.booquest.booquest_api.adapter.out.auth.persistence.jpa.TokenRepository;
 import com.booquest.booquest_api.application.port.out.auth.dto.TokenRefreshResponse;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
@@ -20,7 +19,6 @@ import java.util.Collections;
 @AllArgsConstructor
 public class JwtAuthFilter extends OncePerRequestFilter {
     private final JwtTokenPort jwt;
-    private final TokenRepository tokenRepository;
     private final TokenUseCase tokenUseCase;
 
     @Override

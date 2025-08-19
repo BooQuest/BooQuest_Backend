@@ -2,7 +2,6 @@ package com.booquest.booquest_api.adapter.out.auth;
 
 import com.booquest.booquest_api.application.port.out.auth.JwtTokenPort;
 import com.booquest.booquest_api.application.port.out.auth.dto.TokenInfo;
-import com.booquest.booquest_api.application.port.out.auth.dto.TokenRefreshResponse;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
@@ -96,21 +95,5 @@ public class JwtTokenProvider implements JwtTokenPort {
     public Jws<Claims> parse(String token) {
         SecretKey key = Keys.hmacShaKeyFor(jwtSecret.getBytes());
         return Jwts.parser().verifyWith(key).build().parseSignedClaims(token);
-    }
-
-    @Override
-    public TokenRefreshResponse generateAccessToken(Long userId, String email) {
-        Date now = new Date();
-        long accessTtlMs = accessTokenExpiration * 1000L;
-        Date accessExpiryDate = new Date(now.getTime() + accessTtlMs);
-
-        SecretKey key = Keys.hmacShaKeyFor(jwtSecret.getBytes());
-        String accessToken = getAccessToken(userId, email, now, accessExpiryDate, key);
-
-        return TokenRefreshResponse.builder()
-                .accessToken(accessToken)
-                .tokenType("Bearer")
-                .expiresIn(accessTokenExpiration / 3600)
-                .build();
     }
 }

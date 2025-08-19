@@ -33,7 +33,7 @@ public class SecurityConfig {
                         .anyRequest().authenticated()
 //                        .anyRequest().permitAll()
                 )
-                .addFilterBefore(new JwtAuthFilter(jwtTokenPort, tokenRepository, tokenUseCase), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new JwtAuthFilter(jwtTokenPort, tokenUseCase), UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling(ex -> ex
                         .authenticationEntryPoint((req, res, e) -> res.sendError(401, "Unauthorized"))
                         .accessDeniedHandler((req, res, e) -> res.sendError(403, "Forbidden"))

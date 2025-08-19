@@ -43,4 +43,4 @@ public class TokenRepositoryImpl implements TokenRepository {
     public int upsertByUserId(Long userId, String refreshTokenHash, LocalDateTime expiresAt) {
         return tokenJpaRepository.upsertByUserId(userId, refreshTokenHash, java.sql.Timestamp.valueOf(expiresAt));
     }
-} 
+}
