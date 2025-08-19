@@ -26,17 +26,10 @@ public class AuthController {
         return ApiResponse.success("로그인에 성공했습니다.", response);
     }
 
-//    @PostMapping("/token/refresh")
-//    public ApiResponse<TokenRefreshResponse> refreshToken(@RequestHeader("X-Refresh-Token") String refreshToken) {
-//        TokenRefreshResponse response = tokenUseCase.refreshAccessToken(refreshToken);
-//        return ApiResponse.success("토큰이 갱신되었습니다.", response);
-//    }
-
     @PostMapping("/token/refresh")
     public ResponseEntity<ApiResponse<TokenRefreshResponse>> refreshToken(@RequestHeader("X-Refresh-Token") String refreshToken) {
         TokenRefreshResponse response = tokenUseCase.refreshAccessToken(refreshToken);
 
-        // 응답 헤더에 새 액세스 토큰 추가
         HttpHeaders headers = new HttpHeaders();
         headers.add("X-New-Access-Token", response.getAccessToken());
         headers.add("X-Token-Type", response.getTokenType());

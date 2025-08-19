@@ -57,23 +57,19 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         
         if (refreshToken != null) {
             try {
-                // 리프레시 토큰으로 새 액세스 토큰 발급
                 TokenRefreshResponse newToken = tokenUseCase.refreshAccessToken(refreshToken);
-                
-                // 응답 헤더에 새 액세스 토큰 추가
+
                 response.setHeader("X-New-Access-Token", newToken.getAccessToken());
                 response.setHeader("X-Token-Type", newToken.getTokenType());
                 response.setHeader("X-Expires-In", String.valueOf(newToken.getExpiresIn()));
-                
-                // 새 토큰으로 인증 정보 설정
+
                 var claimsJws = jwt.parse(newToken.getAccessToken());
                 var body = claimsJws.getBody();
                 String principal = body.getSubject();
                 
                 var authentication = new UsernamePasswordAuthenticationToken(principal, null, Collections.emptyList());
                 SecurityContextHolder.getContext().setAuthentication(authentication);
-                
-                // 요청 계속 진행
+
                 filterChain.doFilter(request, response);
                 return;
             } catch (Exception e) {
@@ -82,8 +78,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 return;
             }
         }
-        
-        // 리프레시 토큰이 없거나 갱신 실패 시
+
         SecurityContextHolder.clearContext();
         response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Token expired");
     }
