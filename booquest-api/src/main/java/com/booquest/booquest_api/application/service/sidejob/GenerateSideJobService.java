@@ -1,6 +1,7 @@
 package com.booquest.booquest_api.application.service.sidejob;
 
-import com.booquest.booquest_api.adapter.in.onboarding.web.sidejob.dto.RegenerateRequest;
+import com.booquest.booquest_api.adapter.in.onboarding.web.sidejob.dto.RegenerateAllSideJobRequest;
+import com.booquest.booquest_api.adapter.in.onboarding.web.sidejob.dto.RegenerateSideJobRequest;
 import com.booquest.booquest_api.application.port.in.dto.GenerateSideJobRequest;
 import com.booquest.booquest_api.application.port.in.sidejob.GenerateSideJobUseCase;
 import com.booquest.booquest_api.application.port.in.sidejob.RegenerateSideJobUseCase;
@@ -26,16 +27,16 @@ public class GenerateSideJobService implements GenerateSideJobUseCase, Regenerat
     @Transactional
     @Override
     public List<SideJob> generateSideJob(GenerateSideJobRequest request) {
-        SideJobGenerationResult result = sideJobGenerator.generateSideJob(request);
+        SideJobGenerationResult result = sideJobGenerator.generateSideJobs(request);
         return saveSideJobs(request.userId(), result.tasks(), result.prompt(), null);
     }
 
     @Override
-    public List<SideJob> regenerateAll(RegenerateRequest request) {
+    public List<SideJob> regenerateAll(RegenerateAllSideJobRequest request) {
         List<SideJob> sideJobs = sideJobRepository.findAllByIds(request.sideJobIds());
 
         GenerateSideJobRequest generateSideJobRequest = request.generateSideJobRequest();
-        SideJobGenerationResult result = sideJobGenerator.generateSideJob(generateSideJobRequest);
+        SideJobGenerationResult result = sideJobGenerator.generateSideJobs(generateSideJobRequest);
 
         if (sideJobs.size() != result.tasks().size()) {
             throw new IllegalArgumentException("기존 부업 개수와 생성된 개수가 일치하지 않습니다.");
@@ -70,7 +71,19 @@ public class GenerateSideJobService implements GenerateSideJobUseCase, Regenerat
     }
 
     @Override
-    public SideJob regenerate(Long sideJobId) {
-        return null;
+    public SideJob regenerate(Long sideJobId, RegenerateSideJobRequest request) {
+        SideJobGenerationResult result = sideJobGenerator.regenerateSideJob(request);
+        SideJobItem sideJobItem = result.tasks().getFirst();
+
+        SideJob sideJob = SideJob.builder()
+                .id(sideJobId)
+                .userId(request.generateSideJobRequest().userId())
+                .title(sideJobItem.title())
+                .description(sideJobItem.description())
+                .promptMeta(result.prompt())
+                .isSelected(false)
+                .build();
+
+        return sideJobRepository.save(sideJob);
     }
 }

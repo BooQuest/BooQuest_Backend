@@ -1,6 +1,6 @@
 package com.booquest.booquest_api.application.service.sidejob;
 
-import com.booquest.booquest_api.adapter.in.onboarding.web.sidejob.dto.RegenerateRequest;
+import com.booquest.booquest_api.adapter.in.onboarding.web.sidejob.dto.RegenerateAllSideJobRequest;
 import com.booquest.booquest_api.application.port.in.dto.GenerateSideJobRequest;
 import com.booquest.booquest_api.application.port.in.sidejob.SideJobGenerationResult;
 import com.booquest.booquest_api.application.port.in.sidejob.SideJobItem;
@@ -46,7 +46,7 @@ class GenerateSideJobServiceTest {
         );
         SideJobGenerationResult result = new SideJobGenerationResult(true, "", items, "프롬프트");
 
-        given(sideJobGenerator.generateSideJob(request)).willReturn(result);
+        given(sideJobGenerator.generateSideJobs(request)).willReturn(result);
 
         given(sideJobRepository.save(any(SideJob.class)))
                 .willAnswer(invocation -> invocation.getArgument(0));
@@ -65,7 +65,7 @@ class GenerateSideJobServiceTest {
     void regenerateAll_shouldRegenerateAndOverwrite() {
         // given
         List<Long> ids = List.of(10L, 20L);
-        RegenerateRequest request = new RegenerateRequest(
+        RegenerateAllSideJobRequest request = new RegenerateAllSideJobRequest(
                 ids,
                 new GenerateSideJobRequest(1L, "디자이너", List.of("그림"), "TEXT", "CREATIVE")
         );
@@ -81,7 +81,7 @@ class GenerateSideJobServiceTest {
                 new SideJobItem("새부업2", "새설명2")
         );
         SideJobGenerationResult result = new SideJobGenerationResult(true, "", items, "새프롬프트");
-        given(sideJobGenerator.generateSideJob(request.generateSideJobRequest())).willReturn(result);
+        given(sideJobGenerator.generateSideJobs(request.generateSideJobRequest())).willReturn(result);
 
         given(sideJobRepository.save(any(SideJob.class)))
                 .willAnswer(invocation -> invocation.getArgument(0));
@@ -102,7 +102,7 @@ class GenerateSideJobServiceTest {
     void regenerateAll_shouldThrowIfSizeMismatch() {
         // given
         List<Long> ids = List.of(10L);
-        RegenerateRequest request = new RegenerateRequest(
+        RegenerateAllSideJobRequest request = new RegenerateAllSideJobRequest(
                 ids,
                 new GenerateSideJobRequest(1L, "작가", List.of("글쓰기"), "TEXT", "CREATIVE")
         );
@@ -116,7 +116,7 @@ class GenerateSideJobServiceTest {
         );
         SideJobGenerationResult mismatchResult = new SideJobGenerationResult(true, "", mismatchItems, "새프롬프트");
 
-        given(sideJobGenerator.generateSideJob(request.generateSideJobRequest()))
+        given(sideJobGenerator.generateSideJobs(request.generateSideJobRequest()))
                 .willReturn(mismatchResult);
 
         // when & then

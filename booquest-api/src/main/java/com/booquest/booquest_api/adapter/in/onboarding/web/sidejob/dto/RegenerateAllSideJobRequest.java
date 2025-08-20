@@ -4,5 +4,5 @@ import com.booquest.booquest_api.application.port.in.dto.GenerateSideJobRequest;
 import jakarta.validation.Valid;
 import java.util.List;
 
-public record RegenerateRequest(List<Long> sideJobIds, @Valid GenerateSideJobRequest generateSideJobRequest) {
+public record RegenerateAllSideJobRequest(List<Long> sideJobIds, @Valid GenerateSideJobRequest generateSideJobRequest) {
 }
