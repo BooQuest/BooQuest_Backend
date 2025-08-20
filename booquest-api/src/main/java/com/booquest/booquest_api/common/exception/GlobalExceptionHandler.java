@@ -32,6 +32,6 @@ public class GlobalExceptionHandler {
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(ApiResponse.fail(500, "서버 오류가 발생했습니다."));
+                .body(ApiResponse.fail(500, ex.getMessage()));
     }
 }

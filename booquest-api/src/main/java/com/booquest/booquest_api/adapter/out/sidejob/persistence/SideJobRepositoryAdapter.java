@@ -3,6 +3,7 @@ package com.booquest.booquest_api.adapter.out.sidejob.persistence;
 import com.booquest.booquest_api.application.port.out.sidejob.SideJobRepositoryPort;
 import com.booquest.booquest_api.domain.sidejob.model.SideJob;
 import jakarta.persistence.EntityNotFoundException;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -33,5 +34,10 @@ public class SideJobRepositoryAdapter implements SideJobRepositoryPort {
     @Override
     public boolean isExistByUserId(Long userId) {
         return sideJobRepository.existsByUserId(userId);
+    }
+
+    @Override
+    public List<SideJob> findAllByIds(List<Long> sideJobIds) {
+        return sideJobRepository.findAllById(sideJobIds);
     }
 }

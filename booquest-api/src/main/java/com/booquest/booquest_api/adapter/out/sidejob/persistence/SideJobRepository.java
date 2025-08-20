@@ -2,6 +2,7 @@ package com.booquest.booquest_api.adapter.out.sidejob.persistence;
 
 
 import com.booquest.booquest_api.domain.sidejob.model.SideJob;
+import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
