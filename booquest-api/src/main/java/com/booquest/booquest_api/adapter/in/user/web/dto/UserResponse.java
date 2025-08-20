@@ -1,4 +1,4 @@
-package com.booquest.booquest_api.adapter.out.user.dto;
+package com.booquest.booquest_api.adapter.in.user.web.dto;
 
 import com.booquest.booquest_api.adapter.in.onboarding.web.dto.OnboardingProgressInfo;
 import com.booquest.booquest_api.domain.user.model.User;

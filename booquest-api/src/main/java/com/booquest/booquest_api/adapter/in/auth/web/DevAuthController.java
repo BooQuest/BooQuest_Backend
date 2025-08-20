@@ -1,7 +1,7 @@
 package com.booquest.booquest_api.adapter.in.auth.web;
 
 import com.booquest.booquest_api.application.port.in.auth.TokenUseCase;
-import com.booquest.booquest_api.application.port.out.auth.dto.TokenInfo;
+import com.booquest.booquest_api.adapter.in.auth.web.token.dto.TokenInfo;
 import com.booquest.booquest_api.common.response.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Profile;

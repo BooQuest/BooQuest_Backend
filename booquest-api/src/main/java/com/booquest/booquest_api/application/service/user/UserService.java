@@ -1,6 +1,6 @@
 package com.booquest.booquest_api.application.service.user;
 
-import com.booquest.booquest_api.adapter.out.user.dto.UserResponse;
+import com.booquest.booquest_api.adapter.in.user.web.dto.UserResponse;
 import com.booquest.booquest_api.application.port.in.user.GetUserUseCase;
 import com.booquest.booquest_api.application.port.in.user.UpdateUserProfileUseCase;
 import com.booquest.booquest_api.application.port.out.user.UserCommandPort;

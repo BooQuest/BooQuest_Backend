@@ -2,7 +2,7 @@ package com.booquest.booquest_api.adapter.in.auth;
 
 import com.booquest.booquest_api.application.port.in.auth.TokenUseCase;
 import com.booquest.booquest_api.application.port.out.auth.JwtTokenPort;
-import com.booquest.booquest_api.application.port.out.auth.dto.TokenRefreshResponse;
+import com.booquest.booquest_api.adapter.in.auth.web.token.dto.TokenRefreshResponse;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
