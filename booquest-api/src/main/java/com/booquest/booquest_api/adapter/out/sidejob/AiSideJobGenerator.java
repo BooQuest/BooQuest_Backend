@@ -32,7 +32,7 @@ public class AiSideJobGenerator implements GenerateSideJobPort {
 
     private <T> SideJobGenerationResult postForSideJobResult(String url, T requestBody) {
         try {
-            return webClient.post()
+            SideJobGenerationResult result = webClient.post()
                     .uri(url)
                     .contentType(MediaType.APPLICATION_JSON)
                     .accept(MediaType.APPLICATION_JSON)
@@ -40,10 +40,18 @@ public class AiSideJobGenerator implements GenerateSideJobPort {
                     .retrieve()
                     .bodyToMono(SideJobGenerationResult.class)
                     .block();
+
+            if (result == null) {
+                throw new RuntimeException("AI 서버로부터 응답이 없습니다.");
+            }
+
+            if (!result.success()) {
+                throw new RuntimeException("AI 서버 응답 실패: " + result.message());
+            }
+
+            return result;
         } catch (WebClientResponseException e) {
             throw new RuntimeException("AI 서버 응답 실패: " + e.getResponseBodyAsString(), e);
-        } catch (Exception e) {
-            throw new RuntimeException("AI 서버 호출 실패", e);
         }
     }
 }
