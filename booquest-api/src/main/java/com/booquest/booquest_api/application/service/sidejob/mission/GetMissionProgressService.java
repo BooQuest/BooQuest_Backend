@@ -22,7 +22,6 @@ public class GetMissionProgressService implements GetMissionProgressUseCase {
     
     @Override
     public MissionProgressResponseDto getMissionProgress(Long userId, Long sideJobId) {
-        // 사용자의 모든 미션을 order_no 순으로 조회
         List<Mission> missions = missionRepository.findByUserIdAndSideJobIdOrderByOrderNo(userId, sideJobId);
         
         if (missions.isEmpty()) {
@@ -33,8 +32,7 @@ public class GetMissionProgressService implements GetMissionProgressUseCase {
                     .missionStepProgressPercentage(0.0)
                     .build();
         }
-        
-        // 현재 진행중인 미션 찾기 (IN_PROGRESS 상태이거나, PLANNED 상태 중 가장 낮은 order_no)
+
         Mission currentMission = findCurrentMission(missions);
         
         if (currentMission == null) {
@@ -45,11 +43,9 @@ public class GetMissionProgressService implements GetMissionProgressUseCase {
                     .missionStepProgressPercentage(0.0)
                     .build();
         }
-        
-        // 현재 미션의 부퀘스트들 조회
+
         List<MissionStep> missionSteps = missionStepRepository.findByMissionIdOrderBySeq(currentMission.getId());
-        
-        // 부퀘스트 진행률 계산
+
         double progressPercentage = calculateMissionStepProgress(missionSteps);
         
         return MissionProgressResponseDto.builder()
@@ -61,7 +57,6 @@ public class GetMissionProgressService implements GetMissionProgressUseCase {
     }
     
     private Mission findCurrentMission(List<Mission> missions) {
-        // IN_PROGRESS 상태인 미션 찾기
         Mission inProgressMission = missions.stream()
                 .filter(mission -> mission.getStatus() == MissionStatus.IN_PROGRESS)
                 .findFirst()
@@ -70,8 +65,7 @@ public class GetMissionProgressService implements GetMissionProgressUseCase {
         if (inProgressMission != null) {
             return inProgressMission;
         }
-        
-        // IN_PROGRESS가 없으면 PLANNED 상태 중 가장 낮은 order_no 찾기
+
         return missions.stream()
                 .filter(mission -> mission.getStatus() == MissionStatus.PLANNED)
                 .findFirst()
