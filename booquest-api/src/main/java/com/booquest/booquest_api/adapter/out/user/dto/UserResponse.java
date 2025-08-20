@@ -1,6 +1,7 @@
 package com.booquest.booquest_api.adapter.out.user.dto;
 
 import com.booquest.booquest_api.adapter.in.onboarding.web.dto.OnboardingProgressInfo;
+import com.booquest.booquest_api.domain.user.model.User;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -15,6 +16,18 @@ public class UserResponse {
     private String socialNickname;
     private String profileImageUrl;
     private OnboardingProgressInfo onboardingProgressInfo;
+
+    public static UserResponse toResponse(User user) {
+        return UserResponse.builder()
+                .id(user.getId())
+                .provider(user.getProvider())
+                .providerUserId(user.getProviderUserId())
+                .email(user.getEmail())
+                .nickname(user.getNickname())
+                .socialNickname(user.getSocialNickname())
+                .profileImageUrl(user.getProfileImageUrl())
+                .build();
+    }
 
     public static UserResponse of(UserResponse userResponse, OnboardingProgressInfo onboardingProgressInfo) {
         return UserResponse.builder()

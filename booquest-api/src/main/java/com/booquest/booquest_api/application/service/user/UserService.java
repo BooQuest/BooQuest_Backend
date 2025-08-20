@@ -22,7 +22,7 @@ public class UserService implements GetUserUseCase, UpdateUserProfileUseCase {
     public UserResponse getUserById(Long userId) {
         User user = userQueryPort.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
-        return UserMapper.toResponse(user);
+        return UserResponse.toResponse(user);
 
     }
 
