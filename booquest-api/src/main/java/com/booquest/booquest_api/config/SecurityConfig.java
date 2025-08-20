@@ -30,7 +30,7 @@ public class SecurityConfig {
                                 "/swagger-ui/**",
                                 "/v3/api-docs/**"
                         ).permitAll()
-                        .anyRequest().permitAll()
+                        .anyRequest().authenticated()
 //                        .anyRequest().permitAll()
                 )
                 .addFilterBefore(new JwtAuthFilter(jwtTokenPort, tokenUseCase), UsernamePasswordAuthenticationFilter.class)
