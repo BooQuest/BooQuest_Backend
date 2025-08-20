@@ -21,69 +21,59 @@ import org.springframework.transaction.annotation.Transactional;
 public class GenerateSideJobService implements GenerateSideJobUseCase, RegenerateSideJobUseCase {
 
     private final SideJobRepositoryPort sideJobRepository;
-
     private final GenerateSideJobPort sideJobGenerator;
 
     @Transactional
     @Override
     public List<SideJob> generateSideJob(GenerateSideJobRequest request) {
         SideJobGenerationResult result = sideJobGenerator.generateSideJobs(request);
-        return saveSideJobs(request.userId(), result.tasks(), result.prompt(), null);
+        return saveGeneratedJobs(request.userId(), result, null);
     }
 
+    @Transactional
     @Override
     public List<SideJob> regenerateAll(RegenerateAllSideJobRequest request) {
-        List<SideJob> sideJobs = sideJobRepository.findAllByIds(request.sideJobIds());
+        List<SideJob> existingJobs = sideJobRepository.findAllByIds(request.sideJobIds());
+        SideJobGenerationResult result = sideJobGenerator.generateSideJobs(request.generateSideJobRequest());
 
-        GenerateSideJobRequest generateSideJobRequest = request.generateSideJobRequest();
-        SideJobGenerationResult result = sideJobGenerator.generateSideJobs(generateSideJobRequest);
-
-        if (sideJobs.size() != result.tasks().size()) {
+        if (existingJobs.size() != result.tasks().size()) {
             throw new IllegalArgumentException("기존 부업 개수와 생성된 개수가 일치하지 않습니다.");
         }
 
-        // ID 매핑
-        List<Long> ids = sideJobs.stream().map(SideJob::getId).toList();
-        return saveSideJobs(generateSideJobRequest.userId(), result.tasks(), result.prompt(), ids);
+        List<Long> ids = existingJobs.stream().map(SideJob::getId).toList();
+        return saveGeneratedJobs(request.generateSideJobRequest().userId(), result, ids);
     }
 
-    private List<SideJob> saveSideJobs(Long userId, List<SideJobItem> tasks, String promptMeta, List<Long> ids) {
-        List<SideJob> savedJobs = new ArrayList<>();
-
-        for (int i = 0; i < tasks.size(); i++) {
-            SideJobItem task = tasks.get(i);
-
-            SideJob.SideJobBuilder builder = SideJob.builder()
-                    .userId(userId)
-                    .title(task.title())
-                    .description(task.description())
-                    .promptMeta(promptMeta)
-                    .isSelected(false);
-
-            if (ids != null) {
-                builder.id(ids.get(i)); // regenerate의 경우 id 주입
-            }
-
-            savedJobs.add(sideJobRepository.save(builder.build()));
-        }
-
-        return savedJobs;
-    }
-
+    @Transactional
     @Override
     public SideJob regenerate(Long sideJobId, RegenerateSideJobRequest request) {
         SideJobGenerationResult result = sideJobGenerator.regenerateSideJob(request);
-        SideJobItem sideJobItem = result.tasks().getFirst();
+        return saveGeneratedJob(request.generateSideJobRequest().userId(), result.tasks().getFirst(), result.prompt(), sideJobId);
+    }
 
-        SideJob sideJob = SideJob.builder()
-                .id(sideJobId)
-                .userId(request.generateSideJobRequest().userId())
-                .title(sideJobItem.title())
-                .description(sideJobItem.description())
-                .promptMeta(result.prompt())
-                .isSelected(false)
-                .build();
+    // 공통 저장 로직
+    private List<SideJob> saveGeneratedJobs(Long userId, SideJobGenerationResult result, List<Long> ids) {
+        List<SideJob> saved = new ArrayList<>();
+        List<SideJobItem> tasks = result.tasks();
 
-        return sideJobRepository.save(sideJob);
+        for (int i = 0; i < tasks.size(); i++) {
+            Long id = (ids != null) ? ids.get(i) : null;
+            saved.add(saveGeneratedJob(userId, tasks.get(i), result.prompt(), id));
+        }
+
+        return saved;
+    }
+
+    private SideJob saveGeneratedJob(Long userId, SideJobItem task, String promptMeta, Long id) {
+        SideJob.SideJobBuilder builder = SideJob.builder()
+                .userId(userId)
+                .title(task.title())
+                .description(task.description())
+                .promptMeta(promptMeta)
+                .isSelected(false);
+
+        if (id != null) builder.id(id);
+
+        return sideJobRepository.save(builder.build());
     }
 }
