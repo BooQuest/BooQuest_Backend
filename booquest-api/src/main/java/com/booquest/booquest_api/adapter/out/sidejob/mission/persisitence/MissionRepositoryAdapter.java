@@ -34,4 +34,14 @@ public class MissionRepositoryAdapter implements MissionRepositoryPort {
     public boolean existsByUserIdAndStatusNot(Long userId, MissionStatus missionStatus) {
         return missionRepository.existsByUserIdAndStatusNot(userId, missionStatus);
     }
+    
+    @Override
+    public List<Mission> findByUserIdAndSideJobIdOrderByOrderNo(Long userId, Long sideJobId) {
+        return missionRepository.findByUserIdAndSideJobIdOrderByOrderNo(userId, sideJobId);
+    }
+    
+    @Override
+    public Optional<Mission> findById(Long missionId) {
+        return missionRepository.findById(missionId);
+    }
 }
