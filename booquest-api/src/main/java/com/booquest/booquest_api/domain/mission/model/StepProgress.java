@@ -47,8 +47,7 @@ public class StepProgress extends CreatedOnlyEntity {
     @Column(name = "feedback_text")
     private String feedbackText;
 
-    @Type(JsonType.class)
-    @Column(columnDefinition = "jsonb")
+    @Column(columnDefinition = "TEXT")
     private String extra;
 
     @Column(name = "started_at")

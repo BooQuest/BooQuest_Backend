@@ -43,9 +43,8 @@ public class Mission extends AuditableEntity {
     @Column(name = "order_no", nullable = false)
     private int orderNo;
 
-    @Type(JsonType.class)
-    @Column(name = "design_notes", columnDefinition = "jsonb")
-    private JsonNode designNotes;
+    @Column(name = "design_notes", columnDefinition = "TEXT")
+    private String designNotes;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "mission_id")

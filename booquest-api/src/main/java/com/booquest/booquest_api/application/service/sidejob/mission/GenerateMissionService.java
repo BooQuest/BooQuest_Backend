@@ -40,18 +40,14 @@ public class GenerateMissionService implements GenerateMissionUseCase {
 
         var missions = result.tasks().stream()
                 .map(t -> {
-                    try {
-                        return Mission.builder()
-                                .sidejobId(sideJobSelectedId)
-                                .userId(userId)
-                                .title(t.title())
-                                .status(MissionStatus.PLANNED)
-                                .orderNo(t.orderNo())
-                                .designNotes(mapper.readTree(t.notes()))
-                                .build();
-                    } catch (JsonProcessingException e) {
-                        throw new RuntimeException(e);
-                    }
+                    return Mission.builder()
+                            .sidejobId(sideJobSelectedId)
+                            .userId(userId)
+                            .title(t.title())
+                            .status(MissionStatus.PLANNED)
+                            .orderNo(t.orderNo())
+                            .designNotes(t.notes())
+                            .build();
                 }).toList();
 
          return missionRepository.saveAll(missions);

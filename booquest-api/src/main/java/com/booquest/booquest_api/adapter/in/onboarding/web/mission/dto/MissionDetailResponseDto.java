@@ -10,7 +10,7 @@ public record MissionDetailResponseDto(
         Long id,
         String title,
         int order,
-        JsonNode designNotes,
+        String designNotes,
         List<MissionStepResponseDto> missionSteps
 ) {
         public static MissionDetailResponseDto fromEntity(Mission entity) {

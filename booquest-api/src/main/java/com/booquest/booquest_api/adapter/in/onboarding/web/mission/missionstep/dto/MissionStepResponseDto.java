@@ -9,7 +9,7 @@ public record MissionStepResponseDto(
         String title,
         int seq,
         StepStatus status,
-        JsonNode detail
+        String detail
 ) {
         public static MissionStepResponseDto fromEntity(MissionStep entity) {
                 return new MissionStepResponseDto(

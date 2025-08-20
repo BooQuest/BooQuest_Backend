@@ -35,17 +35,13 @@ public class GenerateMissionStepService implements GenerateMissionStepUseCase {
 
         var missionSteps = result.steps().stream()
                 .map(t -> {
-                    try {
-                        return MissionStep.builder()
-                                .missionId(missionId)
-                                .title(t.title())
-                                .status(StepStatus.PLANNED)
-                                .seq(t.seq())
-                                .detail(mapper.readTree(t.detail()))
-                                .build();
-                    } catch (JsonProcessingException e) {
-                        throw new RuntimeException(e);
-                    }
+                    return MissionStep.builder()
+                            .missionId(missionId)
+                            .title(t.title())
+                            .status(StepStatus.PLANNED)
+                            .seq(t.seq())
+                            .detail(t.detail())
+                            .build();
                 }).toList();
 
          return missionStepRepository.saveAll(missionSteps);

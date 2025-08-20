@@ -42,7 +42,6 @@ public class MissionStep extends AuditableEntity {
     @Column(columnDefinition = "status")
     private StepStatus status = StepStatus.PLANNED;
 
-    @Type(JsonType.class)
-    @Column(columnDefinition = "jsonb")
-    private JsonNode detail;
+    @Column(columnDefinition = "TEXT")
+    private String detail;
 }
