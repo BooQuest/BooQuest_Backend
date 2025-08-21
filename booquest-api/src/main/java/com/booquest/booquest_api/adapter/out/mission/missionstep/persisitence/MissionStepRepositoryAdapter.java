@@ -1,4 +1,4 @@
-package com.booquest.booquest_api.adapter.out.sidejob.mission.missionstep.persisitence;
+package com.booquest.booquest_api.adapter.out.mission.missionstep.persisitence;
 
 import com.booquest.booquest_api.application.port.out.sidejob.mission.missionstep.MissionStepRepositoryPort;
 import com.booquest.booquest_api.domain.mission.model.MissionStep;

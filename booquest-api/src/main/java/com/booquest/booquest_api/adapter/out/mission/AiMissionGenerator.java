@@ -1,4 +1,4 @@
-package com.booquest.booquest_api.adapter.out.sidejob.mission;
+package com.booquest.booquest_api.adapter.out.mission;
 
 import com.booquest.booquest_api.adapter.in.mission.dto.MissionGenerateRequestDto;
 import com.booquest.booquest_api.application.port.in.sidejob.mission.GenerateMissionResult;
