@@ -1,7 +1,7 @@
 package com.booquest.booquest_api.application.service.sidejob.mission.missionstep;
 
 import com.booquest.booquest_api.adapter.in.missionstep.dto.MissionStepGenerateRequestDto;
-import com.booquest.booquest_api.application.port.in.mission.missionstep.GenerateMissionStepUseCase;
+import com.booquest.booquest_api.application.port.in.missionstep.GenerateMissionStepUseCase;
 import com.booquest.booquest_api.application.port.out.sidejob.mission.missionstep.GenerateMissionStepPort;
 import com.booquest.booquest_api.application.port.out.sidejob.mission.missionstep.MissionStepRepositoryPort;
 import com.booquest.booquest_api.domain.mission.model.Mission;

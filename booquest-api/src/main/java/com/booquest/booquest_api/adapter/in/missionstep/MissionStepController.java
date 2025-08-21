@@ -2,8 +2,8 @@ package com.booquest.booquest_api.adapter.in.missionstep;
 
 import com.booquest.booquest_api.adapter.in.missionstep.dto.MissionStepGenerateRequestDto;
 import com.booquest.booquest_api.adapter.in.missionstep.dto.MissionStepResponseDto;
-import com.booquest.booquest_api.application.port.in.mission.missionstep.GenerateMissionStepUseCase;
-import com.booquest.booquest_api.application.port.in.mission.missionstep.SelectMissionStepUseCase;
+import com.booquest.booquest_api.application.port.in.missionstep.GenerateMissionStepUseCase;
+import com.booquest.booquest_api.application.port.in.missionstep.SelectMissionStepUseCase;
 import com.booquest.booquest_api.common.response.ApiResponse;
 import com.booquest.booquest_api.domain.mission.model.MissionStep;
 import io.swagger.v3.oas.annotations.Operation;

@@ -1,4 +1,4 @@
-package com.booquest.booquest_api.application.port.in.mission.missionstep;
+package com.booquest.booquest_api.application.port.in.missionstep;
 
 import java.util.List;
 
