@@ -1,7 +1,7 @@
-package com.booquest.booquest_api.adapter.in.onboarding.web.mission.missionstep;
+package com.booquest.booquest_api.adapter.in.mission.missionstep;
 
-import com.booquest.booquest_api.adapter.in.onboarding.web.mission.missionstep.dto.MissionStepGenerateRequestDto;
-import com.booquest.booquest_api.adapter.in.onboarding.web.mission.missionstep.dto.MissionStepResponseDto;
+import com.booquest.booquest_api.adapter.in.mission.missionstep.dto.MissionStepGenerateRequestDto;
+import com.booquest.booquest_api.adapter.in.mission.missionstep.dto.MissionStepResponseDto;
 import com.booquest.booquest_api.application.port.in.sidejob.mission.missionstep.GenerateMissionStepUseCase;
 import com.booquest.booquest_api.application.port.in.sidejob.mission.missionstep.SelectMissionStepUseCase;
 import com.booquest.booquest_api.common.response.ApiResponse;

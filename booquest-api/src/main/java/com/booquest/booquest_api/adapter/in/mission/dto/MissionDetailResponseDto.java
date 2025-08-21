@@ -1,6 +1,6 @@
-package com.booquest.booquest_api.adapter.in.onboarding.web.mission.dto;
+package com.booquest.booquest_api.adapter.in.mission.dto;
 
-import com.booquest.booquest_api.adapter.in.onboarding.web.mission.missionstep.dto.MissionStepResponseDto;
+import com.booquest.booquest_api.adapter.in.mission.missionstep.dto.MissionStepResponseDto;
 import com.booquest.booquest_api.domain.mission.model.Mission;
 import com.fasterxml.jackson.databind.JsonNode;
 

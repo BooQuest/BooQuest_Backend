@@ -1,12 +1,12 @@
-package com.booquest.booquest_api.adapter.in.onboarding.web.mission;
+package com.booquest.booquest_api.adapter.in.mission;
 
-import com.booquest.booquest_api.adapter.in.onboarding.web.mission.dto.MissionListResponse;
-import com.booquest.booquest_api.adapter.in.onboarding.web.mission.dto.MissionDetailResponseDto;
-import com.booquest.booquest_api.adapter.in.onboarding.web.mission.dto.MissionGenerateRequestDto;
-import com.booquest.booquest_api.adapter.in.onboarding.web.mission.dto.MissionProgressResponseDto;
-import com.booquest.booquest_api.adapter.in.onboarding.web.mission.dto.MissionResponseDto;
+import com.booquest.booquest_api.adapter.in.mission.dto.MissionListResponse;
+import com.booquest.booquest_api.adapter.in.mission.dto.MissionDetailResponseDto;
+import com.booquest.booquest_api.adapter.in.mission.dto.MissionGenerateRequestDto;
+import com.booquest.booquest_api.adapter.in.mission.dto.MissionProgressResponseDto;
+import com.booquest.booquest_api.adapter.in.mission.dto.MissionResponseDto;
 import com.booquest.booquest_api.application.port.in.mission.GetMissionListUseCase;
-import com.booquest.booquest_api.adapter.in.onboarding.web.mission.dto.MissionResponse;
+import com.booquest.booquest_api.adapter.in.mission.dto.MissionResponse;
 import com.booquest.booquest_api.application.port.in.sidejob.mission.GenerateMissionUseCase;
 import com.booquest.booquest_api.application.port.in.sidejob.mission.GetMissionProgressUseCase;
 import com.booquest.booquest_api.application.port.in.sidejob.mission.SelectMissionUseCase;

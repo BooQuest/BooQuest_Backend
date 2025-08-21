@@ -1,4 +1,4 @@
-package com.booquest.booquest_api.adapter.in.onboarding.web.mission.missionstep.dto;
+package com.booquest.booquest_api.adapter.in.mission.missionstep.dto;
 
 
 public record MissionStepGenerateRequestDto(
