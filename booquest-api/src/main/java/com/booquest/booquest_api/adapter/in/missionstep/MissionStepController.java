@@ -50,17 +50,6 @@ public class MissionStepController {
         return ApiResponse.success("부퀘스트가 조회되었습니다.", response);
     }
 
-//    @PostMapping("/{stepId}/complete")
-//    @Operation(summary = "부퀘스트 완료", description = "부퀘스트를 완료 처리합니다. 완료 시 캐릭터에 10 EXP가 부여됩니다.")
-//    public ApiResponse<MissionStepResponseDto> complete(@PathVariable Long stepId) {
-//        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-//        Long userId = Long.parseLong(auth.getName());
-//
-//        var updated = updateMissionStepStatusUseCase.updateStatus(stepId, userId, StepStatus.COMPLETED);
-//        var response = MissionStepResponseDto.fromEntity(updated);
-//        return ApiResponse.success("부퀘스트가 완료되었습니다.", response);
-//    }
-
     @PatchMapping("/{stepId}/status")
     @Operation(summary = "부퀘스트 상태 변경", description = "부퀘스트 상태를 변경합니다(완료/완료취소 포함).")
     public ApiResponse<MissionStepUpdateStatusResponse> updateStatus(@PathVariable Long stepId, @RequestBody @Valid MissionStepUpdateStatusRequest request) {
