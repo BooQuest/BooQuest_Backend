@@ -19,5 +19,7 @@ public interface MissionRepositoryPort {
 
     Optional<Mission> findById(Long missionId);
 
+    List<Mission> findByUserId(Long userId);
+
     List<Mission> findByUserIdAndStatus(Long userId, MissionStatus status);
 }

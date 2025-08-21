@@ -21,8 +21,10 @@ public class GetMissionListService implements GetMissionListUseCase {
 
     @Override
     public List<MissionResponse> getMissionList(Long userId, MissionStatus status) {
-        List<Mission> missions = missionRepositoryPort.findByUserIdAndStatus(userId, status);
-        
+        List<Mission> missions = (status == null)
+                ? missionRepositoryPort.findByUserId(userId)
+                : missionRepositoryPort.findByUserIdAndStatus(userId, status);
+
         return missions.stream()
                 .map(MissionResponse::toResponse)
                 .collect(Collectors.toList());
