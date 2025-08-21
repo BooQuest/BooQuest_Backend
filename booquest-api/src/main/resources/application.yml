@@ -53,3 +53,8 @@ jwt:
   secret: ${JWT_SECRET}
   access-token-ttl-seconds: 3600
   refresh-token-ttl-seconds: 2592000
+
+springdoc:
+  swagger-ui:
+    tags-sorter: alpha
+    operations-sorter: alpha
