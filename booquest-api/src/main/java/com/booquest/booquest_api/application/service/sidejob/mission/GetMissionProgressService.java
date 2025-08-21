@@ -3,7 +3,7 @@ package com.booquest.booquest_api.application.service.sidejob.mission;
 import com.booquest.booquest_api.adapter.in.mission.dto.MissionProgressResponseDto;
 import com.booquest.booquest_api.application.port.in.mission.GetMissionProgressUseCase;
 import com.booquest.booquest_api.application.port.out.mission.MissionRepositoryPort;
-import com.booquest.booquest_api.application.port.out.mission.missionstep.MissionStepRepositoryPort;
+import com.booquest.booquest_api.application.port.out.missionstep.MissionStepRepositoryPort;
 import com.booquest.booquest_api.domain.mission.model.Mission;
 import com.booquest.booquest_api.domain.mission.model.MissionStep;
 import com.booquest.booquest_api.domain.sidejob.enums.MissionStatus;

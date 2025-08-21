@@ -1,4 +1,4 @@
-package com.booquest.booquest_api.application.port.out.mission.missionstep;
+package com.booquest.booquest_api.application.port.out.missionstep;
 
 import com.booquest.booquest_api.domain.mission.model.MissionStep;
 
