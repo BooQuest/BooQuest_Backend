@@ -18,4 +18,6 @@ public interface MissionRepositoryPort {
     List<Mission> findByUserIdAndSideJobIdOrderByOrderNo(Long userId, Long sideJobId);
 
     Optional<Mission> findById(Long missionId);
+
+    List<Mission> findByUserIdAndStatus(Long userId, MissionStatus status);
 }

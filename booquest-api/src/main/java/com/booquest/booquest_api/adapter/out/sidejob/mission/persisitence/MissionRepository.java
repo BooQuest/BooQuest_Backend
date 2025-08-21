@@ -27,4 +27,7 @@ public interface MissionRepository extends JpaRepository<Mission, Long> {
     boolean existsByUserIdAndStatusNot(Long userId, MissionStatus missionStatus);
 
     List<Mission> findByUserIdAndSideJobIdOrderByOrderNo(Long userId, Long sideJobId);
+
+    @Query("SELECT m FROM Mission m LEFT JOIN FETCH m.steps WHERE m.userId = :userId AND m.status = :status ORDER BY m.orderNo")
+    List<Mission> findByUserIdAndStatusWithSteps(@Param("userId") Long userId, @Param("status") MissionStatus status);
 }
