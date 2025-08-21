@@ -2,7 +2,7 @@ package com.booquest.booquest_api.adapter.out.mission.persisitence;
 
 import com.booquest.booquest_api.application.port.out.mission.MissionRepositoryPort;
 import com.booquest.booquest_api.domain.mission.model.Mission;
-import com.booquest.booquest_api.domain.sidejob.enums.MissionStatus;
+import com.booquest.booquest_api.domain.mission.enums.MissionStatus;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;

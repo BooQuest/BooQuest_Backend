@@ -4,7 +4,7 @@ import com.booquest.booquest_api.application.port.in.mission.GetMissionListUseCa
 import com.booquest.booquest_api.adapter.in.mission.dto.MissionResponse;
 import com.booquest.booquest_api.application.port.out.mission.MissionRepositoryPort;
 import com.booquest.booquest_api.domain.mission.model.Mission;
-import com.booquest.booquest_api.domain.sidejob.enums.MissionStatus;
+import com.booquest.booquest_api.domain.mission.enums.MissionStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

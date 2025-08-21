@@ -2,7 +2,7 @@ package com.booquest.booquest_api.application.service.sidejob;
 
 import com.booquest.booquest_api.application.port.out.sidejob.SideJobRepositoryPort;
 import com.booquest.booquest_api.application.port.out.mission.MissionRepositoryPort;
-import com.booquest.booquest_api.domain.sidejob.enums.MissionStatus;
+import com.booquest.booquest_api.domain.mission.enums.MissionStatus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

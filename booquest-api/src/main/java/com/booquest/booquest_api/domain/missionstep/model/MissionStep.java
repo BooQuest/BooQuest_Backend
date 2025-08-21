@@ -1,7 +1,7 @@
-package com.booquest.booquest_api.domain.mission.model;
+package com.booquest.booquest_api.domain.missionstep.model;
 
 import com.booquest.booquest_api.common.entity.AuditableEntity;
-import com.booquest.booquest_api.domain.sidejob.enums.StepStatus;
+import com.booquest.booquest_api.domain.missionstep.enums.StepStatus;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.vladmihalcea.hibernate.type.json.JsonType;
 import jakarta.persistence.Column;

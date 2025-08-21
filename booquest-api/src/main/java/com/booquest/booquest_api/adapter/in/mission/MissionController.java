@@ -12,7 +12,7 @@ import com.booquest.booquest_api.application.port.in.mission.GetMissionProgressU
 import com.booquest.booquest_api.application.port.in.mission.SelectMissionUseCase;
 import com.booquest.booquest_api.common.response.ApiResponse;
 import com.booquest.booquest_api.domain.mission.model.Mission;
-import com.booquest.booquest_api.domain.sidejob.enums.MissionStatus;
+import com.booquest.booquest_api.domain.mission.enums.MissionStatus;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;

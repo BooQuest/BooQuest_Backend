@@ -1,7 +1,7 @@
 package com.booquest.booquest_api.adapter.in.missionstep.dto;
 
-import com.booquest.booquest_api.domain.mission.model.MissionStep;
-import com.booquest.booquest_api.domain.sidejob.enums.StepStatus;
+import com.booquest.booquest_api.domain.missionstep.model.MissionStep;
+import com.booquest.booquest_api.domain.missionstep.enums.StepStatus;
 import com.fasterxml.jackson.databind.JsonNode;
 
 public record MissionStepResponseDto(

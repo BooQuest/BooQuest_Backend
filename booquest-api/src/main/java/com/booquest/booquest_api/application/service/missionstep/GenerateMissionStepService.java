@@ -4,10 +4,10 @@ import com.booquest.booquest_api.adapter.in.missionstep.dto.MissionStepGenerateR
 import com.booquest.booquest_api.application.port.in.missionstep.GenerateMissionStepUseCase;
 import com.booquest.booquest_api.application.port.out.missionstep.GenerateMissionStepPort;
 import com.booquest.booquest_api.application.port.out.missionstep.MissionStepRepositoryPort;
-import com.booquest.booquest_api.domain.mission.model.Mission;
-import com.booquest.booquest_api.domain.mission.model.MissionStep;
-import com.booquest.booquest_api.domain.sidejob.enums.MissionStatus;
-import com.booquest.booquest_api.domain.sidejob.enums.StepStatus;
+import com.booquest.booquest_api.domain.missionstep.model.MissionStep;
+import com.booquest.booquest_api.domain.missionstep.model.MissionStep;
+import com.booquest.booquest_api.domain.missionstep.enums.StepStatus;
+import com.booquest.booquest_api.domain.mission.enums.MissionStatus;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;

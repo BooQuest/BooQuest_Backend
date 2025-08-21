@@ -5,9 +5,9 @@ import com.booquest.booquest_api.application.port.in.mission.GetMissionProgressU
 import com.booquest.booquest_api.application.port.out.mission.MissionRepositoryPort;
 import com.booquest.booquest_api.application.port.out.missionstep.MissionStepRepositoryPort;
 import com.booquest.booquest_api.domain.mission.model.Mission;
-import com.booquest.booquest_api.domain.mission.model.MissionStep;
-import com.booquest.booquest_api.domain.sidejob.enums.MissionStatus;
-import com.booquest.booquest_api.domain.sidejob.enums.StepStatus;
+import com.booquest.booquest_api.domain.missionstep.model.MissionStep;
+import com.booquest.booquest_api.domain.mission.enums.MissionStatus;
+import com.booquest.booquest_api.domain.missionstep.enums.StepStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

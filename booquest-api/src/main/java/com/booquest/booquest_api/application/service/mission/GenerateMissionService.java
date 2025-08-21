@@ -7,7 +7,7 @@ import com.booquest.booquest_api.application.port.out.sidejob.SideJobRepositoryP
 import com.booquest.booquest_api.application.port.out.mission.GenerateMissionPort;
 import com.booquest.booquest_api.application.port.out.mission.MissionRepositoryPort;
 import com.booquest.booquest_api.domain.mission.model.Mission;
-import com.booquest.booquest_api.domain.sidejob.enums.MissionStatus;
+import com.booquest.booquest_api.domain.mission.enums.MissionStatus;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;

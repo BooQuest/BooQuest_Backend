@@ -1,7 +1,7 @@
 package com.booquest.booquest_api.adapter.out.missionstep.persisitence;
 
 
-import com.booquest.booquest_api.domain.mission.model.MissionStep;
+import com.booquest.booquest_api.domain.missionstep.model.MissionStep;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

@@ -5,7 +5,7 @@ import com.booquest.booquest_api.adapter.in.missionstep.dto.MissionStepResponseD
 import com.booquest.booquest_api.application.port.in.missionstep.GenerateMissionStepUseCase;
 import com.booquest.booquest_api.application.port.in.missionstep.SelectMissionStepUseCase;
 import com.booquest.booquest_api.common.response.ApiResponse;
-import com.booquest.booquest_api.domain.mission.model.MissionStep;
+import com.booquest.booquest_api.domain.missionstep.model.MissionStep;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
