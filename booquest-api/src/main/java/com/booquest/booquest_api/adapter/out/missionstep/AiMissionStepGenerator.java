@@ -2,7 +2,7 @@ package com.booquest.booquest_api.adapter.out.missionstep;
 
 import com.booquest.booquest_api.adapter.in.missionstep.dto.MissionStepGenerateRequestDto;
 import com.booquest.booquest_api.application.port.in.missionstep.GenerateMissionStepResult;
-import com.booquest.booquest_api.application.port.out.sidejob.mission.missionstep.GenerateMissionStepPort;
+import com.booquest.booquest_api.application.port.out.mission.missionstep.GenerateMissionStepPort;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.MediaType;

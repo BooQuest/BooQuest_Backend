@@ -1,4 +1,4 @@
-package com.booquest.booquest_api.application.port.out.sidejob.mission;
+package com.booquest.booquest_api.application.port.out.mission;
 
 import com.booquest.booquest_api.domain.mission.model.Mission;
 import com.booquest.booquest_api.domain.sidejob.enums.MissionStatus;

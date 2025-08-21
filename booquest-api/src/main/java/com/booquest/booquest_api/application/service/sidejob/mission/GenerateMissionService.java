@@ -4,8 +4,8 @@ import com.booquest.booquest_api.adapter.in.mission.dto.MissionGenerateRequestDt
 import com.booquest.booquest_api.application.port.in.mission.GenerateMissionResult;
 import com.booquest.booquest_api.application.port.in.mission.GenerateMissionUseCase;
 import com.booquest.booquest_api.application.port.out.sidejob.SideJobRepositoryPort;
-import com.booquest.booquest_api.application.port.out.sidejob.mission.GenerateMissionPort;
-import com.booquest.booquest_api.application.port.out.sidejob.mission.MissionRepositoryPort;
+import com.booquest.booquest_api.application.port.out.mission.GenerateMissionPort;
+import com.booquest.booquest_api.application.port.out.mission.MissionRepositoryPort;
 import com.booquest.booquest_api.domain.mission.model.Mission;
 import com.booquest.booquest_api.domain.sidejob.enums.MissionStatus;
 import com.fasterxml.jackson.core.JsonProcessingException;

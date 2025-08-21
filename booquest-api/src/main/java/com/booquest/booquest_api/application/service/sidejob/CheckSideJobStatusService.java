@@ -2,7 +2,7 @@ package com.booquest.booquest_api.application.service.sidejob;
 
 import com.booquest.booquest_api.application.port.in.onboarding.CheckSideJobStatusUseCase;
 import com.booquest.booquest_api.application.port.out.sidejob.SideJobRepositoryPort;
-import com.booquest.booquest_api.application.port.out.sidejob.mission.MissionRepositoryPort;
+import com.booquest.booquest_api.application.port.out.mission.MissionRepositoryPort;
 import com.booquest.booquest_api.domain.sidejob.enums.MissionStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

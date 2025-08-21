@@ -2,7 +2,7 @@ package com.booquest.booquest_api.application.service.mission;
 
 import com.booquest.booquest_api.application.port.in.mission.GetMissionListUseCase;
 import com.booquest.booquest_api.adapter.in.mission.dto.MissionResponse;
-import com.booquest.booquest_api.application.port.out.sidejob.mission.MissionRepositoryPort;
+import com.booquest.booquest_api.application.port.out.mission.MissionRepositoryPort;
 import com.booquest.booquest_api.domain.mission.model.Mission;
 import com.booquest.booquest_api.domain.sidejob.enums.MissionStatus;
 import lombok.RequiredArgsConstructor;

@@ -1,6 +1,6 @@
 package com.booquest.booquest_api.adapter.out.missionstep.persisitence;
 
-import com.booquest.booquest_api.application.port.out.sidejob.mission.missionstep.MissionStepRepositoryPort;
+import com.booquest.booquest_api.application.port.out.mission.missionstep.MissionStepRepositoryPort;
 import com.booquest.booquest_api.domain.mission.model.MissionStep;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;

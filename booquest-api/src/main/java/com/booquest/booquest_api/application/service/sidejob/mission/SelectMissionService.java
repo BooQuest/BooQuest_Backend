@@ -1,7 +1,7 @@
 package com.booquest.booquest_api.application.service.sidejob.mission;
 
 import com.booquest.booquest_api.application.port.in.mission.SelectMissionUseCase;
-import com.booquest.booquest_api.application.port.out.sidejob.mission.MissionRepositoryPort;
+import com.booquest.booquest_api.application.port.out.mission.MissionRepositoryPort;
 import com.booquest.booquest_api.domain.mission.model.Mission;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
