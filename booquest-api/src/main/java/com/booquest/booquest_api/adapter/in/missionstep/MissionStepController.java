@@ -51,7 +51,7 @@ public class MissionStepController {
     }
 
     @PatchMapping("/{stepId}/status")
-    @Operation(summary = "부퀘스트 상태 변경 (완료/완료취소 포함)", description = "로그인한 사용자의 부퀘스트 상태를 변경합니다. </br>상태 변경 시, 캐릭터 경험치도 업데이트됩니다.")
+    @Operation(summary = "부퀘스트 상태 업데이트 (완료/완료취소 포함)", description = "로그인한 사용자의 부퀘스트 상태를 변경합니다. </br>상태 변경 시, 캐릭터 경험치도 업데이트됩니다.")
     public ApiResponse<MissionStepUpdateStatusResponse> updateStatus(@PathVariable Long stepId, @RequestBody @Valid MissionStepUpdateStatusRequest request) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         Long userId = Long.parseLong(auth.getName());
