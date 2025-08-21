@@ -1,4 +1,4 @@
-package com.booquest.booquest_api.application.service.mission.missionstep;
+package com.booquest.booquest_api.application.service.missionstep;
 
 import com.booquest.booquest_api.application.port.in.missionstep.SelectMissionStepUseCase;
 import com.booquest.booquest_api.application.port.out.missionstep.MissionStepRepositoryPort;
