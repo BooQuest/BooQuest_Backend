@@ -39,4 +39,8 @@ public class UserCharacter extends AuditableEntity {
     @Column(name = "avatar_url")
     private String avatarUrl;
 
+    public void updateExp(int newExp) {
+        this.exp = Math.max(0, newExp);
+    }
+
 }

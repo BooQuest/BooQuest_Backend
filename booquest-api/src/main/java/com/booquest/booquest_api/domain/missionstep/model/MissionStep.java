@@ -44,4 +44,8 @@ public class MissionStep extends AuditableEntity {
 
     @Column(columnDefinition = "TEXT")
     private String detail;
+
+    public void updateStatus(StepStatus newStatus) {
+        this.status = newStatus;
+    }
 }
