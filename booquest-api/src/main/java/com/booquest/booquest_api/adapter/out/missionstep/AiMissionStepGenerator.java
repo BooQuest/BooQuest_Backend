@@ -1,7 +1,7 @@
 package com.booquest.booquest_api.adapter.out.missionstep;
 
 import com.booquest.booquest_api.adapter.in.missionstep.dto.MissionStepGenerateRequestDto;
-import com.booquest.booquest_api.application.port.in.sidejob.mission.missionstep.GenerateMissionStepResult;
+import com.booquest.booquest_api.application.port.in.mission.missionstep.GenerateMissionStepResult;
 import com.booquest.booquest_api.application.port.out.sidejob.mission.missionstep.GenerateMissionStepPort;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;

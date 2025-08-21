@@ -1,4 +1,4 @@
-package com.booquest.booquest_api.application.port.in.sidejob.mission;
+package com.booquest.booquest_api.application.port.in.mission;
 
 import java.util.List;
 
