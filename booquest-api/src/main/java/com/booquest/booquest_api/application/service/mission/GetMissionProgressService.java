@@ -1,4 +1,4 @@
-package com.booquest.booquest_api.application.service.sidejob.mission;
+package com.booquest.booquest_api.application.service.mission;
 
 import com.booquest.booquest_api.adapter.in.mission.dto.MissionProgressResponseDto;
 import com.booquest.booquest_api.application.port.in.mission.GetMissionProgressUseCase;

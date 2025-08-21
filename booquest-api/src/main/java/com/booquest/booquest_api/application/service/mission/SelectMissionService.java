@@ -1,4 +1,4 @@
-package com.booquest.booquest_api.application.service.sidejob.mission;
+package com.booquest.booquest_api.application.service.mission;
 
 import com.booquest.booquest_api.application.port.in.mission.SelectMissionUseCase;
 import com.booquest.booquest_api.application.port.out.mission.MissionRepositoryPort;
