@@ -1,4 +1,4 @@
-package com.booquest.booquest_api.adapter.in.onboarding.web.sidejob.dto;
+package com.booquest.booquest_api.adapter.in.sidejob.dto;
 
 import com.booquest.booquest_api.application.port.in.dto.GenerateSideJobRequest;
 import jakarta.validation.Valid;

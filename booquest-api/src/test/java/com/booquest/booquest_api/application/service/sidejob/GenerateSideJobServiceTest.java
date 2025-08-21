@@ -1,6 +1,6 @@
 package com.booquest.booquest_api.application.service.sidejob;
 
-import com.booquest.booquest_api.adapter.in.onboarding.web.sidejob.dto.RegenerateAllSideJobRequest;
+import com.booquest.booquest_api.adapter.in.sidejob.dto.RegenerateAllSideJobRequest;
 import com.booquest.booquest_api.application.port.in.dto.GenerateSideJobRequest;
 import com.booquest.booquest_api.application.port.in.sidejob.SideJobGenerationResult;
 import com.booquest.booquest_api.application.port.in.sidejob.SideJobItem;

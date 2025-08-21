@@ -40,4 +40,9 @@ public class SideJobRepositoryAdapter implements SideJobRepositoryPort {
     public List<SideJob> findAllByIds(List<Long> sideJobIds) {
         return sideJobRepository.findAllById(sideJobIds);
     }
+
+    @Override
+    public List<SideJob> findAllByUserId(Long userId) {
+        return sideJobRepository.findAllByUserId(userId);
+    }
 }

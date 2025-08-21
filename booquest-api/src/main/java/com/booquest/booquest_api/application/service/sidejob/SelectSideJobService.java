@@ -7,6 +7,7 @@ import com.booquest.booquest_api.application.port.out.mission.MissionRepositoryP
 import com.booquest.booquest_api.domain.mission.model.Mission;
 import com.booquest.booquest_api.domain.sidejob.model.SideJob;
 import jakarta.persistence.EntityNotFoundException;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -21,4 +22,11 @@ public class SelectSideJobService implements SelectSideJobUseCase {
         return sideJobRepository.findByIdWithMissionsAndSteps(sideJobId)
                 .orElseThrow(() -> new EntityNotFoundException("SideJob not found: " + sideJobId));
     }
+
+    @Override
+    public List<SideJob> selectSideJobsByUserId(Long userId) {
+        return sideJobRepository.findAllByUserId(userId);
+    }
+
+
 }
