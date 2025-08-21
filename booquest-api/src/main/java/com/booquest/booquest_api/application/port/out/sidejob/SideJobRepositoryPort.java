@@ -14,4 +14,6 @@ public interface SideJobRepositoryPort {
     boolean isExistByUserId(Long userId);
 
     List<SideJob> findAllByIds(List<Long> sideJobIds);
+
+    List<SideJob> findAllByUserId(Long userId);
 }
