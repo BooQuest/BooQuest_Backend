@@ -1,9 +1,9 @@
 package com.booquest.booquest_api.application.service.sidejob;
 
 import com.booquest.booquest_api.application.port.in.sidejob.SelectSideJobUseCase;
-import com.booquest.booquest_api.application.port.in.sidejob.mission.SelectMissionUseCase;
+import com.booquest.booquest_api.application.port.in.mission.SelectMissionUseCase;
 import com.booquest.booquest_api.application.port.out.sidejob.SideJobRepositoryPort;
-import com.booquest.booquest_api.application.port.out.sidejob.mission.MissionRepositoryPort;
+import com.booquest.booquest_api.application.port.out.mission.MissionRepositoryPort;
 import com.booquest.booquest_api.domain.mission.model.Mission;
 import com.booquest.booquest_api.domain.sidejob.model.SideJob;
 import jakarta.persistence.EntityNotFoundException;

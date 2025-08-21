@@ -5,6 +5,8 @@ import com.booquest.booquest_api.adapter.in.user.web.dto.UserResponse;
 import com.booquest.booquest_api.application.port.in.onboarding.CheckSideJobStatusUseCase;
 import com.booquest.booquest_api.application.port.in.user.GetUserUseCase;
 import com.booquest.booquest_api.common.response.ApiResponse;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -15,12 +17,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/user")
+@Tag(name = "User", description = "사용자 API")
 public class UserController {
 
     private final GetUserUseCase getUserUseCase;
     private final CheckSideJobStatusUseCase checkSideJobStatusUseCase;
 
     @GetMapping("/me")
+    @Operation(summary = "로그인한 사용자 조회", description = "로그인한 사용자의 상세 정보를 조회합니다.")
     public ApiResponse<UserResponse> getUserFromAuth() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         UserResponse response = getUserUseCase.getUserFromAuth(auth);
