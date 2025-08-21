@@ -6,6 +6,8 @@ import com.booquest.booquest_api.application.port.in.sidejob.mission.missionstep
 import com.booquest.booquest_api.application.port.in.sidejob.mission.missionstep.SelectMissionStepUseCase;
 import com.booquest.booquest_api.common.response.ApiResponse;
 import com.booquest.booquest_api.domain.mission.model.MissionStep;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -15,12 +17,14 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/missions/steps")
+@Tag(name = "Mission Step", description = "부퀘스트 API")
 public class MissionStepController {
 
     private final GenerateMissionStepUseCase generateMissionStepUseCase;
     private final SelectMissionStepUseCase selectMissionStepUseCase;
 
     @PostMapping()
+    @Operation(summary = "부퀘스트 생성", description = "부퀘스트를 생성합니다.")
     public ApiResponse<List<MissionStepResponseDto>> generate(@RequestBody @Valid MissionStepGenerateRequestDto requestDto) {
         List<MissionStep> missionSteps = generateMissionStepUseCase.generateMissionStep(requestDto);
 
@@ -32,7 +36,8 @@ public class MissionStepController {
     }
 
     @GetMapping("/{stepId}")
-    public ApiResponse<MissionStepResponseDto> list(@PathVariable Long stepId) {
+    @Operation(summary = "부퀘스트 조회", description = "부퀘스트 상세 정보를 조회합니다.")
+    public ApiResponse<MissionStepResponseDto> getMissionStep(@PathVariable Long stepId) {
         var missionStep = selectMissionStepUseCase.selectMissionStep(stepId);
         var response = MissionStepResponseDto.fromEntity(missionStep);
 

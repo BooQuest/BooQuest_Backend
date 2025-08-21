@@ -25,7 +25,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/missions")
-@Tag(name = "Mission", description = "메인퀘스트 관련 API")
+@Tag(name = "Mission", description = "메인퀘스트 API")
 public class MissionController {
 
     private final GenerateMissionUseCase generateMissionUseCase;
@@ -63,7 +63,7 @@ public class MissionController {
     }
 
     @GetMapping("/{missionId}")
-    @Operation(summary = "메인퀘스트 조회", description = "메인퀘스트를 조회합니다.")
+    @Operation(summary = "메인퀘스트 조회", description = "메인퀘스트 상세 정보를 조회합니다.")
     public ApiResponse<MissionDetailResponseDto> select(
             @PathVariable Long missionId
     ) {

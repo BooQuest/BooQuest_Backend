@@ -14,6 +14,8 @@ import com.booquest.booquest_api.application.port.in.user.UpdateUserProfileUseCa
 import com.booquest.booquest_api.common.response.ApiResponse;
 import com.booquest.booquest_api.domain.character.enums.CharacterType;
 import com.booquest.booquest_api.domain.sidejob.model.SideJob;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/onboarding")
+@Tag(name = "Onboarding", description = "온보딩 API")
 public class OnboardingController {
 
     private final SubmitOnboardingUseCase submitOnboardingUseCase;
@@ -31,6 +34,7 @@ public class OnboardingController {
     private final SelectSideJobUseCase selectSideJobUseCase;
 
     @PostMapping
+    @Operation(summary = "온보딩 및 부업 생성", description = "온보딩 데이터를 저장하고 닉네임 및 캐릭터를 설정한 뒤 AI로 부업 후보를 생성합니다.")
     public ApiResponse<List<SideJobResponseDto>> generateSideJobFromOnboarding(
             @Valid @RequestBody OnboardingDataRequest request) {
 
@@ -50,6 +54,7 @@ public class OnboardingController {
     }
 
     @GetMapping("/{sideJobId}")
+    @Operation(summary = "부업 조회", description = "부업 상세 정보를 조회합니다.")
     public ApiResponse<SideJobDetailResponseDto> list(@PathVariable Long sideJobId) {
         var sideJobDetail = selectSideJobUseCase.selectSideJob(sideJobId);
         var response = SideJobDetailResponseDto.fromEntity(sideJobDetail);
