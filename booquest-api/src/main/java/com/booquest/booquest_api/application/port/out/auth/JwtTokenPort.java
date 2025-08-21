@@ -1,6 +1,6 @@
 package com.booquest.booquest_api.application.port.out.auth;
 
-import com.booquest.booquest_api.application.port.out.auth.dto.TokenInfo;
+import com.booquest.booquest_api.adapter.in.auth.web.token.dto.TokenInfo;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 

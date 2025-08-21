@@ -5,7 +5,7 @@ import com.booquest.booquest_api.adapter.in.auth.web.dto.SocialLoginResponse;
 import com.booquest.booquest_api.adapter.in.onboarding.web.dto.OnboardingProgressInfo;
 import com.booquest.booquest_api.application.port.in.auth.SocialLoginUseCase;
 import com.booquest.booquest_api.application.port.in.auth.TokenUseCase;
-import com.booquest.booquest_api.application.port.out.auth.dto.TokenRefreshResponse;
+import com.booquest.booquest_api.adapter.in.auth.web.token.dto.TokenRefreshResponse;
 import com.booquest.booquest_api.application.port.in.onboarding.CheckSideJobStatusUseCase;
 import com.booquest.booquest_api.common.response.ApiResponse;
 import jakarta.validation.Valid;

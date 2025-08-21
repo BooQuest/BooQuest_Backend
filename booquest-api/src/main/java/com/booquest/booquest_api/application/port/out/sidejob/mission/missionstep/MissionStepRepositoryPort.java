@@ -9,4 +9,6 @@ public interface MissionStepRepositoryPort {
     List<MissionStep> saveAll(Iterable<MissionStep> missions);
 
     Optional<MissionStep> findById(Long id);
+    
+    List<MissionStep> findByMissionIdOrderBySeq(Long missionId);
 }

@@ -41,7 +41,7 @@ public class GenerateMissionService implements GenerateMissionUseCase {
         var missions = result.tasks().stream()
                 .map(t -> {
                     return Mission.builder()
-                            .sidejobId(sideJobSelectedId)
+                            .sideJobId(sideJobSelectedId)
                             .userId(userId)
                             .title(t.title())
                             .status(MissionStatus.PLANNED)

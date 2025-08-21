@@ -24,4 +24,9 @@ public class MissionStepRepositoryAdapter implements MissionStepRepositoryPort {
     public Optional<MissionStep> findById(Long id) {
         return missionStepRepository.findById(id);
     }
+    
+    @Override
+    public List<MissionStep> findByMissionIdOrderBySeq(Long missionId) {
+        return missionStepRepository.findByMissionIdOrderBySeq(missionId);
+    }
 }

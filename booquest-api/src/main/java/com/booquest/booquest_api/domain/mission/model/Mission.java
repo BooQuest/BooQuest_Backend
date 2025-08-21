@@ -28,7 +28,7 @@ public class Mission extends AuditableEntity {
     private Long id;
 
     @Column(name = "sidejob_id", nullable = false)
-    private Long sidejobId;
+    private Long sideJobId;
 
     @Column(name = "user_id", nullable = false)
     private Long userId;

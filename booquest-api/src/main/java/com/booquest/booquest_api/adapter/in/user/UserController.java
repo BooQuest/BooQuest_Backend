@@ -1,7 +1,7 @@
 package com.booquest.booquest_api.adapter.in.user;
 
 import com.booquest.booquest_api.adapter.in.onboarding.web.dto.OnboardingProgressInfo;
-import com.booquest.booquest_api.adapter.out.user.dto.UserResponse;
+import com.booquest.booquest_api.adapter.in.user.web.dto.UserResponse;
 import com.booquest.booquest_api.application.port.in.onboarding.CheckSideJobStatusUseCase;
 import com.booquest.booquest_api.application.port.in.user.GetUserUseCase;
 import com.booquest.booquest_api.common.response.ApiResponse;

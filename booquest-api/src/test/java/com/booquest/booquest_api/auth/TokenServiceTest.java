@@ -1,27 +1,9 @@
 package com.booquest.booquest_api.auth;
 
-import com.booquest.booquest_api.application.port.out.auth.JwtTokenPort;
-import com.booquest.booquest_api.adapter.out.auth.persistence.jpa.TokenRepository;
-import com.booquest.booquest_api.application.port.out.auth.dto.TokenInfo;
-import com.booquest.booquest_api.application.port.out.auth.dto.TokenRefreshResponse;
-import com.booquest.booquest_api.application.port.out.user.UserQueryPort;
-import com.booquest.booquest_api.application.service.auth.TokenService;
-import com.booquest.booquest_api.common.exception.TokenException;
-import com.booquest.booquest_api.domain.auth.model.Token;
-import com.booquest.booquest_api.domain.user.model.User;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.LocalDateTime;
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class TokenServiceTest {

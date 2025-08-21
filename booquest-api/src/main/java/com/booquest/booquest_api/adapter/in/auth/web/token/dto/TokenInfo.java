@@ -1,4 +1,4 @@
-package com.booquest.booquest_api.application.port.out.auth.dto;
+package com.booquest.booquest_api.adapter.in.auth.web.token.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
