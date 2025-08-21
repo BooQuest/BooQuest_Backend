@@ -21,6 +21,11 @@ public class MissionStepRepositoryAdapter implements MissionStepRepositoryPort {
     }
 
     @Override
+    public MissionStep save(MissionStep missionStep) {
+        return missionStepRepository.save(missionStep);
+    }
+
+    @Override
     public Optional<MissionStep> findById(Long id) {
         return missionStepRepository.findById(id);
     }
