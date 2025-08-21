@@ -3,7 +3,7 @@ package com.booquest.booquest_api.adapter.in.onboarding.web;
 import com.booquest.booquest_api.adapter.in.onboarding.web.dto.OnboardingDataRequest;
 import com.booquest.booquest_api.adapter.in.onboarding.web.dto.SideJobDetailResponseDto;
 import com.booquest.booquest_api.adapter.in.onboarding.web.dto.SideJobResponseDto;
-import com.booquest.booquest_api.adapter.in.mission.missionstep.dto.MissionStepResponseDto;
+import com.booquest.booquest_api.adapter.in.missionstep.dto.MissionStepResponseDto;
 import com.booquest.booquest_api.application.port.in.character.CreateCharacterUseCase;
 import com.booquest.booquest_api.application.port.in.dto.GenerateSideJobRequest;
 import com.booquest.booquest_api.application.port.in.dto.SubmitOnboardingData;

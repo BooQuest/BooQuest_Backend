@@ -1,4 +1,4 @@
-package com.booquest.booquest_api.adapter.in.mission.missionstep.dto;
+package com.booquest.booquest_api.adapter.in.missionstep.dto;
 
 import com.booquest.booquest_api.domain.mission.model.MissionStep;
 import com.booquest.booquest_api.domain.sidejob.enums.StepStatus;
