@@ -34,7 +34,7 @@ public class UserSideJob extends AuditableEntity {
     @Enumerated(EnumType.STRING)
     @JdbcTypeCode(SqlTypes.NAMED_ENUM)
     @Column(columnDefinition = "sidejob_status")
-    private UserSideJobStatus status = UserSideJobStatus.PLANNED;
+    private UserSideJobStatus status;
 
     @Column(name = "started_at")
     private LocalDateTime startedAt;
