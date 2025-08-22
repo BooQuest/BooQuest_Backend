@@ -32,4 +32,7 @@ public interface SideJobRepository extends JpaRepository<SideJob, Long> {
     List<SideJob> findAllByUserId(Long userId);
 
     List<SideJob> findTop3ByUserIdOrderByCreatedAtDesc(Long userId);
+
+    @Query("SELECT s.id FROM SideJob s WHERE s.userId = :userId AND s.isSelected = true")
+    Optional<Long> findSelectedSideJobByUserId(Long userId);
 }

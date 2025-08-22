@@ -48,4 +48,10 @@ public class SideJobRepositoryAdapter implements SideJobRepositoryPort {
     public List<SideJob> findTop3ByUserIdOrderByCreatedAtDesc(Long userId) {
         return sideJobRepository.findTop3ByUserIdOrderByCreatedAtDesc(userId);
     }
+
+    @Override
+    public Long findSelectedSideJobByUserId(Long userId) {
+        return sideJobRepository.findSelectedSideJobByUserId(userId)
+                .orElse(null);
+    }
 }
