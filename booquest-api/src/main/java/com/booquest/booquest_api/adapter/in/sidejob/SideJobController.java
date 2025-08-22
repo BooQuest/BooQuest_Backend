@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/sideJob")
-@Tag(name = "Side Job", description = "부업 API")
+@Tag(name = "Side Job Recommendation", description = "부업 추천 API")
 public class SideJobController {
 
     private final RegenerateSideJobUseCase regenerateSideJobUseCase;
