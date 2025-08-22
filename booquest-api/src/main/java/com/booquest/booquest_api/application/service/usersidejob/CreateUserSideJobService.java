@@ -40,7 +40,6 @@ public class CreateUserSideJobService implements CreateUserSideJobUseCase {
                 .userId(userId)
                 .sideJobId(sideJobId)
                 .title(sideJob.getTitle())
-//                .title(firstNonNull(titleOverride, sideJob.getTitle()))
                 .description(sideJob.getDescription())
                 .status(UserSideJobStatus.IN_PROGRESS)
                 .startedAt(LocalDateTime.now())
@@ -49,10 +48,7 @@ public class CreateUserSideJobService implements CreateUserSideJobUseCase {
 
         sideJob.setSelected(true);
         sideJob.setStartedAt(LocalDateTime.now());
-        // sideJobRepository.save(sideJob); // 영속 상태면 생략 가능
 
         return UserSideJobResponse.toResponse(createdUserSideJob).withExists(false);
     }
-
-    private static String firstNonNull(String a, String b) { return a != null ? a : b; }
 }
