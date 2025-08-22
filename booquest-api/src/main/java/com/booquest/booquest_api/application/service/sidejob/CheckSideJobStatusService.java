@@ -14,8 +14,6 @@ public class CheckSideJobStatusService implements CheckSideJobStatusUseCase {
     private final SideJobRepositoryPort sideJobRepositoryPort;
     private final MissionRepositoryPort missionRepositoryPort;
 
-
-
     @Override
     public boolean isSideJobRecommended(Long userId) {
         return sideJobRepositoryPort.isExistByUserId(userId);
@@ -31,5 +29,10 @@ public class CheckSideJobStatusService implements CheckSideJobStatusUseCase {
         return missionRepositoryPort.existsByUserIdAndStatusNot(
                 userId, MissionStatus.PLANNED
         );
+    }
+
+    @Override
+    public long getSelectedSideJobId(Long userId) {
+        return sideJobRepositoryPort.findSelectedSideJobByUserId(userId);
     }
 }

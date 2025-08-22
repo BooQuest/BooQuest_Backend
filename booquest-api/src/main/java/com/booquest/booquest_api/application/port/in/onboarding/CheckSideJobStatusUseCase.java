@@ -9,11 +9,14 @@ public interface CheckSideJobStatusUseCase {
 
     boolean isSideJobCreated(Long userId); // 부업 생성 완료 여부
 
+    long getSelectedSideJobId(Long userId); // 유저가 선택한 부업
+
     default OnboardingProgressInfo getOnboardingProgress(Long userId) {
         return OnboardingProgressInfo.builder()
                 .sideJobRecommended(isSideJobRecommended(userId))
                 .missionRecommended(isMissionRecommended(userId))
                 .sideJobCreated(isSideJobCreated(userId))
+                .selectedSideJobId(getSelectedSideJobId(userId))
                 .build();
     }
 }

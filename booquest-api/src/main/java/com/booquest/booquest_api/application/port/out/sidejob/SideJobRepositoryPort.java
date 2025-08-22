@@ -16,4 +16,8 @@ public interface SideJobRepositoryPort {
     List<SideJob> findAllByIds(List<Long> sideJobIds);
 
     List<SideJob> findAllByUserId(Long userId);
+
+    List<SideJob> findTop3ByUserIdOrderByCreatedAtDesc(Long userId);
+
+    Long findSelectedSideJobByUserId(Long userId);
 }

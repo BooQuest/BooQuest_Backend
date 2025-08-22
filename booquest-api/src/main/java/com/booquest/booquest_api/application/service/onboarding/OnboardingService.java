@@ -33,12 +33,15 @@ public class OnboardingService implements SubmitOnboardingUseCase {
             throw new IllegalArgumentException("존재하지 않는 회원입니다.");
         }
 
-//        if (onboardingProfileRepository.existsByUserId(onboardingData.userId())) {
-//            throw new IllegalStateException("이미 온보딩 정보가 존재합니다.");
-//        }
+        // 1. 온보딩 프로필 upsert
+        OnboardingProfile profile = onboardingProfileRepository.findByUserId(onboardingData.userId())
+                .map(existing -> updateExistingProfile(existing, onboardingData))
+                .orElseGet(() -> buildOnboardingProfile(onboardingData));
 
-        OnboardingProfile profile = buildOnboardingProfile(onboardingData);
         onboardingProfileRepository.save(profile);
+
+        // 2. 기존 카테고리 삭제 후 재삽입
+        onboardingCategoryRepository.deleteByProfileId(profile.getId());
 
         List<OnboardingCategory> onboardingCategories = buildAndSaveOnboardingCategory(onboardingData.hobbies(), profile);
         onboardingCategoryRepository.saveAll(onboardingCategories);
@@ -66,5 +69,12 @@ public class OnboardingService implements SubmitOnboardingUseCase {
                 .expressionStyle(ExpressionStyle.from(onboardingData.expressionStyle()))
                 .strengthType(StrengthType.from(onboardingData.strengthType()))
                 .build();
+    }
+
+    private OnboardingProfile updateExistingProfile(OnboardingProfile existing, SubmitOnboardingData data) {
+        return existing
+                .withJob(data.job())
+                .withExpressionStyle(ExpressionStyle.from(data.expressionStyle()))
+                .withStrengthType(StrengthType.from(data.strengthType()));
     }
 }

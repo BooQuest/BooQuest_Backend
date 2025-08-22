@@ -42,4 +42,19 @@ public class OnboardingProfile extends AuditableEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "strength_type", nullable = false)
     private StrengthType strengthType;
+
+    public OnboardingProfile withJob(String job) {
+        this.job = job;
+        return this;
+    }
+
+    public OnboardingProfile withExpressionStyle(ExpressionStyle expressionStyle) {
+        this.expressionStyle = expressionStyle;
+        return this;
+    }
+
+    public OnboardingProfile withStrengthType(StrengthType strengthType) {
+        this.strengthType = strengthType;
+        return this;
+    }
 }

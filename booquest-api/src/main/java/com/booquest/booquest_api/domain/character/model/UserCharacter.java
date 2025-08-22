@@ -43,4 +43,8 @@ public class UserCharacter extends AuditableEntity {
         this.exp = Math.max(0, newExp);
     }
 
+    public UserCharacter withCharacterType(CharacterType type) {
+        this.characterType = type;
+        return this;
+    }
 }
