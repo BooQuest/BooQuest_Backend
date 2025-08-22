@@ -3,6 +3,8 @@ package com.booquest.booquest_api.adapter.in.usersidejob.dto;
 import com.booquest.booquest_api.domain.usersidejob.enums.UserSideJobStatus;
 import com.booquest.booquest_api.domain.usersidejob.model.UserSideJob;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -20,7 +22,14 @@ public class UserSideJobResponse {
     private LocalDateTime endedAt;
 
     @JsonIgnore
-    private boolean exists;
+    private Boolean exists;
+
+    @JsonProperty("result")
+    @Schema(description = "created | already_exists", allowableValues = {"created","already_exists"})
+    public String getResult() {
+        if (exists == null) return null; // 설정 안 했으면 응답에서 빠짐(@JsonInclude가 제거)
+        return exists ? "already_exists" : "created";
+    }
 
     public static UserSideJobResponse toResponse(UserSideJob userSideJob) {
         return UserSideJobResponse.builder()

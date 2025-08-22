@@ -30,13 +30,15 @@ public class UserSideJobController {
     private final GetUserSideJobSummaryUseCase getUserSideJobSummaryUseCase;
 
     @PostMapping
-    @Operation(summary = "부업 시작 (사용자 부업 생성)", description = "추천받은 부업 중 하나를 선택해, 로그인한 사용자의 부업으로 생성합니다. </br>이미 진행중인 부업일 경우 새로 생성되지 않습니다.")
+    @Operation(summary = "부업 시작 (사용자 부업 생성)", description = "추천받은 부업 중 하나를 선택해, 로그인한 사용자의 부업으로 생성합니다. </br>" +
+            "이미 진행중인 부업일 경우 새로 생성되지 않습니다. </br></br>응답값 data.result: created (새로 생성됨), already_exists (이미 진행중인 부업 반환)")
     public ApiResponse<UserSideJobResponse> createUserSideJob(@Valid @RequestBody UserSideJobCreateRequest request) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         Long userId = Long.parseLong(auth.getName());
 
         UserSideJobResponse response = createUserSideJobUseCase.createUserSideJob(userId, request.getSideJobId());
-        String message = response.isExists() ? "이미 진행 중인 부업입니다." : "부업을 시작했습니다.";
+        Boolean exists = response.getExists();
+        String message = Boolean.TRUE.equals(exists) ? "이미 진행 중인 부업입니다." : "부업을 시작했습니다.";
         return ApiResponse.success(message, response);
     }
 
