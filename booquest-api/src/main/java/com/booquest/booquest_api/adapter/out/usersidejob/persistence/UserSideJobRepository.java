@@ -17,4 +17,6 @@ public interface UserSideJobRepository extends JpaRepository<UserSideJob, Long> 
     boolean existsByUserIdAndSideJobId(Long userId, Long sideJobId);
 
     Optional<UserSideJob> findByUserIdAndSideJobId(Long userId, Long sideJobId);
+
+    boolean existsByIdAndUserId(Long id, Long userId);
 }

@@ -23,4 +23,9 @@ public class UserSideJobRepositoryAdapter implements UserSideJobRepositoryPort {
     public Optional<UserSideJob> findById(Long userSideJobId) {
         return userSideJobRepository.findById(userSideJobId);
     }
+
+    @Override
+    public boolean existsByIdAndUserId(Long userSideJobId, Long userId) {
+        return userSideJobRepository.existsByIdAndUserId(userSideJobId, userId);
+    }
 }

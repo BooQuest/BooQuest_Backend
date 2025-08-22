@@ -7,5 +7,8 @@ import java.util.Optional;
 
 public interface UserSideJobRepositoryPort {
     List<UserSideJob> findAllByUserId(Long userId);
+
     Optional<UserSideJob> findById(Long userSideJobId);
+
+    boolean existsByIdAndUserId(Long userSideJobId, Long userId);
 }
