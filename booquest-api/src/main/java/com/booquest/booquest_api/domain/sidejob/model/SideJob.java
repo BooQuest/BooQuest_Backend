@@ -10,11 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.Type;
 
 @Entity
@@ -23,6 +19,7 @@ import org.hibernate.annotations.Type;
 @Table(name = "side_jobs")
 @Builder
 @Getter
+@Setter
 public class SideJob extends AuditableEntity {
 
     @Id
