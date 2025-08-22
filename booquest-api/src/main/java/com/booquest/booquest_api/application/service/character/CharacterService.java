@@ -9,6 +9,7 @@ import com.booquest.booquest_api.application.port.out.character.CharacterQueryPo
 import com.booquest.booquest_api.domain.character.enums.CharacterType;
 import com.booquest.booquest_api.domain.character.model.UserCharacter;
 import jakarta.persistence.EntityNotFoundException;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,14 +24,17 @@ public class CharacterService implements CreateCharacterUseCase, GetCharacterUse
     @Override
     @Transactional
     public void createCharacter(long userId, CharacterType type) {
-        UserCharacter character = UserCharacter.builder()
-                .userId(userId)
-                .name("부냥이")
-                .characterType(type)
-                .avatarUrl("fake-url")
-                .level(1)
-                .exp(0)
-                .build();
+        UserCharacter character = characterCommandPort.findByUserId(userId)
+                .map(existing -> existing.withCharacterType(type))
+                .orElseGet(() -> UserCharacter.builder()
+                        .userId(userId)
+                        .name("부냥이")
+                        .characterType(type)
+                        .avatarUrl("fake-url")
+                        .level(1)
+                        .exp(0)
+                        .build()
+                );
 
         characterCommandPort.save(character);
     }
