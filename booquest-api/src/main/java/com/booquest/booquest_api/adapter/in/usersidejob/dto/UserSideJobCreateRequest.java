@@ -11,5 +11,4 @@ import lombok.NoArgsConstructor;
 public class UserSideJobCreateRequest {
     @NotNull
     private Long sideJobId;
-//    private String titleOverride; // 제목 수정해서 시작하고 싶을 때(옵션)
 }
