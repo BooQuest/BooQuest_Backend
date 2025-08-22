@@ -23,11 +23,7 @@ public class CreateUserSideJobService implements CreateUserSideJobUseCase {
     @Transactional
     @Override
     public UserSideJobResponse createUserSideJob(Long userId, Long sideJobId) {
-        SideJob sideJob = sideJobRepository.findById(sideJobId)
-                .orElseThrow(() -> new EntityNotFoundException("SideJob not found: " + sideJobId));
-        if (!sideJob.getUserId().equals(userId)) {
-            throw new IllegalArgumentException("This side job does not belong to you.");
-        }
+        SideJob sideJob = getSideJobAndCheckUserPermission(userId, sideJobId);
 
         boolean exists = userSideJobRepository.existsByUserIdAndSideJobId(userId, sideJobId);
         if(exists) {
@@ -36,6 +32,20 @@ public class CreateUserSideJobService implements CreateUserSideJobUseCase {
             return UserSideJobResponse.toResponse(userSideJob).withExists(true);
         }
 
+        UserSideJob createdUserSideJob = create(userId, sideJobId, sideJob);
+        return UserSideJobResponse.toResponse(createdUserSideJob).withExists(false);
+    }
+
+    private SideJob getSideJobAndCheckUserPermission(Long userId, Long sideJobId) {
+        SideJob sideJob = sideJobRepository.findById(sideJobId)
+                .orElseThrow(() -> new EntityNotFoundException("SideJob not found: " + sideJobId));
+        if (!sideJob.getUserId().equals(userId)) {
+            throw new IllegalArgumentException("This side job does not belong to you.");
+        }
+        return sideJob;
+    }
+
+    private UserSideJob create(Long userId, Long sideJobId, SideJob sideJob) {
         UserSideJob createdUserSideJob = UserSideJob.builder()
                 .userId(userId)
                 .sideJobId(sideJobId)
@@ -49,6 +59,6 @@ public class CreateUserSideJobService implements CreateUserSideJobUseCase {
         sideJob.setSelected(true);
         sideJob.setStartedAt(LocalDateTime.now());
 
-        return UserSideJobResponse.toResponse(createdUserSideJob).withExists(false);
+        return createdUserSideJob;
     }
 }
