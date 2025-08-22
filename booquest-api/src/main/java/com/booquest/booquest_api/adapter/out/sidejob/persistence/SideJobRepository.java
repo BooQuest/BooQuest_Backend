@@ -30,4 +30,6 @@ public interface SideJobRepository extends JpaRepository<SideJob, Long> {
     boolean existsByUserId(Long userId);
 
     List<SideJob> findAllByUserId(Long userId);
+
+    List<SideJob> findTop3ByUserIdOrderByCreatedAtDesc(Long userId);
 }
