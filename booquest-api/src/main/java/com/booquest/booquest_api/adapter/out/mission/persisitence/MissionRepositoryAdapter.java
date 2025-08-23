@@ -54,4 +54,9 @@ public class MissionRepositoryAdapter implements MissionRepositoryPort {
     public List<Mission> findByUserIdAndStatus(Long userId, MissionStatus status) {
         return missionRepository.findByUserIdAndStatusWithSteps(userId, status);
     }
+
+    @Override
+    public List<Mission> findByUserIdAndSideJobId(long userId, long sideJobId) {
+        return missionRepository.findByUserIdAndSideJobId(userId, sideJobId);
+    }
 }

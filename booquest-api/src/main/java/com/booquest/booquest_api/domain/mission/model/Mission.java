@@ -50,4 +50,9 @@ public class Mission extends AuditableEntity {
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "mission_id")
     private Set<MissionStep> steps;
+
+    public void updateTitleAndNotes(String title, String notes) {
+        this.title = title;
+        this.designNotes = notes;
+    }
 }
