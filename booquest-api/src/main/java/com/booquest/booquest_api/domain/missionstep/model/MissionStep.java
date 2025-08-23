@@ -53,4 +53,11 @@ public class MissionStep extends AuditableEntity {
         this.title = title;
         this.detail = detail;
     }
+
+    public void start() {
+        if (this.status != StepStatus.PLANNED) {
+            throw new IllegalStateException("스텝은 PLANNED 상태에서만 시작할 수 있습니다.");
+        }
+        this.status = StepStatus.IN_PROGRESS;
+    }
 }

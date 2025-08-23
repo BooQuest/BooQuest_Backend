@@ -10,6 +10,7 @@ import com.booquest.booquest_api.adapter.in.mission.dto.MissionResponse;
 import com.booquest.booquest_api.application.port.in.mission.GenerateMissionUseCase;
 import com.booquest.booquest_api.application.port.in.mission.GetMissionProgressUseCase;
 import com.booquest.booquest_api.application.port.in.mission.SelectMissionUseCase;
+import com.booquest.booquest_api.application.port.in.mission.StartMissionUseCase;
 import com.booquest.booquest_api.common.response.ApiResponse;
 import com.booquest.booquest_api.domain.mission.model.Mission;
 import com.booquest.booquest_api.domain.mission.enums.MissionStatus;
@@ -32,6 +33,7 @@ public class MissionController {
     private final GetMissionListUseCase getMissionListUseCase;
     private final SelectMissionUseCase selectMissionUseCase;
     private final GetMissionProgressUseCase getMissionProgressUseCase;
+    private final StartMissionUseCase startMissionUseCase;
 
     @PostMapping()
     @Operation(summary = "메인퀘스트 생성", description = "메인퀘스트를 생성합니다.")
@@ -82,5 +84,11 @@ public class MissionController {
         var response = getMissionProgressUseCase.getMissionProgress(userId, sideJobId);
 
         return ApiResponse.success("퀘스트 진행률을 조회합니다.", response);
+    }
+
+    @PostMapping("/{missionId}/start")
+    public ApiResponse<Void> startMission(@PathVariable Long missionId) {
+        startMissionUseCase.start(missionId);
+        return ApiResponse.success("미션이 시작되었습니다");
     }
 }
