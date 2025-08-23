@@ -20,7 +20,7 @@ public class AiMissionGenerator implements GenerateMissionPort {
     @Override
     public GenerateMissionResult generateMission(MissionGenerateRequestDto request) {
         try {
-            return webClient.post()
+            GenerateMissionResult result = webClient.post()
                     .uri(API_URL)
                     .contentType(MediaType.APPLICATION_JSON)
                     .accept(MediaType.APPLICATION_JSON)
@@ -29,6 +29,15 @@ public class AiMissionGenerator implements GenerateMissionPort {
                     .bodyToMono(GenerateMissionResult.class)
                     .block();
 
+            if (result == null) {
+                throw new RuntimeException("AI 서버로부터 응답이 없습니다.");
+            }
+
+            if (!result.success()) {
+                throw new RuntimeException("AI 서버 응답 실패: " + result.message());
+            }
+
+            return result;
         } catch (WebClientResponseException e) {
             throw new RuntimeException("AI 서버 응답 실패: " + e.getResponseBodyAsString(), e);
         } catch (Exception e) {

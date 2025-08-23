@@ -20,7 +20,7 @@ public class AiMissionStepGenerator implements GenerateMissionStepPort {
     @Override
     public GenerateMissionStepResult generateMissionStep(MissionStepGenerateRequestDto request) {
         try {
-            return webClient.post()
+            GenerateMissionStepResult result = webClient.post()
                     .uri(API_URL)
                     .contentType(MediaType.APPLICATION_JSON)
                     .accept(MediaType.APPLICATION_JSON)
@@ -29,6 +29,15 @@ public class AiMissionStepGenerator implements GenerateMissionStepPort {
                     .bodyToMono(GenerateMissionStepResult.class)
                     .block();
 
+            if (result == null) {
+                throw new RuntimeException("AI 서버로부터 응답이 없습니다.");
+            }
+
+            if (!result.success()) {
+                throw new RuntimeException("AI 서버 응답 실패: " + result.message());
+            }
+
+            return result;
         } catch (WebClientResponseException e) {
             throw new RuntimeException("AI 서버 응답 실패: " + e.getResponseBodyAsString(), e);
         } catch (Exception e) {
