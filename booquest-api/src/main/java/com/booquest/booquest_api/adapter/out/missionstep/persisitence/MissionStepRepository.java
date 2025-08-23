@@ -10,4 +10,6 @@ import java.util.List;
 @Repository
 public interface MissionStepRepository extends JpaRepository<MissionStep, Long> {
     List<MissionStep> findByMissionIdOrderBySeq(Long missionId);
+
+    List<MissionStep> findByMissionId(Long missionId);
 }

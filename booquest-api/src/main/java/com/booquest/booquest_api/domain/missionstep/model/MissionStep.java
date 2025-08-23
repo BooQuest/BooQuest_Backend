@@ -48,4 +48,9 @@ public class MissionStep extends AuditableEntity {
     public void updateStatus(StepStatus newStatus) {
         this.status = newStatus;
     }
+
+    public void updateTitleAndDetail(String title, String detail) {
+        this.title = title;
+        this.detail = detail;
+    }
 }
