@@ -33,6 +33,9 @@ public interface SideJobRepository extends JpaRepository<SideJob, Long> {
 
     List<SideJob> findTop3ByUserIdOrderByCreatedAtDesc(Long userId);
 
-    @Query("SELECT s.id FROM SideJob s WHERE s.userId = :userId AND s.isSelected = true")
-    Optional<Long> findSelectedSideJobByUserId(Long userId);
+//    @Query("SELECT s.id FROM SideJob s WHERE s.userId = :userId AND s.isSelected = true")
+//    Optional<Long> findSelectedSideJobByUserId(Long userId); // 단건을 기대하는 메서드가 여러 건을 받아와서 로그인 시 에러남
+
+    @Query(value = "SELECT id FROM side_jobs WHERE user_id = :userId AND is_selected = true ORDER BY updated_at DESC, id DESC LIMIT 1", nativeQuery = true)
+    Optional<Long> findTopSelectedSideJobId(Long userId);
 }

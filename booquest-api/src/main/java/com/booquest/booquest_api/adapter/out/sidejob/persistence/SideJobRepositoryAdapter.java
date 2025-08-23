@@ -51,7 +51,7 @@ public class SideJobRepositoryAdapter implements SideJobRepositoryPort {
 
     @Override
     public Long findSelectedSideJobByUserId(Long userId) {
-        return sideJobRepository.findSelectedSideJobByUserId(userId)
+        return sideJobRepository.findTopSelectedSideJobId(userId)
                 .orElse(null);
     }
 }
