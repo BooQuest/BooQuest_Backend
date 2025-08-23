@@ -87,6 +87,7 @@ public class MissionController {
     }
 
     @PostMapping("/{missionId}/start")
+    @Operation(summary = "미션을 시작해서 상태를 진행중으로 변경", description = "선택한 미션과 첫번째 부퀘스트를 진행중 상태로 변경합니다")
     public ApiResponse<Void> startMission(@PathVariable Long missionId) {
         startMissionUseCase.start(missionId);
         return ApiResponse.success("미션이 시작되었습니다");
