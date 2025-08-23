@@ -13,4 +13,6 @@ public interface MissionStepRepositoryPort {
     Optional<MissionStep> findById(Long id);
     
     List<MissionStep> findByMissionIdOrderBySeq(Long missionId);
+
+    List<MissionStep> findByMissionId(Long missionId);
 }

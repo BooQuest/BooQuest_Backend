@@ -10,6 +10,8 @@ import com.booquest.booquest_api.domain.missionstep.enums.StepStatus;
 import com.booquest.booquest_api.domain.mission.enums.MissionStatus;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.Map;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,16 +33,29 @@ public class GenerateMissionStepService implements GenerateMissionStepUseCase {
         //  ai 서버로 미션생성 요청
         var result = missionGenerator.generateMissionStep(generateDto);
 
-        var missionSteps = result.steps().stream()
+        // 기존 스텝 조회
+        List<MissionStep> existingSteps = missionStepRepository.findByMissionId(missionId);
+        Map<Integer, MissionStep> existingMap = existingSteps.stream()
+                .collect(Collectors.toMap(MissionStep::getSeq, step -> step));
+
+        // upsert 수행
+        List<MissionStep> missionSteps = result.steps().stream()
                 .map(t -> {
-                    return MissionStep.builder()
-                            .missionId(missionId)
-                            .title(t.title())
-                            .status(StepStatus.PLANNED)
-                            .seq(t.seq())
-                            .detail(t.detail())
-                            .build();
-                }).toList();
+                    MissionStep existing = existingMap.get(t.seq());
+                    if (existing != null) {
+                        existing.updateTitleAndDetail(t.title(), t.detail());
+                        return existing;
+                    } else {
+                        return MissionStep.builder()
+                                .missionId(missionId)
+                                .title(t.title())
+                                .status(StepStatus.PLANNED)
+                                .seq(t.seq())
+                                .detail(t.detail())
+                                .build();
+                    }
+                })
+                .toList();
 
          return missionStepRepository.saveAll(missionSteps);
     }
