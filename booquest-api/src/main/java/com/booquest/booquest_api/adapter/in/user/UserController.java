@@ -39,4 +39,13 @@ public class UserController {
 
         return UserResponse.of(response, onboardingProgressInfo);
     }
+
+//    @GetMapping("/me/activities")
+//    @Operation(summary = "나의 활동 요약 조회", description = "로그인한 사용자의 활동 요약 정보를 조회합니다.")
+//    public ApiResponse<> getMyActivities() {
+//        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+//        Long userId = Long.parseLong(auth.getName());
+//
+//        return ApiResponse.success("나의 활동 요약이 조회되었습니다.", );
+//    }
 }
