@@ -17,9 +17,12 @@ import com.booquest.booquest_api.domain.mission.enums.MissionStatus;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.List;
 
@@ -29,7 +32,8 @@ import java.util.List;
 @Tag(name = "Mission", description = "메인퀘스트 API")
 public class MissionController {
 
-    private final GenerateMissionUseCase generateMissionUseCase;
+    private final @Qualifier("aiWebClient") WebClient webClient;
+
     private final GetMissionListUseCase getMissionListUseCase;
     private final SelectMissionUseCase selectMissionUseCase;
     private final GetMissionProgressUseCase getMissionProgressUseCase;
@@ -37,16 +41,16 @@ public class MissionController {
 
     @PostMapping()
     @Operation(summary = "메인퀘스트 생성", description = "메인퀘스트를 생성합니다.")
-    public ApiResponse<List<MissionResponseDto>> generate(
-            @RequestBody MissionGenerateRequestDto requestDto
-    ) {
-        List<Mission> missions = generateMissionUseCase.generateMission(requestDto);
+    public ApiResponse<String> generate(@RequestBody MissionGenerateRequestDto requestDto) {
+        String raw = webClient.post()                                   // POST로 호출해야 해서 필요
+                .uri("/ai/generate-mission")                        // 호출할 AI 경로 지정 — 필요
+                .contentType(MediaType.APPLICATION_JSON)                // 요청 바디가 JSON임을 명시 — 필요
+                .bodyValue(requestDto)                                     // 보낼 페이로드 지정 — 필요
+                .retrieve()                                             // 요청 실행 트리거 — 필요
+                .bodyToMono(String.class)                               // 응답 바디를 “문자열”로 그대로 받음(파싱 없음) — 필요
+                .block();
 
-        List<MissionResponseDto> response = missions.stream()
-                .map(MissionResponseDto::fromEntity)
-                .toList();
-
-        return ApiResponse.success("미션이 생성되었습니다.", response);
+        return ApiResponse.success("미션이 생성되었습니다.", raw);
     }
 
     @GetMapping
