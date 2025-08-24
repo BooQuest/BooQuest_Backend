@@ -32,7 +32,7 @@ public class CheckSideJobStatusService implements CheckSideJobStatusUseCase {
     }
 
     @Override
-    public long getSelectedSideJobId(Long userId) {
+    public Long getSelectedSideJobId(Long userId) {
         return sideJobRepositoryPort.findSelectedSideJobByUserId(userId);
     }
 }
