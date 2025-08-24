@@ -1,17 +1,11 @@
 package com.booquest.booquest_api.domain.missionstep.model;
 
 import com.booquest.booquest_api.common.entity.AuditableEntity;
+import com.booquest.booquest_api.domain.mission.model.Mission;
 import com.booquest.booquest_api.domain.missionstep.enums.StepStatus;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.vladmihalcea.hibernate.type.json.JsonType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.Type;
@@ -29,8 +23,12 @@ public class MissionStep extends AuditableEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "mission_id", nullable = false)
-    private Long missionId;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "mission_id", nullable = false)
+    private Mission mission;
+
+    @Column(name = "mission_id", insertable = false, updatable = false)
+    private Long missionId; // read-only
 
     @Column(nullable = false)
     private int seq;
@@ -40,6 +38,7 @@ public class MissionStep extends AuditableEntity {
     @Enumerated(EnumType.STRING)
     @JdbcTypeCode(SqlTypes.NAMED_ENUM)
     @Column(columnDefinition = "status")
+    @Builder.Default
     private StepStatus status = StepStatus.PLANNED;
 
     @Column(columnDefinition = "TEXT")

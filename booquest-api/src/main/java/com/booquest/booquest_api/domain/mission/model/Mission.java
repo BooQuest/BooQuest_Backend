@@ -3,6 +3,7 @@ package com.booquest.booquest_api.domain.mission.model;
 import com.booquest.booquest_api.common.entity.AuditableEntity;
 import com.booquest.booquest_api.domain.mission.enums.MissionStatus;
 import com.booquest.booquest_api.domain.missionstep.model.MissionStep;
+import com.booquest.booquest_api.domain.sidejob.model.SideJob;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.vladmihalcea.hibernate.type.json.JsonType;
 import jakarta.persistence.*;
@@ -28,8 +29,12 @@ public class Mission extends AuditableEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "sidejob_id", nullable = false)
-    private Long sideJobId;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "sidejob_id", nullable = false)
+    private SideJob sideJob;
+
+    @Column(name = "sidejob_id", insertable = false, updatable = false)
+    private Long sideJobId; // read-only
 
     @Column(name = "user_id", nullable = false)
     private Long userId;
@@ -39,6 +44,7 @@ public class Mission extends AuditableEntity {
     @Enumerated(EnumType.STRING)
     @JdbcTypeCode(SqlTypes.NAMED_ENUM)
     @Column(columnDefinition = "mission_status")
+    @Builder.Default
     private MissionStatus status = MissionStatus.PLANNED;
 
     @Column(name = "order_no", nullable = false)
@@ -47,9 +53,15 @@ public class Mission extends AuditableEntity {
     @Column(name = "design_notes", columnDefinition = "TEXT")
     private String designNotes;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "mission_id")
-    private Set<MissionStep> steps;
+    @OneToMany(
+            mappedBy = "mission",   // 자식(MissionStep) 쪽 필드명
+            cascade = CascadeType.ALL,
+            orphanRemoval = true,
+            fetch = FetchType.LAZY
+    )
+    private Set<MissionStep> steps = new java.util.HashSet<>();
+//    @OrderBy("seq ASC")
+//    private List<MissionStep> steps = new ArrayList<>();
 
     public void updateTitleAndNotes(String title, String notes) {
         this.title = title;
