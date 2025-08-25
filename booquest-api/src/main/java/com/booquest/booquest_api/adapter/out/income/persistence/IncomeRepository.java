@@ -38,4 +38,12 @@ public interface IncomeRepository extends JpaRepository<Income, Long> {
 
     // 조회 및 권한 확인
     Optional<Income> findByIdAndUserId(Long id, Long userId);
+
+    @Query("select coalesce(sum(i.amount), 0) from Income i where i.user.id = :userId and i.userSideJobId = :userSideJobId")
+    Long sumAmountByUserAndSideJob(@Param("userId") Long userId,
+                                   @Param("userSideJobId") Long userSideJobId);
+
+    @Query("select min(i.incomeDate) from Income i where i.user.id = :userId and i.userSideJobId = :userSideJobId")
+    LocalDate findFirstIncomeDate(@Param("userId") Long userId,
+                                              @Param("userSideJobId") Long userSideJobId);
 }

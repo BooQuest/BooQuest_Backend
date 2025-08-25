@@ -15,4 +15,6 @@ public interface MissionStepRepositoryPort {
     List<MissionStep> findByMissionIdOrderBySeq(Long missionId);
 
     List<MissionStep> findByMissionId(Long missionId);
+
+    int countCompletedByUserAndSideJob(Long userId, Long userSideJobId);
 }
