@@ -2,16 +2,13 @@ package com.booquest.booquest_api.domain.sidejob.model;
 
 import com.booquest.booquest_api.common.entity.AuditableEntity;
 import com.booquest.booquest_api.domain.mission.model.Mission;
-import com.vladmihalcea.hibernate.type.json.JsonType;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import lombok.*;
-import org.hibernate.annotations.Type;
 
 @Entity
 @AllArgsConstructor
@@ -47,5 +44,6 @@ public class SideJob extends AuditableEntity {
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "sidejob_id")  // Mission 테이블의 FK 컬럼 이름
-    private Set<Mission> missions;
+    @OrderBy("orderNo ASC")
+    private List<Mission> missions = new ArrayList<>();
 }

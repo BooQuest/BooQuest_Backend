@@ -3,17 +3,13 @@ package com.booquest.booquest_api.domain.mission.model;
 import com.booquest.booquest_api.common.entity.AuditableEntity;
 import com.booquest.booquest_api.domain.mission.enums.MissionStatus;
 import com.booquest.booquest_api.domain.missionstep.model.MissionStep;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.vladmihalcea.hibernate.type.json.JsonType;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.annotations.Type;
 import org.hibernate.type.SqlTypes;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @AllArgsConstructor
@@ -49,7 +45,8 @@ public class Mission extends AuditableEntity {
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "mission_id")
-    private Set<MissionStep> steps;
+    @OrderBy("seq ASC")
+    private List<MissionStep> steps = new ArrayList<>();
 
     public void updateTitleAndNotes(String title, String notes) {
         this.title = title;

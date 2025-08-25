@@ -3,9 +3,11 @@ package com.booquest.booquest_api.adapter.in.mission.dto;
 import com.booquest.booquest_api.adapter.in.missionstep.dto.MissionStepResponse;
 import com.booquest.booquest_api.domain.mission.model.Mission;
 import com.booquest.booquest_api.domain.mission.enums.MissionStatus;
+import com.booquest.booquest_api.domain.missionstep.model.MissionStep;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -20,10 +22,14 @@ public class MissionResponse {
     private String designNotes;
     private List<MissionStepResponse> steps;
 
+    private MissionStepProgressResponse progress;
+
     public static MissionResponse toResponse(Mission mission) {
         List<MissionStepResponse> stepResponses = mission.getSteps().stream()
                 .map(MissionStepResponse::toResponse)
                 .collect(Collectors.toList());
+
+        MissionStepProgressResponse progress = calculateProgress(mission);
 
         return MissionResponse.builder()
                 .id(mission.getId())
@@ -33,6 +39,28 @@ public class MissionResponse {
                 .orderNo(mission.getOrderNo())
                 .designNotes(mission.getDesignNotes())
                 .steps(stepResponses)
+                .progress(progress)
+                .build();
+    }
+
+    private static MissionStepProgressResponse calculateProgress(Mission mission) {
+        List<MissionStep> steps = mission.getSteps();
+
+        int total = steps.size();
+        long done = steps.stream().filter(MissionStep::isCompleted).count();
+        int percent = (total == 0) ? 0 : (int) Math.round(done * 100.0 / total);
+
+        MissionStep current = steps.stream()
+                .filter(s -> !s.isCompleted())
+                .min(Comparator.comparingInt(MissionStep::getSeq))
+                .orElse(null);
+
+        return MissionStepProgressResponse.builder()
+                .percent(percent)
+                .completedStepCount((int) done)
+                .totalStepCount(total)
+                .currentStepId(current == null ? null : current.getId())
+                .currentStepOrder(current == null ? null : current.getSeq())
                 .build();
     }
 }
