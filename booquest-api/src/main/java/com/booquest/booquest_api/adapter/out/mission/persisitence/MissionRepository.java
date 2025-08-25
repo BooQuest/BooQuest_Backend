@@ -35,4 +35,7 @@ public interface MissionRepository extends JpaRepository<Mission, Long> {
     List<Mission> findByUserIdAndStatusWithSteps(@Param("userId") Long userId, @Param("status") MissionStatus status);
 
     List<Mission> findByUserIdAndSideJobId(long userId, long sideJobId);
+
+    @Query("select m from Mission m where m.sideJobId = :sid order by m.orderNo asc")
+    List<Mission> findMissionsBySideJobId(Long sid);
 }

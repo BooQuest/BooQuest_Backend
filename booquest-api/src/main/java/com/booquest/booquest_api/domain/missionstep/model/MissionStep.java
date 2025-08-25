@@ -60,4 +60,8 @@ public class MissionStep extends AuditableEntity {
         }
         this.status = StepStatus.IN_PROGRESS;
     }
+
+    public boolean isCompleted() {
+        return status == StepStatus.COMPLETED;
+    }
 }

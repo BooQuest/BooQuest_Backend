@@ -1,6 +1,7 @@
 package com.booquest.booquest_api.domain.usersidejob.model;
 
 import com.booquest.booquest_api.common.entity.AuditableEntity;
+import com.booquest.booquest_api.domain.mission.model.Mission;
 import com.booquest.booquest_api.domain.usersidejob.enums.UserSideJobStatus;
 import jakarta.persistence.*;
 import lombok.*;
@@ -8,6 +9,7 @@ import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
 import java.time.LocalDateTime;
+import java.util.Set;
 
 @Entity
 @AllArgsConstructor
@@ -41,4 +43,8 @@ public class UserSideJob extends AuditableEntity {
 
     @Column(name = "ended_at")
     private LocalDateTime endedAt;
+
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "sidejob_id")  // Mission 테이블의 FK 컬럼 이름
+    private Set<Mission> missions;
 }

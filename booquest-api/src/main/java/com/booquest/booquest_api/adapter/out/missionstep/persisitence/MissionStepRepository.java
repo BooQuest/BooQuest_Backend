@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collection;
 import java.util.List;
 
 @Repository
@@ -51,4 +52,7 @@ public interface MissionStepRepository extends JpaRepository<MissionStep, Long> 
     long countCompletedByUserAndSideJob(@Param("userId") Long userId,
                                         @Param("userSideJobId") Long userSideJobId,
                                         @Param("status") StepStatus status);
+
+    @Query("select s from MissionStep s where s.missionId in :missionIds")
+    List<MissionStep> findStepsByMissionIds(Collection<Long> missionIds);
 }

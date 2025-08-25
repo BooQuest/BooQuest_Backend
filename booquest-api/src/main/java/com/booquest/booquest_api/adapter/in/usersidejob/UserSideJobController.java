@@ -1,13 +1,7 @@
 package com.booquest.booquest_api.adapter.in.usersidejob;
 
-import com.booquest.booquest_api.adapter.in.usersidejob.dto.UserSideJobCreateRequest;
-import com.booquest.booquest_api.adapter.in.usersidejob.dto.UserSideJobListResponse;
-import com.booquest.booquest_api.adapter.in.usersidejob.dto.UserSideJobResponse;
-import com.booquest.booquest_api.adapter.in.usersidejob.dto.UserSideJobSummaryResponse;
-import com.booquest.booquest_api.application.port.in.usersidejob.CreateUserSideJobUseCase;
-import com.booquest.booquest_api.application.port.in.usersidejob.GetUserSideJobListUseCase;
-import com.booquest.booquest_api.application.port.in.usersidejob.GetUserSideJobSummaryUseCase;
-import com.booquest.booquest_api.application.port.in.usersidejob.GetUserSideJobUseCase;
+import com.booquest.booquest_api.adapter.in.usersidejob.dto.*;
+import com.booquest.booquest_api.application.port.in.usersidejob.*;
 import com.booquest.booquest_api.common.response.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -27,6 +21,7 @@ public class UserSideJobController {
     private final CreateUserSideJobUseCase createUserSideJobUseCase;
     private final GetUserSideJobListUseCase getSideJobListUserCase;
     private final GetUserSideJobUseCase getSideJobUserCase;
+    private final GetUserSideJobProgressUseCase getUserSideJobProgressUseCase;
     private final GetUserSideJobSummaryUseCase getUserSideJobSummaryUseCase;
 
     @PostMapping
@@ -60,6 +55,16 @@ public class UserSideJobController {
 
         UserSideJobResponse response = getSideJobUserCase.getUserSideJob(userId, userSideJobId);
         return ApiResponse.success("부업을 조회하였습니다.", response);
+    }
+
+    @GetMapping("/progress/")
+    @Operation(summary = "부업 진행률 조회", description = "상단 카드용 진행률/단계 현황을 반환합니다.")
+    public ApiResponse<UserSideJobProgressResponse> getUserSideJobProgress() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Long userId = Long.parseLong(auth.getName());
+
+        var response = getUserSideJobProgressUseCase.getUserSideJobProgress(userId);
+        return ApiResponse.success("부업 진행률이 조회되었습니다.", response);
     }
 
     @GetMapping("/{userSideJobId}/summary")
