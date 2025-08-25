@@ -18,12 +18,16 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.reactive.function.client.WebClient;
 
 @RestController
 @RequiredArgsConstructor
@@ -31,30 +35,33 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "Onboarding", description = "온보딩 API")
 public class OnboardingController {
 
+    private final @Qualifier("aiWebClient") WebClient webClient;
+
     private final SubmitOnboardingUseCase submitOnboardingUseCase;
-    private final GenerateSideJobUseCase generateSideJobUseCase;
     private final UpdateUserProfileUseCase updateUserProfileUseCase;
     private final CreateCharacterUseCase createCharacterUseCase;
     private final SelectSideJobUseCase selectSideJobUseCase;
 
     @PostMapping
     @Operation(summary = "온보딩 및 부업 생성", description = "온보딩 데이터를 저장하고 닉네임 및 캐릭터를 설정한 뒤 AI로 부업 후보를 생성합니다.")
-    public ApiResponse<List<SideJobResponseDto>> generateSideJobFromOnboarding(
+    public ApiResponse<String> generateSideJobFromOnboarding(
             @Valid @RequestBody OnboardingDataRequest request) {
 
-        saveOnboardingProfile(request);
-        updateUserProfileUseCase.updateNickname(request.userId(), request.nickname());
+//        saveOnboardingProfile(request);
+//        updateUserProfileUseCase.updateNickname(request.userId(), request.nickname());
 
         CharacterType characterType = CharacterType.from(request.characterType());
         createCharacterUseCase.createCharacter(request.userId(), characterType);
 
-        List<SideJob> sideJobs = generateSideJobToAi(request);
+        String raw = webClient.post()                                   // POST로 호출해야 해서 필요
+                .uri("/ai/generate-side-job")                           // 호출할 AI 경로 지정 — 필요
+                .contentType(MediaType.APPLICATION_JSON)                       // 요청 바디가 JSON임을 명시 — 필요
+                .bodyValue(request)                                             // 보낼 페이로드 지정 — 필요
+                .retrieve()                                                    // 요청 실행 트리거 — 필요
+                .bodyToMono(String.class)                                      // 응답 바디를 “문자열”로 그대로 받음(파싱 없음) — 필요
+                .block();                                                      // MVC 흐름에서 동기로 결과 필요 — 필요
 
-        List<SideJobResponseDto> response = sideJobs.stream()
-                .map(SideJobResponseDto::fromEntity)
-                .toList();
-
-        return ApiResponse.success("부업이 생성되었습니다.", response);
+        return ApiResponse.success("부업이 생성되었습니다.", raw);
     }
 
     @GetMapping("/{sideJobId}")
@@ -66,12 +73,6 @@ public class OnboardingController {
         return ApiResponse.success("부업이 조회되었습니다.", response);
     }
 
-    private List<SideJob> generateSideJobToAi(OnboardingDataRequest request) {
-        GenerateSideJobRequest sideJobData = new GenerateSideJobRequest(request.userId(), request.job(),
-                request.hobbies(), request.expressionStyle(), request.strengthType());
-        //ai에게 부업 생성 요청
-        return generateSideJobUseCase.generateSideJob(sideJobData);
-    }
 
     private void saveOnboardingProfile(OnboardingDataRequest request) {
         SubmitOnboardingData onboardingData = new SubmitOnboardingData(request.userId(), request.job(),

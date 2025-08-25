@@ -8,6 +8,8 @@ import com.booquest.booquest_api.application.port.in.missionstep.GenerateMission
 import com.booquest.booquest_api.application.port.in.missionstep.SelectMissionStepUseCase;
 import com.booquest.booquest_api.common.response.ApiResponse;
 import com.booquest.booquest_api.application.port.in.missionstep.UpdateMissionStepStatusUseCase;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import com.booquest.booquest_api.domain.missionstep.model.MissionStep;
@@ -16,6 +18,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.List;
 
@@ -25,20 +28,23 @@ import java.util.List;
 @Tag(name = "Mission Step", description = "부퀘스트 API")
 public class MissionStepController {
 
-    private final GenerateMissionStepUseCase generateMissionStepUseCase;
+    private final @Qualifier("aiWebClient") WebClient webClient;
+
     private final SelectMissionStepUseCase selectMissionStepUseCase;
     private final UpdateMissionStepStatusUseCase updateMissionStepStatusUseCase;
 
     @PostMapping()
     @Operation(summary = "부퀘스트 생성", description = "부퀘스트를 생성합니다.")
-    public ApiResponse<List<MissionStepResponseDto>> generate(@RequestBody @Valid MissionStepGenerateRequestDto requestDto) {
-        List<MissionStep> missionSteps = generateMissionStepUseCase.generateMissionStep(requestDto);
+    public ApiResponse<String> generate(@RequestBody @Valid MissionStepGenerateRequestDto requestDto) {
+        String raw = webClient.post()                                   // POST로 호출해야 해서 필요
+                .uri("/ai/generate-mission-step")                   // 호출할 AI 경로 지정 — 필요
+                .contentType(MediaType.APPLICATION_JSON)                // 요청 바디가 JSON임을 명시 — 필요
+                .bodyValue(requestDto)                                     // 보낼 페이로드 지정 — 필요
+                .retrieve()                                             // 요청 실행 트리거 — 필요
+                .bodyToMono(String.class)                               // 응답 바디를 “문자열”로 그대로 받음(파싱 없음) — 필요
+                .block();
 
-        List<MissionStepResponseDto> response = missionSteps.stream()
-                .map(MissionStepResponseDto::fromEntity)
-                .toList();
-
-        return ApiResponse.success("부퀘스트가 생성되었습니다.", response);
+        return ApiResponse.success("부퀘스트가 생성되었습니다.", raw);
     }
 
     @GetMapping("/{stepId}")
