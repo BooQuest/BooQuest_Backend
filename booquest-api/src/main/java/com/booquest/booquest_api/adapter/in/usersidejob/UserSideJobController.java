@@ -62,13 +62,13 @@ public class UserSideJobController {
         return ApiResponse.success("부업을 조회하였습니다.", response);
     }
 
-//    @GetMapping("/{userSideJobId}/summary")
-//    @Operation(summary = "부업 요약 조회", description = "로그인한 사용자의 부업 요약을 조회합니다.")
-//    public ApiResponse<UserSideJobSummaryResponse> getUserSideJobSummary(@PathVariable Long userSideJobId) {
-//        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-//        Long userId = Long.parseLong(auth.getName());
-//
-//        UserSideJobSummaryResponse response = getUserSideJobSummaryUseCase.getUserSideJobSummary(userId, userSideJobId);
-//        return ApiResponse.success("부업 요약을 조회하였습니다.", response);
-//    }
+    @GetMapping("/{userSideJobId}/summary")
+    @Operation(summary = "부업 요약 조회", description = "로그인한 사용자의 부업 요약을 조회합니다.")
+    public ApiResponse<UserSideJobSummaryResponse> getUserSideJobSummary(@PathVariable Long userSideJobId) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Long userId = Long.parseLong(auth.getName());
+
+        UserSideJobSummaryResponse response = getUserSideJobSummaryUseCase.getUserSideJobSummary(userId, userSideJobId);
+        return ApiResponse.success("부업 요약을 조회하였습니다.", response);
+    }
 }

@@ -1,6 +1,7 @@
 package com.booquest.booquest_api.adapter.out.missionstep.persisitence;
 
 
+import com.booquest.booquest_api.domain.missionstep.enums.StepStatus;
 import com.booquest.booquest_api.domain.missionstep.model.MissionStep;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -22,4 +23,32 @@ public interface MissionStepRepository extends JpaRepository<MissionStep, Long> 
       where m.user_id = :userId and ms.status = 'COMPLETED'
     """, nativeQuery = true)
     long countCompletedStepsByUserId(@Param("userId") Long userId);
+
+    // Mission -> MissionStep 단방향(OneToMany)만 있어서 못 씀
+//    @Query("""
+//        select count(ms)
+//        from MissionStep ms
+//        where ms.status = :status
+//          and exists (
+//            select 1 from Mission m
+//            where m.id = ms.missionId
+//              and m.userId = :userId
+//              and m.userSideJobId = :userSideJobId
+//          )
+//    """)
+//    long countCompletedByUserAndSideJob(@Param("userId") Long userId,
+//                                        @Param("userSideJobId") Long userSideJobId,
+//                                        @Param("status") StepStatus status);
+
+    @Query("""
+        select count(ms)
+        from MissionStep ms
+        join Mission m on m.id = ms.missionId
+        where ms.status = :status
+          and m.userId = :userId
+          and m.sideJobId = :userSideJobId
+    """)
+    long countCompletedByUserAndSideJob(@Param("userId") Long userId,
+                                        @Param("userSideJobId") Long userSideJobId,
+                                        @Param("status") StepStatus status);
 }

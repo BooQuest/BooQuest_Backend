@@ -1,6 +1,7 @@
 package com.booquest.booquest_api.adapter.out.missionstep.persisitence;
 
 import com.booquest.booquest_api.application.port.out.missionstep.MissionStepRepositoryPort;
+import com.booquest.booquest_api.domain.missionstep.enums.StepStatus;
 import com.booquest.booquest_api.domain.missionstep.model.MissionStep;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -38,5 +39,10 @@ public class MissionStepRepositoryAdapter implements MissionStepRepositoryPort {
     @Override
     public List<MissionStep> findByMissionId(Long missionId) {
         return missionStepRepository.findByMissionId(missionId);
+    }
+
+    @Override
+    public int countCompletedByUserAndSideJob(Long userId, Long userSideJobId) {
+        return (int) missionStepRepository.countCompletedByUserAndSideJob(userId, userSideJobId, StepStatus.COMPLETED);
     }
 }
