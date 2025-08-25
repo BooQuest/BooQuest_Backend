@@ -54,6 +54,7 @@ public class CharacterService implements CreateCharacterUseCase, GetCharacterUse
                 .orElseThrow(() -> new EntityNotFoundException("User character not found: " + userId));
 
         String name = userCharacter.getName();
+        String type = userCharacter.getCharacterType().name();
         int currentLevel = userCharacter.getLevel();
         int currentExp = userCharacter.getExp();
         int requiredForNext = 150;
@@ -61,6 +62,7 @@ public class CharacterService implements CreateCharacterUseCase, GetCharacterUse
 
         return CharacterGrowthResponse.builder()
                 .name(name)
+                .type(type)
                 .level(currentLevel)
                 .remainingExpToLevelUp(remainingToLevelUp)
                 .currentExp(currentExp)
