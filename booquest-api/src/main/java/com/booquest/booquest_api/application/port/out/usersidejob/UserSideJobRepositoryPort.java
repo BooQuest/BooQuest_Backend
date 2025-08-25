@@ -11,4 +11,6 @@ public interface UserSideJobRepositoryPort {
     Optional<UserSideJob> findById(Long userSideJobId);
 
     boolean existsByIdAndUserId(Long userSideJobId, Long userId);
+
+    Optional<UserSideJob> findLatestSideJobForStatus(Long userId);
 }

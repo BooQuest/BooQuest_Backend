@@ -27,4 +27,31 @@ public interface UserSideJobRepository extends JpaRepository<UserSideJob, Long> 
             "where usj.userId = :userId and usj.status = :status")
     int countCompletedByUserId(@Param("userId") Long userId,
                                 @Param("status") UserSideJobStatus status);
+
+    @Query("""
+      select usj
+      from UserSideJob usj
+      where usj.userId = :uid
+        and usj.status = :status
+        and coalesce(usj.updatedAt, usj.createdAt) = (
+          select max(coalesce(u2.updatedAt, u2.createdAt))
+          from UserSideJob u2
+          where u2.userId = :uid
+            and u2.status  = :status
+        )
+        and usj.id = (
+          select max(u3.id)
+          from UserSideJob u3
+          where u3.userId = :uid
+            and u3.status  = :status
+            and coalesce(u3.updatedAt, u3.createdAt) = (
+              select max(coalesce(u4.updatedAt, u4.createdAt))
+              from UserSideJob u4
+              where u4.userId = :uid
+                and u4.status  = :status
+            )
+        )
+    """)
+    Optional<UserSideJob> findLatestSideJobForStatus(@Param("uid") Long userId,
+                                                @Param("status") UserSideJobStatus status);
 }
