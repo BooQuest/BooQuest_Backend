@@ -34,7 +34,6 @@ public class CharacterRewardService implements UpdateCharacterExpUseCase {
 
         int delta = policy.expDeltaFor(type);
         if (delta != 0) {
-//            userCharacter.updateExp(userCharacter.getExp() + delta);
             userCharacter.applyExpDelta(delta, levelingPolicy);
             characterCommandPort.save(userCharacter);
         }
