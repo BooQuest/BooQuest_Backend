@@ -11,8 +11,11 @@ import com.booquest.booquest_api.application.port.in.sidejob.GenerateSideJobUseC
 import com.booquest.booquest_api.application.port.in.sidejob.SelectSideJobUseCase;
 import com.booquest.booquest_api.application.port.in.user.UpdateUserProfileUseCase;
 import com.booquest.booquest_api.common.response.ApiResponse;
+import com.booquest.booquest_api.common.util.JsonMapperUtils;
 import com.booquest.booquest_api.domain.character.enums.CharacterType;
 import com.booquest.booquest_api.domain.sidejob.model.SideJob;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -44,11 +47,11 @@ public class OnboardingController {
 
     @PostMapping
     @Operation(summary = "온보딩 및 부업 생성", description = "온보딩 데이터를 저장하고 닉네임 및 캐릭터를 설정한 뒤 AI로 부업 후보를 생성합니다.")
-    public ApiResponse<String> generateSideJobFromOnboarding(
+    public ApiResponse<List<SideJobResponseDto>> generateSideJobFromOnboarding(
             @Valid @RequestBody OnboardingDataRequest request) {
 
-//        saveOnboardingProfile(request);
-//        updateUserProfileUseCase.updateNickname(request.userId(), request.nickname());
+        saveOnboardingProfile(request);
+        updateUserProfileUseCase.updateNickname(request.userId(), request.nickname());
 
         CharacterType characterType = CharacterType.from(request.characterType());
         createCharacterUseCase.createCharacter(request.userId(), characterType);
@@ -61,7 +64,11 @@ public class OnboardingController {
                 .bodyToMono(String.class)                                      // 응답 바디를 “문자열”로 그대로 받음(파싱 없음) — 필요
                 .block();                                                      // MVC 흐름에서 동기로 결과 필요 — 필요
 
-        return ApiResponse.success("부업이 생성되었습니다.", raw);
+
+        // JSON 문자열 → DTO 리스트로 변환
+        List<SideJobResponseDto> sideJobs = JsonMapperUtils.parse(raw, new TypeReference<>() {});
+
+        return ApiResponse.success("부업이 생성되었습니다.", sideJobs);
     }
 
     @GetMapping("/{sideJobId}")

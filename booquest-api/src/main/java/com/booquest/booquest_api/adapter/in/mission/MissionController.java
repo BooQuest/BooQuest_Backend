@@ -12,8 +12,10 @@ import com.booquest.booquest_api.application.port.in.mission.GetMissionProgressU
 import com.booquest.booquest_api.application.port.in.mission.SelectMissionUseCase;
 import com.booquest.booquest_api.application.port.in.mission.StartMissionUseCase;
 import com.booquest.booquest_api.common.response.ApiResponse;
+import com.booquest.booquest_api.common.util.JsonMapperUtils;
 import com.booquest.booquest_api.domain.mission.model.Mission;
 import com.booquest.booquest_api.domain.mission.enums.MissionStatus;
+import com.fasterxml.jackson.core.type.TypeReference;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -41,7 +43,7 @@ public class MissionController {
 
     @PostMapping()
     @Operation(summary = "메인퀘스트 생성", description = "메인퀘스트를 생성합니다.")
-    public ApiResponse<String> generate(@RequestBody MissionGenerateRequestDto requestDto) {
+    public ApiResponse<List<MissionResponseDto>> generate(@RequestBody MissionGenerateRequestDto requestDto) {
         String raw = webClient.post()                                   // POST로 호출해야 해서 필요
                 .uri("/ai/generate-mission")                        // 호출할 AI 경로 지정 — 필요
                 .contentType(MediaType.APPLICATION_JSON)                // 요청 바디가 JSON임을 명시 — 필요
@@ -50,7 +52,9 @@ public class MissionController {
                 .bodyToMono(String.class)                               // 응답 바디를 “문자열”로 그대로 받음(파싱 없음) — 필요
                 .block();
 
-        return ApiResponse.success("미션이 생성되었습니다.", raw);
+        List<MissionResponseDto> missions = JsonMapperUtils.parse(raw, new TypeReference<>() {});
+
+        return ApiResponse.success("미션이 생성되었습니다.", missions);
     }
 
     @GetMapping

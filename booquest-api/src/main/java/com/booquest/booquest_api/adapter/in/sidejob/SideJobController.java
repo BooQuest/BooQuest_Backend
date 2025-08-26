@@ -6,7 +6,10 @@ import com.booquest.booquest_api.adapter.in.sidejob.dto.RegenerateSideJobRequest
 import com.booquest.booquest_api.application.port.in.sidejob.RegenerateSideJobUseCase;
 import com.booquest.booquest_api.application.port.in.sidejob.SelectSideJobUseCase;
 import com.booquest.booquest_api.common.response.ApiResponse;
+import com.booquest.booquest_api.common.util.JsonMapperUtils;
 import com.booquest.booquest_api.domain.sidejob.model.SideJob;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -36,22 +39,25 @@ public class SideJobController {
 
     @PostMapping("/regenerate")
     @Operation(summary = "부업 목록 재생성", description = "요청 기준에 따라 부업 목록을 재생성합니다.")
-    public ApiResponse<String> regenerateAll(@RequestBody @Valid RegenerateAllSideJobRequest request) {
+    public ApiResponse<List<SideJobResponseDto>> regenerateAll(@RequestBody @Valid RegenerateAllSideJobRequest request) {
 
         String raw = webClient.post()                                   // POST로 호출해야 해서 필요
                 .uri("/ai/generate-side-job")                           // 호출할 AI 경로 지정 — 필요
                 .contentType(MediaType.APPLICATION_JSON)                       // 요청 바디가 JSON임을 명시 — 필요
-                .bodyValue(request)                                             // 보낼 페이로드 지정 — 필요
+                .bodyValue(request.generateSideJobRequest())                                             // 보낼 페이로드 지정 — 필요
                 .retrieve()                                                    // 요청 실행 트리거 — 필요
                 .bodyToMono(String.class)                                      // 응답 바디를 “문자열”로 그대로 받음(파싱 없음) — 필요
                 .block();
 
-        return ApiResponse.success("부업이 재생성되었습니다.", raw);
+        // JSON 문자열 → DTO 리스트로 변환
+        List<SideJobResponseDto> sideJobs = JsonMapperUtils.parse(raw, new TypeReference<>() {});
+
+        return ApiResponse.success("부업이 재생성되었습니다.", sideJobs);
     }
 
     @PostMapping("/regenerate/{sideJobId}")
     @Operation(summary = "부업 재생성", description = "부업 ID로 지정한 부업을 재생성합니다.")
-    public ApiResponse<String> regenerateById(@PathVariable Long sideJobId,
+    public ApiResponse<SideJobResponseDto> regenerateById(@PathVariable Long sideJobId,
                                                           @RequestBody @Valid RegenerateSideJobRequest request) {
         String raw = webClient.post()                                   // POST로 호출해야 해서 필요
                 .uri("/ai/regenerate-side-job")                           // 호출할 AI 경로 지정 — 필요
@@ -61,7 +67,10 @@ public class SideJobController {
                 .bodyToMono(String.class)                                      // 응답 바디를 “문자열”로 그대로 받음(파싱 없음) — 필요
                 .block();
 
-        return ApiResponse.success("부업이 재생성되었습니다.", raw);
+        // JSON 문자열 → DTO 리스트로 변환
+        SideJobResponseDto sideJob = JsonMapperUtils.parse(raw, new TypeReference<>() {});
+
+        return ApiResponse.success("부업이 재생성되었습니다.", sideJob);
     }
 
     @GetMapping("/{userId}")

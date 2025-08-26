@@ -35,7 +35,7 @@ server:
 
 # --- AI 서버 설정 ---
 ai:
-  base-url: ${AI_BASE_URL:http://localhost:8000}
+  base-url: ${AI_BASE_URL:http://localhost:8081}
   timeout-ms: ${AI_TIMEOUT_MS:5000}
 
 logging:
