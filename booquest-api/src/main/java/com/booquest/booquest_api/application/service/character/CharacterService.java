@@ -44,7 +44,7 @@ public class CharacterService implements CreateCharacterUseCase, GetCharacterUse
     }
 
     private String defaultName() {
-        return "Boo";
+        return "부냥이";
     }
 
 //    private String defaultAvatarUrl(CharacterType type) {
