@@ -42,9 +42,9 @@ public class SideJobController {
     public ApiResponse<List<SideJobResponseDto>> regenerateAll(@RequestBody @Valid RegenerateAllSideJobRequest request) {
 
         String raw = webClient.post()                                   // POST로 호출해야 해서 필요
-                .uri("/ai/generate-side-job")                           // 호출할 AI 경로 지정 — 필요
+                .uri("/ai/regenerate-side-job-all")                           // 호출할 AI 경로 지정 — 필요
                 .contentType(MediaType.APPLICATION_JSON)                       // 요청 바디가 JSON임을 명시 — 필요
-                .bodyValue(request.generateSideJobRequest())                                             // 보낼 페이로드 지정 — 필요
+                .bodyValue(request)                                             // 보낼 페이로드 지정 — 필요
                 .retrieve()                                                    // 요청 실행 트리거 — 필요
                 .bodyToMono(String.class)                                      // 응답 바디를 “문자열”로 그대로 받음(파싱 없음) — 필요
                 .block();
@@ -60,7 +60,7 @@ public class SideJobController {
     public ApiResponse<SideJobResponseDto> regenerateById(@PathVariable Long sideJobId,
                                                           @RequestBody @Valid RegenerateSideJobRequest request) {
         String raw = webClient.post()                                   // POST로 호출해야 해서 필요
-                .uri("/ai/regenerate-side-job")                           // 호출할 AI 경로 지정 — 필요
+                .uri("/ai/regenerate-side-job/{sideJobId}", sideJobId )                           // 호출할 AI 경로 지정 — 필요
                 .contentType(MediaType.APPLICATION_JSON)                       // 요청 바디가 JSON임을 명시 — 필요
                 .bodyValue(request)                                             // 보낼 페이로드 지정 — 필요
                 .retrieve()                                                    // 요청 실행 트리거 — 필요
