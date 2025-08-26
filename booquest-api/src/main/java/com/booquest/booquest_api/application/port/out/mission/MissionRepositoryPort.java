@@ -24,4 +24,7 @@ public interface MissionRepositoryPort {
     List<Mission> findByUserIdAndStatus(Long userId, MissionStatus status);
 
     List<Mission> findByUserIdAndSideJobId(long userId, long sideJobSelectedId);
+
+    List<Mission> findListWithOptionalFilters(Long userId, Long sideJobId, MissionStatus status);
+
 }

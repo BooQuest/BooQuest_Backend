@@ -59,12 +59,12 @@ public class MissionController {
 
     @GetMapping
     @Operation(summary = "메인퀘스트 목록 조회", description = "로그인한 사용자의 메인퀘스트 목록을 조회합니다. </br>" +
-            "status 미 지정 시 (값이 null일 경우), 전체 목록을 조회합니다.")
-    public ApiResponse<MissionListResponse> getMissionList(@RequestParam(required = false) MissionStatus status) {
+            "sideJobId와 status 미 지정 시 (값이 null일 경우), 전체 목록을 조회합니다.")
+    public ApiResponse<MissionListResponse> getMissionList(@RequestParam(required = false) Long sideJobId, @RequestParam(required = false) MissionStatus status) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         Long userId = Long.parseLong(auth.getName());
 
-        List<MissionResponse> missionResponses = getMissionListUseCase.getMissionList(userId, status);
+        List<MissionResponse> missionResponses = getMissionListUseCase.getMissionList(userId, sideJobId, status);
 
         MissionListResponse response = MissionListResponse.builder()
                 .missions(missionResponses)

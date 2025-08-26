@@ -6,5 +6,5 @@ import com.booquest.booquest_api.domain.mission.enums.MissionStatus;
 import java.util.List;
 
 public interface GetMissionListUseCase {
-    List<MissionResponse> getMissionList(Long userId, MissionStatus status);
+    List<MissionResponse> getMissionList(Long userId, Long sideJobId, MissionStatus status);
 }
