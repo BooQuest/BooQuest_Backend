@@ -33,6 +33,7 @@ public class CharacterService implements CreateCharacterUseCase, GetCharacterUse
                         .userId(userId)
                         .name(defaultName())
                         .characterType(type)
+                        .avatarUrl(null)
 //                        .avatarUrl(defaultAvatarUrl(type))
                         .level(1)
                         .exp(0)
