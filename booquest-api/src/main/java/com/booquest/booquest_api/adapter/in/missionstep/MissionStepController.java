@@ -8,6 +8,8 @@ import com.booquest.booquest_api.application.port.in.missionstep.GenerateMission
 import com.booquest.booquest_api.application.port.in.missionstep.SelectMissionStepUseCase;
 import com.booquest.booquest_api.common.response.ApiResponse;
 import com.booquest.booquest_api.application.port.in.missionstep.UpdateMissionStepStatusUseCase;
+import com.booquest.booquest_api.common.util.JsonMapperUtils;
+import com.fasterxml.jackson.core.type.TypeReference;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
@@ -35,7 +37,7 @@ public class MissionStepController {
 
     @PostMapping()
     @Operation(summary = "부퀘스트 생성", description = "부퀘스트를 생성합니다.")
-    public ApiResponse<String> generate(@RequestBody @Valid MissionStepGenerateRequestDto requestDto) {
+    public ApiResponse<List<MissionStepResponseDto>> generate(@RequestBody @Valid MissionStepGenerateRequestDto requestDto) {
         String raw = webClient.post()                                   // POST로 호출해야 해서 필요
                 .uri("/ai/generate-mission-step")                   // 호출할 AI 경로 지정 — 필요
                 .contentType(MediaType.APPLICATION_JSON)                // 요청 바디가 JSON임을 명시 — 필요
@@ -44,7 +46,9 @@ public class MissionStepController {
                 .bodyToMono(String.class)                               // 응답 바디를 “문자열”로 그대로 받음(파싱 없음) — 필요
                 .block();
 
-        return ApiResponse.success("부퀘스트가 생성되었습니다.", raw);
+        List<MissionStepResponseDto> missionSteps = JsonMapperUtils.parse(raw, new TypeReference<>() {});
+
+        return ApiResponse.success("부퀘스트가 생성되었습니다.", missionSteps);
     }
 
     @GetMapping("/{stepId}")

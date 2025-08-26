@@ -1,20 +1,11 @@
 package com.booquest.booquest_api.adapter.in.mission.dto;
 
-import com.booquest.booquest_api.domain.mission.model.Mission;
-
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public record MissionResponseDto(
         Long id,
         String title,
         int order,
+        @JsonProperty("design_notes")
         String designNotes
-) {
-        public static MissionResponseDto fromEntity(Mission entity) {
-                return new MissionResponseDto(
-                        entity.getId(),
-                        entity.getTitle(),
-                        entity.getOrderNo(),
-                        entity.getDesignNotes()
-                );
-        }
-}
+) {}
