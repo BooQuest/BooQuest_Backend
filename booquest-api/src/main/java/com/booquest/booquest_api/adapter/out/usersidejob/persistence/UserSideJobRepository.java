@@ -25,7 +25,7 @@ public interface UserSideJobRepository extends JpaRepository<UserSideJob, Long> 
 
     @Query("select count(usj) from UserSideJob usj " +
             "where usj.userId = :userId and usj.status = :status")
-    int countCompletedByUserId(@Param("userId") Long userId,
+    long countCompletedByUserId(@Param("userId") Long userId,
                                 @Param("status") UserSideJobStatus status);
 
     @Query("""
