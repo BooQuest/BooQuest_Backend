@@ -58,7 +58,7 @@ public class UserSideJobController {
     }
 
     @GetMapping("/progress/")
-    @Operation(summary = "부업 진행률 조회", description = "상단 카드용 진행률/단계 현황을 반환합니다.")
+    @Operation(summary = "부업 진행률 조회", description = "상단 카드용 부업 진행률/단계 현황을 조회합니다. <br/>로그인한 사용자의 부업 중 가장 최근의 부업 진행률을 조회합니다.")
     public ApiResponse<UserSideJobProgressResponse> getUserSideJobProgress() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         Long userId = Long.parseLong(auth.getName());

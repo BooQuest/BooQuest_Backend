@@ -20,11 +20,12 @@ public class MissionResponse {
     private MissionStatus status;
     private int orderNo;
     private String designNotes;
+    private int missionTotalExp;
     private List<MissionStepResponse> steps;
 
     private MissionStepProgressResponse progress;
 
-    public static MissionResponse toResponse(Mission mission) {
+    public static MissionResponse toResponse(Mission mission, int missionTotalExp) {
         List<MissionStepResponse> stepResponses = mission.getSteps().stream()
                 .map(MissionStepResponse::toResponse)
                 .collect(Collectors.toList());
@@ -38,6 +39,7 @@ public class MissionResponse {
                 .status(mission.getStatus())
                 .orderNo(mission.getOrderNo())
                 .designNotes(mission.getDesignNotes())
+                .missionTotalExp(missionTotalExp)
                 .steps(stepResponses)
                 .progress(progress)
                 .build();
