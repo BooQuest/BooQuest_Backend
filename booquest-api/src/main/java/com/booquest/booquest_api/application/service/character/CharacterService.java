@@ -21,6 +21,9 @@ public class CharacterService implements CreateCharacterUseCase, GetCharacterUse
     private final CharacterCommandPort characterCommandPort;
     private final CharacterQueryPort characterQueryPort;
 
+//    @Value("${booquest.assets.avatar-base-url:/assets/avatars}")
+//    private String avatarBaseUrl;
+
     @Override
     @Transactional
     public void createCharacter(long userId, CharacterType type) {
@@ -28,9 +31,9 @@ public class CharacterService implements CreateCharacterUseCase, GetCharacterUse
                 .map(existing -> existing.withCharacterType(type))
                 .orElseGet(() -> UserCharacter.builder()
                         .userId(userId)
-                        .name("부냥이")
+                        .name(defaultName())
                         .characterType(type)
-                        .avatarUrl("fake-url")
+//                        .avatarUrl(defaultAvatarUrl(type))
                         .level(1)
                         .exp(0)
                         .build()
@@ -38,6 +41,14 @@ public class CharacterService implements CreateCharacterUseCase, GetCharacterUse
 
         characterCommandPort.save(character);
     }
+
+    private String defaultName() {
+        return "Boo";
+    }
+
+//    private String defaultAvatarUrl(CharacterType type) {
+//        return String.format("", avatarBaseUrl, type.name().toLowerCase());
+//    }
 
     @Override
     @Transactional(readOnly = true)
