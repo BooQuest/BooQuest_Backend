@@ -29,12 +29,12 @@ public class AuthController {
     public ApiResponse<SocialLoginResponse> socialLogin(@Valid @RequestBody SocialLoginRequest request) {
         SocialLoginResponse response = socialLoginUseCase.login(request.getAccessToken(), request.getProvider());
 
-        SocialLoginResponse loginResponse = ProvideOnboardingStatus(response);
+        SocialLoginResponse loginResponse = provideOnboardingStatus(response);
 
         return ApiResponse.success("로그인에 성공했습니다.", loginResponse);
     }
 
-    private SocialLoginResponse ProvideOnboardingStatus(SocialLoginResponse response) {
+    private SocialLoginResponse provideOnboardingStatus(SocialLoginResponse response) {
         Long userId = response.getUserInfo().getUserId();
         OnboardingProgressInfo onboardingProgressInfo = checkSideJobStatusUseCase.getOnboardingProgress(userId);
 

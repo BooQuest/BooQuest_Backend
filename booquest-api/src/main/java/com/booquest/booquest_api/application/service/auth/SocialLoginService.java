@@ -6,6 +6,7 @@ import com.booquest.booquest_api.application.port.in.auth.SocialLoginUseCase;
 import com.booquest.booquest_api.adapter.in.auth.web.token.dto.TokenInfo;
 import com.booquest.booquest_api.application.port.out.user.UserCommandPort;
 import com.booquest.booquest_api.application.port.out.user.UserQueryPort;
+import com.booquest.booquest_api.domain.auth.enums.AuthProvider;
 import com.booquest.booquest_api.domain.user.model.SocialUser;
 import com.booquest.booquest_api.domain.user.model.User;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +26,7 @@ public class SocialLoginService implements SocialLoginUseCase {
     private final UserCommandPort userCommandPort;
 
     @Override
-    public SocialLoginResponse login(String accessToken, String provider) {
+    public SocialLoginResponse login(String accessToken, AuthProvider provider) {
         SocialUser socialUser = fetchSocialUser(accessToken, provider);
 
         User user = findExistingUser(provider, socialUser.getProviderId())
@@ -37,15 +38,17 @@ public class SocialLoginService implements SocialLoginUseCase {
         return buildResponse(tokenInfo, user);
     }
 
-    private SocialUser fetchSocialUser(String accessToken, String provider) {
-//        return oAuthClient.fetchUserInfo(accessToken, provider);
-        if ("KAKAO".equalsIgnoreCase(provider)) {
-            return kakaoOAuthClient.fetchUserInfo(accessToken);
-        }
-        throw new IllegalArgumentException("Unsupported provider: " + provider);
+    private SocialUser fetchSocialUser(String accessToken, AuthProvider provider) {
+        return switch (provider) {
+            case KAKAO -> kakaoOAuthClient.fetchUserInfo(accessToken);
+            // case GOOGLE -> googleOAuthClient.fetchUserInfo(accessToken);
+            // case APPLE  -> appleOAuthClient.fetchUserInfo(accessToken);
+            // case NAVER  -> naverOAuthClient.fetchUserInfo(accessToken);
+            default -> throw new IllegalArgumentException("Unsupported provider: " + provider);
+        };
     }
 
-    private Optional<User> findExistingUser(String provider, String providerUserId) {
+    private Optional<User> findExistingUser(AuthProvider provider, String providerUserId) {
         return userQueryPort.findByProviderAndProviderUserId(provider, providerUserId);
     }
 
@@ -54,7 +57,7 @@ public class SocialLoginService implements SocialLoginUseCase {
         return userCommandPort.update(user);
     }
 
-    private User registerNewUser(String provider, SocialUser socialUser) {
+    private User registerNewUser(AuthProvider provider, SocialUser socialUser) {
         User user = User.builder()
                 .provider(provider)
                 .providerUserId(socialUser.getProviderId())

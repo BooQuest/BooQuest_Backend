@@ -3,6 +3,7 @@ package com.booquest.booquest_api.adapter.out.auth.persistence;
 import com.booquest.booquest_api.application.port.out.user.UserCommandPort;
 import com.booquest.booquest_api.application.port.out.user.UserQueryPort;
 import com.booquest.booquest_api.adapter.out.auth.persistence.jpa.UserRepository;
+import com.booquest.booquest_api.domain.auth.enums.AuthProvider;
 import com.booquest.booquest_api.domain.user.model.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -16,7 +17,7 @@ public class UserQueryAdapter implements UserQueryPort, UserCommandPort {
     private final UserRepository userRepository;
 
     @Override
-    public Optional<User> findByProviderAndProviderUserId(String provider, String providerUserId) {
+    public Optional<User> findByProviderAndProviderUserId(AuthProvider provider, String providerUserId) {
         return userRepository.findByProviderAndProviderUserId(provider, providerUserId);
     }
 
