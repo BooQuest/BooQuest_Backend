@@ -8,6 +8,7 @@ public record SideJobResponseDto(
         String description
 ) {
     public static SideJobResponseDto fromEntity(SideJob entity) {
+        if (entity == null) return null;
         return new SideJobResponseDto(
                 entity.getId(),
                 entity.getTitle(),

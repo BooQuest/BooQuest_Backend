@@ -12,6 +12,7 @@ public record MissionStepResponseDto(
         String detail
 ) {
         public static MissionStepResponseDto fromEntity(MissionStep entity) {
+                if (entity == null) return null;
                 return new MissionStepResponseDto(
                         entity.getId(),
                         entity.getTitle(),
