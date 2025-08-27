@@ -6,6 +6,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import com.booquest.booquest_api.adapter.out.auth.persistence.jpa.UserRepository;
 import com.booquest.booquest_api.application.port.in.dto.SubmitOnboardingData;
 import com.booquest.booquest_api.application.port.out.onboarding.OnboardingProfileRepository;
+import com.booquest.booquest_api.domain.auth.enums.AuthProvider;
 import com.booquest.booquest_api.domain.onboarding.model.OnboardingProfile;
 import com.booquest.booquest_api.domain.user.model.User;
 import java.util.List;
@@ -59,9 +60,9 @@ class OnboardingServiceIntegrationTest {
 
     @BeforeEach
     void setUpUser() {
-        userId = userRepository.findUserIdByProviderUserId(providerUserId).orElseGet(() -> {
+        userId = userRepository.findIdByProviderAndProviderUserId(AuthProvider.KAKAO, providerUserId).orElseGet(() -> {
             User user = User.builder()
-                    .provider("kakao")
+                    .provider(AuthProvider.KAKAO)
                     .providerUserId(providerUserId)
                     .email("t@example.com")
                     .nickname("tester")

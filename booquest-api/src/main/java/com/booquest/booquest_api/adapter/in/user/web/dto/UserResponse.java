@@ -1,6 +1,7 @@
 package com.booquest.booquest_api.adapter.in.user.web.dto;
 
 import com.booquest.booquest_api.adapter.in.onboarding.web.dto.OnboardingProgressInfo;
+import com.booquest.booquest_api.domain.auth.enums.AuthProvider;
 import com.booquest.booquest_api.domain.user.model.User;
 import lombok.Builder;
 import lombok.Getter;
@@ -9,7 +10,7 @@ import lombok.Getter;
 @Builder
 public class UserResponse {
     private Long id;
-    private String provider;
+    private AuthProvider provider;
     private String providerUserId;
     private String email;
     private String nickname;
