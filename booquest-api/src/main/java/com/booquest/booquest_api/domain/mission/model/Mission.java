@@ -9,7 +9,9 @@ import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @AllArgsConstructor
@@ -45,8 +47,8 @@ public class Mission extends AuditableEntity {
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "mission_id")
-    @OrderColumn(name = "seq")
-    private List<MissionStep> steps = new ArrayList<>();
+    @OrderBy("seq ASC")
+    private Set<MissionStep> steps = new LinkedHashSet<>();
 
     public void updateTitleAndNotes(String title, String notes) {
         this.title = title;

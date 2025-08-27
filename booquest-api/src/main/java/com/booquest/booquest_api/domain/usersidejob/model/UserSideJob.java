@@ -10,7 +10,9 @@ import org.hibernate.type.SqlTypes;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @AllArgsConstructor
@@ -47,6 +49,6 @@ public class UserSideJob extends AuditableEntity {
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "sidejob_id")  // Mission 테이블의 FK 컬럼 이름
-    @OrderColumn(name="order_no")
-    private List<Mission> missions = new ArrayList<>();
+    @OrderBy("orderNo ASC")
+    private Set<Mission> missions = new LinkedHashSet<>();
 }
