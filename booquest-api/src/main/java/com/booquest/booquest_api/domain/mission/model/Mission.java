@@ -45,7 +45,7 @@ public class Mission extends AuditableEntity {
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "mission_id")
-    @OrderBy("seq ASC")
+    @OrderColumn(name = "seq")
     private List<MissionStep> steps = new ArrayList<>();
 
     public void updateTitleAndNotes(String title, String notes) {
