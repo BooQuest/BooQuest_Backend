@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -29,7 +30,7 @@ public class GetIncomeListService implements GetIncomeListUseCase {
         List<Income> incomes = getIncomes(userId, userSideJobId);
         Totals totals = getTotals(userId, userSideJobId);
 
-        List<IncomeResponse> mappedIncomes = mapToResponses(incomes);
+        List<IncomeResponse> mappedIncomes = mapToResponsesWithCumulativeAmount(incomes, totals.amount());
         return buildResponse(mappedIncomes, totals);
     }
 
@@ -61,10 +62,15 @@ public class GetIncomeListService implements GetIncomeListUseCase {
     private static Long defaultZero(Long v) { return v != null ? v : 0L; }
     private record Totals(Long amount, Long count) {}
 
-    private List<IncomeResponse> mapToResponses(List<Income> incomes) {
-        return incomes.stream()
-                .map(IncomeResponse::toResponse)
-                .toList();
+    private List<IncomeResponse> mapToResponsesWithCumulativeAmount(List<Income> incomes, long totalAmount) {
+        long running = totalAmount;
+        List<IncomeResponse> result = new ArrayList<>(incomes.size());
+        for (Income income : incomes) {
+            result.add(IncomeResponse.toResponseWithCumulativeAmount(income, running));
+            int amt = income.getAmount() == null ? 0 : income.getAmount();
+            running -= amt;
+        }
+        return result;
     }
 
     private IncomeListResponse buildResponse(List<IncomeResponse> incomes, Totals totals) {
