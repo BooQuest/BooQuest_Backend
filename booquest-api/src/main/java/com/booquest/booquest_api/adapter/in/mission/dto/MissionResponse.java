@@ -9,6 +9,7 @@ import lombok.Getter;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Getter
@@ -46,7 +47,7 @@ public class MissionResponse {
     }
 
     private static MissionStepProgressResponse calculateProgress(Mission mission) {
-        List<MissionStep> steps = mission.getSteps();
+        Set<MissionStep> steps = mission.getSteps();
 
         int total = steps.size();
         long done = steps.stream().filter(MissionStep::isCompleted).count();
