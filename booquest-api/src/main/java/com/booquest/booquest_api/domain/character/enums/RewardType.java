@@ -1,5 +1,5 @@
 package com.booquest.booquest_api.domain.character.enums;
 
 public enum RewardType {
-    STEP_COMPLETED, STEP_MARKED_INCOMPLETE, NONE
+    STEP_COMPLETED, STEP_MARKED_INCOMPLETE, PROOF_VERIFIED, AD_WATCHED, NONE
 }
