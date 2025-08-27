@@ -4,7 +4,6 @@ import com.booquest.booquest_api.adapter.in.missionstep.dto.MissionStepGenerateR
 import com.booquest.booquest_api.adapter.in.missionstep.dto.MissionStepResponseDto;
 import com.booquest.booquest_api.adapter.in.missionstep.dto.MissionStepUpdateStatusRequest;
 import com.booquest.booquest_api.adapter.in.missionstep.dto.MissionStepUpdateStatusResponse;
-import com.booquest.booquest_api.application.port.in.missionstep.GenerateMissionStepUseCase;
 import com.booquest.booquest_api.application.port.in.missionstep.SelectMissionStepUseCase;
 import com.booquest.booquest_api.common.response.ApiResponse;
 import com.booquest.booquest_api.application.port.in.missionstep.UpdateMissionStepStatusUseCase;
@@ -14,7 +13,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import com.booquest.booquest_api.domain.missionstep.model.MissionStep;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;

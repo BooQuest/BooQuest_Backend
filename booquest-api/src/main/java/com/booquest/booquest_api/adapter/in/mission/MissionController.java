@@ -7,13 +7,11 @@ import com.booquest.booquest_api.adapter.in.mission.dto.MissionProgressResponseD
 import com.booquest.booquest_api.adapter.in.mission.dto.MissionResponseDto;
 import com.booquest.booquest_api.application.port.in.mission.GetMissionListUseCase;
 import com.booquest.booquest_api.adapter.in.mission.dto.MissionResponse;
-import com.booquest.booquest_api.application.port.in.mission.GenerateMissionUseCase;
 import com.booquest.booquest_api.application.port.in.mission.GetMissionProgressUseCase;
 import com.booquest.booquest_api.application.port.in.mission.SelectMissionUseCase;
 import com.booquest.booquest_api.application.port.in.mission.StartMissionUseCase;
 import com.booquest.booquest_api.common.response.ApiResponse;
 import com.booquest.booquest_api.common.util.JsonMapperUtils;
-import com.booquest.booquest_api.domain.mission.model.Mission;
 import com.booquest.booquest_api.domain.mission.enums.MissionStatus;
 import com.fasterxml.jackson.core.type.TypeReference;
 import io.swagger.v3.oas.annotations.Operation;
