@@ -12,35 +12,35 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class TokenRepositoryAdapter implements TokenRepositoryPort {
 
-    private final TokenRepository tokenJpaRepository;
+    private final TokenRepository tokenRepository;
 
     @Override
     public Token save(Token token) {
-        return tokenJpaRepository.save(token);
+        return tokenRepository.save(token);
     }
 
     @Override
     public Optional<Token> findByRefreshTokenHash(String refreshTokenHash) {
-        return tokenJpaRepository.findByRefreshToken(refreshTokenHash);
+        return tokenRepository.findByRefreshToken(refreshTokenHash);
     }
 
     @Override
     public Optional<Token> findByUserId(Long userId) {
-        return tokenJpaRepository.findByUserId(userId);
+        return tokenRepository.findByUserId(userId);
     }
 
     @Override
     public long deleteByUserId(Long userId) {
-        return tokenJpaRepository.deleteByUserId(userId);
+        return tokenRepository.deleteByUserId(userId);
     }
 
     @Override
     public int deleteByRefreshTokenHash(String refreshTokenHash) {
-        return tokenJpaRepository.deleteByRefreshToken(refreshTokenHash);
+        return tokenRepository.deleteByRefreshToken(refreshTokenHash);
     }
 
     @Override
     public int upsertByUserId(Long userId, String refreshTokenHash, LocalDateTime expiresAt) {
-        return tokenJpaRepository.upsertByUserId(userId, refreshTokenHash, java.sql.Timestamp.valueOf(expiresAt));
+        return tokenRepository.upsertByUserId(userId, refreshTokenHash, java.sql.Timestamp.valueOf(expiresAt));
     }
 }
