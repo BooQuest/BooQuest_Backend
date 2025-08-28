@@ -49,7 +49,7 @@ public class GetUserSideJobProgressService implements GetUserSideJobProgressUseC
                 : missionStepRepository.findStepsByMissionIds(missionIds);
 
         Map<Long, List<MissionStep>> stepsByMission =
-                allSteps.stream().collect(Collectors.groupingBy(MissionStep::getMissionId));
+                allSteps.stream().collect(Collectors.groupingBy(missionStep -> missionStep.getMission().getId()));
 
         // 3. 부업 전체 진행률 계산
         // - 미션 균등 가중치: 각 미션 가중치 = 100 / M

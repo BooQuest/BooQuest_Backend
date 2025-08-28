@@ -45,16 +45,16 @@ public interface MissionStepRepository extends JpaRepository<MissionStep, Long> 
     @Query("""
         select count(ms)
         from MissionStep ms
-        join Mission m on m.id = ms.missionId
+        join Mission m on m.id = ms.mission.id
         where ms.status = :status
           and m.userId = :userId
-          and m.sideJobId = :userSideJobId
+          and m.sideJob.id = :userSideJobId
     """)
     long countCompletedByUserAndSideJob(@Param("userId") Long userId,
                                         @Param("userSideJobId") Long userSideJobId,
                                         @Param("status") StepStatus status);
 
-    @Query("select s from MissionStep s where s.missionId in :missionIds")
+    @Query("select s from MissionStep s where s.mission.id in :missionIds")
     List<MissionStep> findStepsByMissionIds(Collection<Long> missionIds);
 
     @Modifying(clearAutomatically = true, flushAutomatically = true)

@@ -28,7 +28,7 @@ public class UpdateMissionStepStatusService implements UpdateMissionStepStatusUs
     @Transactional
     public MissionStepUpdateStatusResponse updateStatus(Long stepId, Long userId, StepStatus newStatus) {
         MissionStep step = getMissionStep(stepId);
-        Mission mission = getMission(step.getMissionId());
+        Mission mission = getMission(step.getMission().getId());
         checkUserPermission(mission, userId);
 
         StepStatus oldStatus = step.getStatus();

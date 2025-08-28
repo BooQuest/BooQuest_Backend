@@ -28,10 +28,10 @@ public interface MissionRepository extends JpaRepository<Mission, Long> {
 
     List<Mission> findByUserIdAndSideJobIdOrderByOrderNo(Long userId, Long sideJobId);
 
-    @Query("SELECT DISTINCT m FROM Mission m LEFT JOIN FETCH m.steps s WHERE m.userId = :userId ORDER BY m.sideJobId ASC, m.orderNo ASC, s.seq ASC, m.id ASC")
+    @Query("SELECT DISTINCT m FROM Mission m LEFT JOIN FETCH m.steps s WHERE m.userId = :userId ORDER BY m.sideJob.id ASC, m.orderNo ASC, s.seq ASC, m.id ASC")
     List<Mission> findByUserIdWithSteps(@Param("userId") Long userId);
 
-    @Query("SELECT DISTINCT m FROM Mission m LEFT JOIN FETCH m.steps s WHERE m.userId = :userId AND m.status = :status ORDER BY m.sideJobId ASC, m.orderNo ASC, s.seq ASC, m.id ASC")
+    @Query("SELECT DISTINCT m FROM Mission m LEFT JOIN FETCH m.steps s WHERE m.userId = :userId AND m.status = :status ORDER BY m.sideJob.id ASC, m.orderNo ASC, s.seq ASC, m.id ASC")
     List<Mission> findByUserIdAndStatusWithSteps(@Param("userId") Long userId, @Param("status") MissionStatus status);
 
     @Query("""
@@ -40,8 +40,8 @@ public interface MissionRepository extends JpaRepository<Mission, Long> {
     left join fetch m.steps s
     where m.userId = :userId
       and m.status   = coalesce(:status, m.status)
-      and m.sideJobId = coalesce(:sideJobId, m.sideJobId)
-    order by m.sideJobId asc, m.orderNo asc, s.seq asc, m.id asc
+      and m.sideJob.id = coalesce(:sideJobId, m.sideJob.id)
+    order by m.sideJob.id asc, m.orderNo asc, s.seq asc, m.id asc
     """)
     List<Mission> findListWithOptionalFilters(
             @Param("userId") Long userId,
@@ -51,7 +51,7 @@ public interface MissionRepository extends JpaRepository<Mission, Long> {
 
     List<Mission> findByUserIdAndSideJobId(long userId, long sideJobId);
 
-    @Query("select m from Mission m where m.sideJobId = :sid order by m.orderNo asc")
+    @Query("select m from Mission m where m.sideJob.id = :sid order by m.orderNo asc")
     List<Mission> findMissionsBySideJobId(Long sid);
 
     @Modifying(clearAutomatically = true, flushAutomatically = true)

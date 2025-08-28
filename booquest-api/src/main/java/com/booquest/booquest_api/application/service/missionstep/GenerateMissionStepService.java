@@ -2,8 +2,10 @@ package com.booquest.booquest_api.application.service.missionstep;
 
 import com.booquest.booquest_api.adapter.in.missionstep.dto.MissionStepGenerateRequestDto;
 import com.booquest.booquest_api.application.port.in.missionstep.GenerateMissionStepUseCase;
+import com.booquest.booquest_api.application.port.out.mission.MissionRepositoryPort;
 import com.booquest.booquest_api.application.port.out.missionstep.GenerateMissionStepPort;
 import com.booquest.booquest_api.application.port.out.missionstep.MissionStepRepositoryPort;
+import com.booquest.booquest_api.domain.mission.model.Mission;
 import com.booquest.booquest_api.domain.missionstep.model.MissionStep;
 import com.booquest.booquest_api.domain.missionstep.model.MissionStep;
 import com.booquest.booquest_api.domain.missionstep.enums.StepStatus;
@@ -21,14 +23,16 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class GenerateMissionStepService implements GenerateMissionStepUseCase {
-     private final MissionStepRepositoryPort missionStepRepository;
+    private final MissionStepRepositoryPort missionStepRepository;
     private final GenerateMissionStepPort missionGenerator;
+    private final MissionRepositoryPort missionRepositoryPort;
 
     @Transactional
     @Override
     public List<MissionStep> generateMissionStep(MissionStepGenerateRequestDto generateDto) {
-        ObjectMapper mapper = new ObjectMapper();
         var missionId = generateDto.missionId();
+        Mission mission = missionRepositoryPort.findById(missionId)
+                .orElseThrow(() -> new IllegalArgumentException("미션이 존재하지 않습니다"));
 
         //  ai 서버로 미션생성 요청
         var result = missionGenerator.generateMissionStep(generateDto);
@@ -47,7 +51,7 @@ public class GenerateMissionStepService implements GenerateMissionStepUseCase {
                         return existing;
                     } else {
                         return MissionStep.builder()
-                                .missionId(missionId)
+                                .mission(mission)
                                 .title(t.title())
                                 .status(StepStatus.PLANNED)
                                 .seq(t.seq())
