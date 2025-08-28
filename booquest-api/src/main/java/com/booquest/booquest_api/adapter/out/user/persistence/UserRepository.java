@@ -1,4 +1,4 @@
-package com.booquest.booquest_api.adapter.out.auth.persistence.jpa;
+package com.booquest.booquest_api.adapter.out.user.persistence;
 
 import com.booquest.booquest_api.domain.auth.enums.AuthProvider;
 import com.booquest.booquest_api.domain.user.model.User;

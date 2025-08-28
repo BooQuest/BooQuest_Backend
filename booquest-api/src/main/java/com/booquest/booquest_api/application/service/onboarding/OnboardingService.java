@@ -4,7 +4,7 @@ import com.booquest.booquest_api.application.port.in.dto.SubmitOnboardingData;
 import com.booquest.booquest_api.application.port.in.onboarding.SubmitOnboardingUseCase;
 import com.booquest.booquest_api.application.port.out.onboarding.OnboardingCategoryRepository;
 import com.booquest.booquest_api.application.port.out.onboarding.OnboardingProfileRepository;
-import com.booquest.booquest_api.adapter.out.auth.persistence.jpa.UserRepository;
+import com.booquest.booquest_api.adapter.out.user.persistence.UserRepository;
 import com.booquest.booquest_api.domain.onboarding.enums.ExpressionStyle;
 import com.booquest.booquest_api.domain.onboarding.enums.StrengthType;
 import com.booquest.booquest_api.domain.onboarding.enums.SubCategoryType;
