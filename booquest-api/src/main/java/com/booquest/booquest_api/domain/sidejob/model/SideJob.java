@@ -44,8 +44,7 @@ public class SideJob extends AuditableEntity {
     @Column(name = "ended_at")
     private LocalDateTime endedAt;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "sidejob_id")  // Mission 테이블의 FK 컬럼 이름
+    @OneToMany(mappedBy = "sideJob", cascade = CascadeType.ALL, orphanRemoval = true)
     @OrderBy("orderNo ASC")
     private Set<Mission> missions = new LinkedHashSet<>();
 }

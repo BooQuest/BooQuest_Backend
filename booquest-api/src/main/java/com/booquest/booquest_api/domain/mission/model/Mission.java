@@ -3,6 +3,7 @@ package com.booquest.booquest_api.domain.mission.model;
 import com.booquest.booquest_api.common.entity.AuditableEntity;
 import com.booquest.booquest_api.domain.mission.enums.MissionStatus;
 import com.booquest.booquest_api.domain.missionstep.model.MissionStep;
+import com.booquest.booquest_api.domain.sidejob.model.SideJob;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.JdbcTypeCode;
@@ -26,9 +27,6 @@ public class Mission extends AuditableEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "sidejob_id", nullable = false)
-    private Long sideJobId;
-
     @Column(name = "user_id", nullable = false)
     private Long userId;
 
@@ -45,10 +43,13 @@ public class Mission extends AuditableEntity {
     @Column(name = "design_notes", columnDefinition = "TEXT")
     private String designNotes;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "mission_id")
+    @OneToMany(mappedBy = "mission", cascade = CascadeType.ALL, orphanRemoval = true)
     @OrderBy("seq ASC")
     private Set<MissionStep> steps = new LinkedHashSet<>();
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "sidejob_id")
+    private SideJob sideJob;
 
     public void updateTitleAndNotes(String title, String notes) {
         this.title = title;
