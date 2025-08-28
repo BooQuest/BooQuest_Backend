@@ -58,6 +58,6 @@ public interface MissionStepRepository extends JpaRepository<MissionStep, Long> 
     List<MissionStep> findStepsByMissionIds(Collection<Long> missionIds);
 
     @Modifying(clearAutomatically = true, flushAutomatically = true)
-    @Query("delete from MissionStep s where s.missionId in ( select m.id from Mission m where m.userId = :userId )")
+    @Query("delete from MissionStep s where s.mission.id in ( select m.id from Mission m where m.userId = :userId )")
     int deleteByUserId(@Param("userId") Long userId);
 }
