@@ -61,7 +61,7 @@ public class UserController {
     @Operation(summary = "탈퇴 (사용자 계정 삭제)", description = "로그인한 사용자의 계정과 모든 관련 데이터를 삭제합니다. </br>" +
             "- 삭제 대상: user_side_jobs, side_jobs, tokens, income, proofs, ad_views, missions, mission_steps, onboarding_categories, onboarding_profiles, step_progress, user_characters, user_stats, users 테이블의 사용자 연계 데이터 전부 </br>" +
             "- 액세스 토큰은 만료까지 유효하므로, 프론트에서 즉시 토큰/로컬데이터를 삭제하세요.")
-    public ApiResponse<DeleteAccountResponse> deleteMe() {
+    public ApiResponse<DeleteAccountResponse> deleteUser() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         Long userId = Long.parseLong(auth.getName());
 

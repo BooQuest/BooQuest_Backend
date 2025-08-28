@@ -48,11 +48,11 @@ public class DeleteAccountService implements DeleteAccountUseCase {
 
     @Override
     public DeleteAccountResponse deleteUserCompletely(Long userId) {
-        // 0) 존재/권한 체크(필요 시)
+        // 0) 존재/권한 체크
         userQueryPort.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException("User not found: " + userId));
 
-        // (선택) proofs가 외부 스토리지(S3)에 파일을 가지고 있으면 먼저 object 삭제
+        // proofs가 외부 스토리지(S3)에 파일을 가지고 있으면 먼저 object 삭제
         // StoragePort.deleteAllForUser(userId);
 
         // 0) step_progress
@@ -79,10 +79,6 @@ public class DeleteAccountService implements DeleteAccountUseCase {
         // 5) 캐릭터/통계
         long deletedUserCharacters = characterCommandPort.deleteByUserId(userId);
         long deletedUserStats = userStatRepositoryPort.deleteByUserId(userId);
-
-//        if(true) {
-//            throw new RuntimeException("FORCED_FAIL_FOR_ROLLBACK_TEST");
-//        }
 
         boolean userDeleted = userCommandPort.deleteById(userId) > 0;
 
