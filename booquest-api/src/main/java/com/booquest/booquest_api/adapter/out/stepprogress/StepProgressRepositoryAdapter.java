@@ -1,4 +1,4 @@
-package com.booquest.booquest_api.adapter.out.auth.stepprogress;
+package com.booquest.booquest_api.adapter.out.stepprogress;
 
 import com.booquest.booquest_api.application.port.out.stepprogress.StepProgressRepositoryPort;
 import lombok.RequiredArgsConstructor;

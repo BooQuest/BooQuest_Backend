@@ -1,4 +1,4 @@
-package com.booquest.booquest_api.adapter.out.auth.stepprogress;
+package com.booquest.booquest_api.adapter.out.stepprogress;
 
 import com.booquest.booquest_api.domain.missionstep.model.StepProgress;
 import org.springframework.data.jpa.repository.JpaRepository;

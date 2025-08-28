@@ -1,4 +1,4 @@
-package com.booquest.booquest_api.adapter.out.auth.userstat;
+package com.booquest.booquest_api.adapter.out.userstat;
 
 import com.booquest.booquest_api.domain.user.model.UserStat;
 import org.springframework.data.jpa.repository.JpaRepository;
