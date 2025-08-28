@@ -2,8 +2,8 @@ package com.booquest.booquest_api.config;
 
 import com.booquest.booquest_api.adapter.in.auth.JwtAuthFilter;
 import com.booquest.booquest_api.application.port.out.auth.JwtTokenPort;
-import com.booquest.booquest_api.adapter.out.auth.persistence.TokenRepository;
 import com.booquest.booquest_api.application.port.in.auth.TokenUseCase;
+import com.booquest.booquest_api.application.port.out.auth.TokenRepositoryPort;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -19,8 +19,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     @Bean
-    SecurityFilterChain filterChain(HttpSecurity http, JwtTokenPort jwtTokenPort, 
-                                   TokenRepository tokenRepository, TokenUseCase tokenUseCase) throws Exception {
+    SecurityFilterChain filterChain(HttpSecurity http, JwtTokenPort jwtTokenPort,
+                                    TokenRepositoryPort tokenRepositoryPort, TokenUseCase tokenUseCase) throws Exception {
         http
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
