@@ -7,6 +7,7 @@ import com.booquest.booquest_api.application.port.in.character.CreateCharacterUs
 import com.booquest.booquest_api.application.port.in.dto.GenerateSideJobRequest;
 import com.booquest.booquest_api.application.port.in.dto.SubmitOnboardingData;
 import com.booquest.booquest_api.application.port.in.onboarding.SubmitOnboardingUseCase;
+import com.booquest.booquest_api.application.port.in.sidejob.DeleteSideJobUseCase;
 import com.booquest.booquest_api.application.port.in.sidejob.GenerateSideJobUseCase;
 import com.booquest.booquest_api.application.port.in.sidejob.SelectSideJobUseCase;
 import com.booquest.booquest_api.application.port.in.user.UpdateUserProfileUseCase;
@@ -44,6 +45,7 @@ public class OnboardingController {
     private final UpdateUserProfileUseCase updateUserProfileUseCase;
     private final CreateCharacterUseCase createCharacterUseCase;
     private final SelectSideJobUseCase selectSideJobUseCase;
+    private final DeleteSideJobUseCase deleteSideJobUseCase;
 
     @PostMapping
     @Operation(summary = "온보딩 및 부업 생성", description = "온보딩 데이터를 저장하고 닉네임 및 캐릭터를 설정한 뒤 AI로 부업 후보를 생성합니다.")
@@ -55,6 +57,8 @@ public class OnboardingController {
 
         CharacterType characterType = CharacterType.from(request.characterType());
         createCharacterUseCase.createCharacter(request.userId(), characterType);
+
+        deleteSideJobUseCase.deleteAllSideJob(request.userId());
 
         String raw = webClient.post()                                   // POST로 호출해야 해서 필요
                 .uri("/ai/generate-side-job")                           // 호출할 AI 경로 지정 — 필요
