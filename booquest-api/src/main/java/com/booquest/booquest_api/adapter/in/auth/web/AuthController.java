@@ -1,8 +1,10 @@
 package com.booquest.booquest_api.adapter.in.auth.web;
 
+import com.booquest.booquest_api.adapter.in.auth.web.dto.LogoutResponse;
 import com.booquest.booquest_api.adapter.in.auth.web.dto.SocialLoginRequest;
 import com.booquest.booquest_api.adapter.in.auth.web.dto.SocialLoginResponse;
 import com.booquest.booquest_api.adapter.in.onboarding.web.dto.OnboardingProgressInfo;
+import com.booquest.booquest_api.application.port.in.auth.LogoutUseCase;
 import com.booquest.booquest_api.application.port.in.auth.SocialLoginUseCase;
 import com.booquest.booquest_api.application.port.in.auth.TokenUseCase;
 import com.booquest.booquest_api.adapter.in.auth.web.token.dto.TokenRefreshResponse;
@@ -12,6 +14,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -23,6 +27,7 @@ public class AuthController {
     private final SocialLoginUseCase socialLoginUseCase;
     private final TokenUseCase tokenUseCase;
     private final CheckSideJobStatusUseCase checkSideJobStatusUseCase;
+    private final LogoutUseCase logoutUseCase;
 
     @PostMapping("/login")
     @Operation(summary = "소셜 로그인", description = "소셜 액세스 토큰을 검증하고 서비스 토큰을 발급합니다. 사용자 정보와 온보딩 진행 상태를 반환합니다.")
@@ -47,4 +52,22 @@ public class AuthController {
         TokenRefreshResponse response = tokenUseCase.refreshAccessToken(refreshToken);
         return ApiResponse.success("토큰이 갱신되었습니다.", response);
     }
+
+    @PostMapping("/logout")
+    @Operation(summary = "로그아웃", description = "현재 세션의 리프레시 토큰을 무효화합니다. <br/>" +
+            "리프레시 토큰은 X-Refresh-Token 헤더로 전달 가능합니다.")
+    public ApiResponse<LogoutResponse> logoutCurrent(@RequestHeader(value = "X-Refresh-Token") String refreshToken) {
+        LogoutResponse response = logoutUseCase.logoutCurrentSession(refreshToken);
+        return ApiResponse.success("로그아웃되었습니다.", response);
+    }
+
+//    @PostMapping("/logout/all")
+//    @Operation(summary = "모든 기기에서 로그아웃", description = "해당 계정의 모든 리프레시 토큰을 무효화합니다.")
+//    public ApiResponse<LogoutResponse> logoutAll() {
+//        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+//        Long userId = Long.parseLong(auth.getName());
+//
+//        LogoutResponse response = logoutUseCase.logoutAllDevices(userId);
+//        return ApiResponse.success("모든 기기에서 로그아웃되었습니다.", response);
+//    }
 }

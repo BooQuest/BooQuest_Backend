@@ -14,7 +14,7 @@ public interface TokenRepositoryPort {
 
     long deleteByUserId(Long userId);
 
-    void deleteByRefreshTokenHash(String refreshTokenHash);
+    int deleteByRefreshTokenHash(String refreshTokenHash);
 
     int upsertByUserId(Long userId, String refreshTokenHash, LocalDateTime expiresAt);
 }
