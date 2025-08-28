@@ -4,6 +4,7 @@ import com.booquest.booquest_api.application.port.in.auth.TokenUseCase;
 import com.booquest.booquest_api.application.port.out.auth.JwtTokenPort;
 import com.booquest.booquest_api.adapter.in.auth.web.token.dto.TokenInfo;
 import com.booquest.booquest_api.adapter.in.auth.web.token.dto.TokenRefreshResponse;
+import com.booquest.booquest_api.application.port.out.auth.TokenHashingPort;
 import com.booquest.booquest_api.application.port.out.auth.TokenRepositoryPort;
 import com.booquest.booquest_api.application.port.out.user.UserQueryPort;
 import com.booquest.booquest_api.common.exception.TokenException;
@@ -23,6 +24,7 @@ import java.util.Date;
 @Transactional
 public class TokenService implements TokenUseCase {
     private final JwtTokenPort jwtTokenPort;
+    private final TokenHashingPort tokenHashingPort;
     private final TokenRepositoryPort tokenRepositoryPort;
     private final UserQueryPort userQueryPort;
 
@@ -36,7 +38,7 @@ public class TokenService implements TokenUseCase {
     public TokenInfo issueToken(User user) {
         TokenInfo tokenInfo = jwtTokenPort.generateToken(user.getId(), user.getEmail());
 
-        String newRefreshTokenHash = sha256Base64(tokenInfo.getRefreshToken());
+        String newRefreshTokenHash = tokenHashingPort.sha256Base64(tokenInfo.getRefreshToken());
 
         long refreshTtlMs = refreshTokenExpiration * 1000L;
         LocalDateTime expiresAt = LocalDateTime.ofInstant(
@@ -56,7 +58,7 @@ public class TokenService implements TokenUseCase {
 
     @Override
     public TokenRefreshResponse refreshAccessToken(String refreshToken) {
-        String refreshTokenHash = sha256Base64(refreshToken);
+        String refreshTokenHash = tokenHashingPort.sha256Base64(refreshToken);
         Token token = tokenRepositoryPort.findByRefreshTokenHash(refreshTokenHash)
                 .orElseThrow(() -> new TokenException("Invalid refresh token"));
 
@@ -70,7 +72,7 @@ public class TokenService implements TokenUseCase {
         var newToken = jwtTokenPort.generateToken(token.getUserId(), user.getEmail());
         String newAccessToken = newToken.getAccessToken();
         String newRefreshToken = newToken.getRefreshToken();
-        String newRefreshTokenHash = sha256Base64(newRefreshToken);
+        String newRefreshTokenHash = tokenHashingPort.sha256Base64(newRefreshToken);
 
         long refreshTtlMs = refreshTokenExpiration * 1000L;
         LocalDateTime newRefreshExpiresAt = LocalDateTime.ofInstant(
@@ -87,12 +89,5 @@ public class TokenService implements TokenUseCase {
                 .tokenType("Bearer")
                 .expiresIn(accessTokenExpiration)
                 .build();
-    }
-
-    private static String sha256Base64(String s) {
-        try {
-            var md = java.security.MessageDigest.getInstance("SHA-256");
-            return java.util.Base64.getEncoder().encodeToString(md.digest(s.getBytes(java.nio.charset.StandardCharsets.UTF_8)));
-        } catch (Exception e) { throw new RuntimeException(e); }
     }
 }
