@@ -13,4 +13,6 @@ public interface UserSideJobRepositoryPort {
     boolean existsByIdAndUserId(Long userSideJobId, Long userId);
 
     Optional<UserSideJob> findLatestSideJobForStatus(Long userId);
+
+    long deleteByUserId(Long userId);
 }

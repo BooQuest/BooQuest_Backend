@@ -4,6 +4,7 @@ package com.booquest.booquest_api.adapter.out.missionstep.persisitence;
 import com.booquest.booquest_api.domain.missionstep.enums.StepStatus;
 import com.booquest.booquest_api.domain.missionstep.model.MissionStep;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -55,4 +56,8 @@ public interface MissionStepRepository extends JpaRepository<MissionStep, Long> 
 
     @Query("select s from MissionStep s where s.missionId in :missionIds")
     List<MissionStep> findStepsByMissionIds(Collection<Long> missionIds);
+
+    @Modifying(clearAutomatically = true, flushAutomatically = true)
+    @Query("delete from MissionStep s where s.missionId in ( select m.id from Mission m where m.userId = :userId )")
+    int deleteByUserId(@Param("userId") Long userId);
 }

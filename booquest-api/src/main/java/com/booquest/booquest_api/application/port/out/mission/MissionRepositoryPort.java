@@ -27,4 +27,5 @@ public interface MissionRepositoryPort {
 
     List<Mission> findListWithOptionalFilters(Long userId, Long sideJobId, MissionStatus status);
 
+    long deleteByUserId(Long userId);
 }

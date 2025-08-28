@@ -8,4 +8,5 @@ public interface ProofRepositoryPort {
     Proof save(Proof proof);
     Optional<Proof> findByUserIdAndStepId(Long userId, Long stepId);
     boolean existsByUserIdAndStepId(Long userId, Long stepId);
+    long deleteByUserId(Long userId);
 }

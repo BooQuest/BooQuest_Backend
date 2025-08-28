@@ -38,4 +38,6 @@ public interface SideJobRepository extends JpaRepository<SideJob, Long> {
 
     @Query(value = "SELECT id FROM side_jobs WHERE user_id = :userId AND is_selected = true ORDER BY updated_at DESC, id DESC LIMIT 1", nativeQuery = true)
     Optional<Long> findTopSelectedSideJobId(Long userId);
+
+    long deleteByUserId(Long userId);
 }

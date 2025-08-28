@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface AdViewJpaRepository extends JpaRepository<AdView, Long> {
+    long deleteByUserId(Long userId);
 }

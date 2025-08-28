@@ -22,4 +22,9 @@ public class IncomeRepositoryAdapter implements IncomeRepositoryPort {
     public LocalDate findFirstIncomeDate(Long userId, Long userSideJobId) {
         return incomeRepository.findFirstIncomeDate(userId, userSideJobId);
     }
+
+    @Override
+    public long deleteByUserId(Long userId) {
+        return incomeRepository.deleteByUserId(userId);
+    }
 }

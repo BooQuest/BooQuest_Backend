@@ -4,7 +4,7 @@ import com.booquest.booquest_api.adapter.in.income.web.dto.CreateIncomeRequest;
 import com.booquest.booquest_api.adapter.in.income.web.dto.IncomeResponse;
 import com.booquest.booquest_api.application.port.in.income.CreateIncomeUseCase;
 import com.booquest.booquest_api.domain.user.model.User;
-import com.booquest.booquest_api.adapter.out.auth.persistence.jpa.UserRepository;
+import com.booquest.booquest_api.adapter.out.user.persistence.UserRepository;
 import com.booquest.booquest_api.domain.income.model.Income;
 import com.booquest.booquest_api.adapter.out.income.persistence.IncomeRepository;
 import com.booquest.booquest_api.domain.usersidejob.model.UserSideJob;

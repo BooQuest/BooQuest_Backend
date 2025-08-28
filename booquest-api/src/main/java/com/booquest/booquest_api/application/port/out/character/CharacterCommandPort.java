@@ -7,4 +7,6 @@ public interface CharacterCommandPort {
     UserCharacter save(UserCharacter userCharacter);
 
     Optional<UserCharacter> findByUserId(Long userId);
+
+    long deleteByUserId(Long userId);
 }

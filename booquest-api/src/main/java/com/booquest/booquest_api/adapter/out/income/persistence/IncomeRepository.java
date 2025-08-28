@@ -2,6 +2,7 @@ package com.booquest.booquest_api.adapter.out.income.persistence;
 
 import com.booquest.booquest_api.domain.income.model.Income;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -46,4 +47,8 @@ public interface IncomeRepository extends JpaRepository<Income, Long> {
     @Query("select min(i.incomeDate) from Income i where i.user.id = :userId and i.userSideJobId = :userSideJobId")
     LocalDate findFirstIncomeDate(@Param("userId") Long userId,
                                               @Param("userSideJobId") Long userSideJobId);
+
+    @Modifying(clearAutomatically = true, flushAutomatically = true)
+    @Query("delete from Income i where i.user.id = :userId")
+    int deleteByUserId(@Param("userId") Long userId);
 }

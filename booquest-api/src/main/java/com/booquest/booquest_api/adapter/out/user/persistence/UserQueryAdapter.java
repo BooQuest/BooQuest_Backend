@@ -1,8 +1,7 @@
-package com.booquest.booquest_api.adapter.out.auth.persistence;
+package com.booquest.booquest_api.adapter.out.user.persistence;
 
 import com.booquest.booquest_api.application.port.out.user.UserCommandPort;
 import com.booquest.booquest_api.application.port.out.user.UserQueryPort;
-import com.booquest.booquest_api.adapter.out.auth.persistence.jpa.UserRepository;
 import com.booquest.booquest_api.domain.auth.enums.AuthProvider;
 import com.booquest.booquest_api.domain.user.model.User;
 import lombok.RequiredArgsConstructor;
@@ -34,5 +33,10 @@ public class UserQueryAdapter implements UserQueryPort, UserCommandPort {
     @Override
     public Optional<User> findById(long id) {
         return userRepository.findById(id);
+    }
+
+    @Override
+    public long deleteById(Long id) {
+        return userRepository.deleteByIdReturningCount(id);
     }
 }

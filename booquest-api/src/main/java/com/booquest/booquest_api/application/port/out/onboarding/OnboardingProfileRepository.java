@@ -8,4 +8,6 @@ public interface OnboardingProfileRepository extends JpaRepository<OnboardingPro
     boolean existsByUserId(Long userId);
 
     Optional<OnboardingProfile> findByUserId(Long userId);
+
+    long deleteByUserId(Long userId);
 }
