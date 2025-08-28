@@ -22,7 +22,7 @@ public interface TokenRepository extends JpaRepository<Token, Long> {
 
     long deleteByUserId(Long userId);
 
-    void deleteByRefreshToken(String refreshToken);
+    int deleteByRefreshToken(String refreshToken);
 
     @Modifying
     @Query(value = """

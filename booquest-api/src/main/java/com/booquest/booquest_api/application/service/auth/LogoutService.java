@@ -16,8 +16,15 @@ public class LogoutService implements LogoutUseCase {
     private final TokenHashingPort tokenHashingPort;
 
     @Override
-    public LogoutResponse logoutCurrentSession(Long userId, String rawRefreshToken) {
-        return null;
+    public LogoutResponse logoutCurrentSession(String refreshToken) {
+        if (refreshToken == null || refreshToken.isBlank()) {
+            throw new IllegalArgumentException("X-Refresh-Token is required");
+        }
+
+        String refreshTokenHash = tokenHashingPort.sha256Base64(refreshToken);
+        int deleted = tokenRepositoryPort.deleteByRefreshTokenHash(refreshTokenHash);
+
+        return new LogoutResponse(true, "current", deleted);
     }
 
     @Override

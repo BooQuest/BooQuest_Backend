@@ -35,8 +35,8 @@ public class TokenRepositoryAdapter implements TokenRepositoryPort {
     }
 
     @Override
-    public void deleteByRefreshTokenHash(String refreshTokenHash) {
-        tokenJpaRepository.deleteByRefreshToken(refreshTokenHash);
+    public int deleteByRefreshTokenHash(String refreshTokenHash) {
+        return tokenJpaRepository.deleteByRefreshToken(refreshTokenHash);
     }
 
     @Override

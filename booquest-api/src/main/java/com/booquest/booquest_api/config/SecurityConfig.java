@@ -25,14 +25,18 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/api/auth/logout/all").authenticated()
                         .requestMatchers(
-                                "/api/auth/**",
+                                "/api/auth/login",
+                                "/api/auth/token/**",
+                                "/api/auth/logout"
+                        ).permitAll()
+                        .requestMatchers(
                                 "/api/dev/**",
                                 "/swagger-ui/**",
                                 "/v3/api-docs/**"
                         ).permitAll()
                         .anyRequest().authenticated()
-//                        .anyRequest().permitAll()
                 )
                 .addFilterBefore(new JwtAuthFilter(jwtTokenPort, tokenUseCase), UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling(ex -> ex
