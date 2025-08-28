@@ -54,7 +54,7 @@ public class AuthController {
     }
 
     @PostMapping("/logout")
-    @Operation(summary = "로그아웃", description = "현재 세션의 리프레시 토큰을 무효화합니다. <br/>" +
+    @Operation(summary = "로그아웃", description = "제출된 리프레시 토큰을 무효화합니다. <br/>" +
             "리프레시 토큰은 X-Refresh-Token 헤더로 전달 가능합니다.")
     public ApiResponse<LogoutResponse> logoutCurrent(@RequestHeader(value = "X-Refresh-Token") String refreshToken) {
         LogoutResponse response = logoutUseCase.logoutCurrentSession(refreshToken);
