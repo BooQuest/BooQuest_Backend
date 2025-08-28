@@ -64,4 +64,9 @@ public class MissionRepositoryAdapter implements MissionRepositoryPort {
     public List<Mission> findListWithOptionalFilters(Long userId, Long sideJobId, MissionStatus status) {
         return missionRepository.findListWithOptionalFilters(userId, sideJobId, status);
     }
+
+    @Override
+    public long deleteByUserId(Long userId) {
+        return (long) missionRepository.deleteByUserId(userId);
+    }
 }

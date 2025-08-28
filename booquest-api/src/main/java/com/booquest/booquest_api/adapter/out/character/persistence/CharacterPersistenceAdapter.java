@@ -22,4 +22,9 @@ public class CharacterPersistenceAdapter implements CharacterCommandPort, Charac
     public Optional<UserCharacter> findByUserId(Long userId) {
         return characterRepository.findById(userId);
     }
+
+    @Override
+    public long deleteByUserId(Long userId) {
+        return characterRepository.deleteByUserId(userId);
+    }
 }

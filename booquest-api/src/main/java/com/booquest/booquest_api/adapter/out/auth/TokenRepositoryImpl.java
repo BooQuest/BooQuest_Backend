@@ -30,8 +30,8 @@ public class TokenRepositoryImpl implements TokenRepository {
     }
 
     @Override
-    public void deleteByUserId(Long userId) {
-        tokenJpaRepository.deleteByUserId(userId);
+    public long deleteByUserId(Long userId) {
+        return tokenJpaRepository.deleteByUserId(userId);
     }
 
     @Override

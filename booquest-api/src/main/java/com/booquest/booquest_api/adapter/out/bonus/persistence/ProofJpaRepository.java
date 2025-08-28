@@ -10,4 +10,5 @@ import java.util.Optional;
 public interface ProofJpaRepository extends JpaRepository<Proof, Long> {
     Optional<Proof> findByUserIdAndStepId(Long userId, Long stepId);
     boolean existsByUserIdAndStepId(Long userId, Long stepId);
+    long deleteByUserId(Long userId);
 }

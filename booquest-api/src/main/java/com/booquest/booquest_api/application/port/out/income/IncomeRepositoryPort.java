@@ -6,4 +6,5 @@ import java.time.LocalDate;
 public interface IncomeRepositoryPort {
     BigDecimal sumByUserAndSideJob(Long userId, Long userSideJobId);
     LocalDate findFirstIncomeDate(Long userId, Long userSideJobId);
+    long deleteByUserId(Long userId);
 }

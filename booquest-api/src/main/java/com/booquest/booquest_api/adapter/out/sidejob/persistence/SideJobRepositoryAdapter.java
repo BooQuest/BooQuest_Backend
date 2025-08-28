@@ -54,4 +54,9 @@ public class SideJobRepositoryAdapter implements SideJobRepositoryPort {
         return sideJobRepository.findTopSelectedSideJobId(userId)
                 .orElse(null);
     }
+
+    @Override
+    public long deleteByUserId(Long userId) {
+        return sideJobRepository.deleteByUserId(userId);
+    }
 }

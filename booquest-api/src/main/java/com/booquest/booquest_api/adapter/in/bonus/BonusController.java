@@ -22,6 +22,7 @@ public class BonusController {
 
     @PostMapping("/{stepId}/proof")
     @Operation(summary = "인증하기", description = "부퀘스트 완료 후 링크/텍스트/사진으로 인증하여 추가 경험치를 받습니다. <br/><br/>" +
+            "proofType: LINK, TEXT, IMAGE <br/><br/>" +
             "data.status 값 <br/>" +
             "- granted: 인증을 완료하고 추가 경험치를 지급 받았습니다. <br/>" +
             "- not-completed: 먼저 해당 스텝을 완료해주세요. <br/>" +

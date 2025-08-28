@@ -13,7 +13,7 @@ import java.util.Optional;
 public interface TokenJpaRepository extends JpaRepository<Token, Long> {
     Optional<Token> findByRefreshToken(String refreshToken);
     Optional<Token> findByUserId(Long userId);
-    void deleteByUserId(Long userId);
+    long deleteByUserId(Long userId);
     void deleteByRefreshToken(String refreshToken);
 
     @Modifying

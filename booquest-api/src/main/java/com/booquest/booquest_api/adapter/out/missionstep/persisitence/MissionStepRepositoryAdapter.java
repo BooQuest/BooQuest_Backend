@@ -45,4 +45,9 @@ public class MissionStepRepositoryAdapter implements MissionStepRepositoryPort {
     public int countCompletedByUserAndSideJob(Long userId, Long userSideJobId) {
         return (int) missionStepRepository.countCompletedByUserAndSideJob(userId, userSideJobId, StepStatus.COMPLETED);
     }
+
+    @Override
+    public long deleteByUserId(Long userId) {
+        return (long) missionStepRepository.deleteByUserId(userId);
+    }
 }

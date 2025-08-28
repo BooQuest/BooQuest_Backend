@@ -19,4 +19,9 @@ public class AdViewRepositoryAdapter implements AdViewRepositoryPort {
     public boolean existsCompletedByUserIdAndStepId(Long userId, Long stepId) {
         return false;
     }
+
+    @Override
+    public long deleteByUserId(Long userId) {
+        return adViewJpaRepository.deleteByUserId(userId);
+    }
 }

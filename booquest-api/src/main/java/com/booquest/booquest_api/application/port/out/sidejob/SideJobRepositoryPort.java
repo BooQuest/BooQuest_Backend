@@ -20,4 +20,6 @@ public interface SideJobRepositoryPort {
     List<SideJob> findTop3ByUserIdOrderByCreatedAtDesc(Long userId);
 
     Long findSelectedSideJobByUserId(Long userId);
+
+    long deleteByUserId(Long userId);
 }

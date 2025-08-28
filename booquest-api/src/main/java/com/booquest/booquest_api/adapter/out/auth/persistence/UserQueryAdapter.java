@@ -35,4 +35,9 @@ public class UserQueryAdapter implements UserQueryPort, UserCommandPort {
     public Optional<User> findById(long id) {
         return userRepository.findById(id);
     }
+
+    @Override
+    public long deleteById(Long id) {
+        return userRepository.deleteByIdReturningCount(id);
+    }
 }

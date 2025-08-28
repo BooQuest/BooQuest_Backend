@@ -37,6 +37,11 @@ public class UserSideJobRepositoryAdapter implements UserSideJobRepositoryPort, 
     }
 
     @Override
+    public long deleteByUserId(Long userId) {
+        return userSideJobRepository.deleteByUserId(userId);
+    }
+
+    @Override
     public int countCompletedSideJobsByUserId(Long userId) {
         return (int) userSideJobRepository.countCompletedByUserId(userId, UserSideJobStatus.COMPLETED);
     }

@@ -14,7 +14,7 @@ public interface TokenRepository {
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     Optional<Token> findByRefreshTokenHash(String refreshTokenHash);
     Optional<Token> findByUserId(Long userId);
-    void deleteByUserId(Long userId);
+    long deleteByUserId(Long userId);
     void deleteByRefreshTokenHash(String refreshTokenHash);
     int upsertByUserId(Long userId, String refreshTokenHash, LocalDateTime expiresAt);
 }
