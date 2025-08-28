@@ -1,7 +1,7 @@
 package com.booquest.booquest_api.application.service.user;
 
 import com.booquest.booquest_api.adapter.in.user.web.dto.DeleteAccountResponse;
-import com.booquest.booquest_api.adapter.out.auth.persistence.jpa.TokenRepository;
+import com.booquest.booquest_api.adapter.out.auth.persistence.TokenRepository;
 import com.booquest.booquest_api.application.port.in.user.DeleteAccountUseCase;
 import com.booquest.booquest_api.application.port.out.bonus.AdViewRepositoryPort;
 import com.booquest.booquest_api.application.port.out.bonus.ProofRepositoryPort;

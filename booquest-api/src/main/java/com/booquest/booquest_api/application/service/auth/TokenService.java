@@ -2,7 +2,7 @@ package com.booquest.booquest_api.application.service.auth;
 
 import com.booquest.booquest_api.application.port.in.auth.TokenUseCase;
 import com.booquest.booquest_api.application.port.out.auth.JwtTokenPort;
-import com.booquest.booquest_api.adapter.out.auth.persistence.jpa.TokenRepository;
+import com.booquest.booquest_api.adapter.out.auth.persistence.TokenRepository;
 import com.booquest.booquest_api.adapter.in.auth.web.token.dto.TokenInfo;
 import com.booquest.booquest_api.adapter.in.auth.web.token.dto.TokenRefreshResponse;
 import com.booquest.booquest_api.application.port.out.user.UserQueryPort;

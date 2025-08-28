@@ -1,4 +1,4 @@
-package com.booquest.booquest_api.adapter.out.auth.persistence.jpa;
+package com.booquest.booquest_api.adapter.out.auth.persistence;
 
 import com.booquest.booquest_api.domain.auth.model.Token;
 import jakarta.persistence.LockModeType;

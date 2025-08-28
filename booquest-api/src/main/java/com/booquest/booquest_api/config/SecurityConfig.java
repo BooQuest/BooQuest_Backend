@@ -2,7 +2,7 @@ package com.booquest.booquest_api.config;
 
 import com.booquest.booquest_api.adapter.in.auth.JwtAuthFilter;
 import com.booquest.booquest_api.application.port.out.auth.JwtTokenPort;
-import com.booquest.booquest_api.adapter.out.auth.persistence.jpa.TokenRepository;
+import com.booquest.booquest_api.adapter.out.auth.persistence.TokenRepository;
 import com.booquest.booquest_api.application.port.in.auth.TokenUseCase;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

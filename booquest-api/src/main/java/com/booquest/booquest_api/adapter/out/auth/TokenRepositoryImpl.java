@@ -1,6 +1,6 @@
 package com.booquest.booquest_api.adapter.out.auth;
 
-import com.booquest.booquest_api.adapter.out.auth.persistence.jpa.TokenRepository;
+import com.booquest.booquest_api.adapter.out.auth.persistence.TokenRepository;
 import com.booquest.booquest_api.domain.auth.model.Token;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
