@@ -1,8 +1,8 @@
 package com.booquest.booquest_api.application.service.user;
 
 import com.booquest.booquest_api.adapter.in.user.web.dto.DeleteAccountResponse;
-import com.booquest.booquest_api.adapter.out.auth.persistence.TokenRepository;
 import com.booquest.booquest_api.application.port.in.user.DeleteAccountUseCase;
+import com.booquest.booquest_api.application.port.out.auth.TokenRepositoryPort;
 import com.booquest.booquest_api.application.port.out.bonus.AdViewRepositoryPort;
 import com.booquest.booquest_api.application.port.out.bonus.ProofRepositoryPort;
 import com.booquest.booquest_api.application.port.out.character.CharacterCommandPort;
@@ -34,8 +34,7 @@ public class DeleteAccountService implements DeleteAccountUseCase {
     private final OnboardingProfileRepository onboardingProfileRepository;
     private final OnboardingCategoryRepository onboardingCategoryRepository;
     private final UserSideJobRepositoryPort userSideJobRepositoryPort;
-//    private final TokenRepositoryPort tokenRepositoryPort;
-    private final TokenRepository tokenRepositoryPort;
+    private final TokenRepositoryPort tokenRepositoryPort;
     private final IncomeRepositoryPort incomeRepositoryPort;
     private final ProofRepositoryPort proofRepositoryPort;
     private final AdViewRepositoryPort adViewRepositoryPort;

@@ -2,9 +2,9 @@ package com.booquest.booquest_api.application.service.auth;
 
 import com.booquest.booquest_api.application.port.in.auth.TokenUseCase;
 import com.booquest.booquest_api.application.port.out.auth.JwtTokenPort;
-import com.booquest.booquest_api.adapter.out.auth.persistence.TokenRepository;
 import com.booquest.booquest_api.adapter.in.auth.web.token.dto.TokenInfo;
 import com.booquest.booquest_api.adapter.in.auth.web.token.dto.TokenRefreshResponse;
+import com.booquest.booquest_api.application.port.out.auth.TokenRepositoryPort;
 import com.booquest.booquest_api.application.port.out.user.UserQueryPort;
 import com.booquest.booquest_api.common.exception.TokenException;
 import com.booquest.booquest_api.domain.auth.model.Token;
@@ -23,7 +23,7 @@ import java.util.Date;
 @Transactional
 public class TokenService implements TokenUseCase {
     private final JwtTokenPort jwtTokenPort;
-    private final TokenRepository tokenRepository;
+    private final TokenRepositoryPort tokenRepositoryPort;
     private final UserQueryPort userQueryPort;
 
     @Value("${jwt.access-token-ttl-seconds:3600}") // 1 hour
@@ -44,7 +44,7 @@ public class TokenService implements TokenUseCase {
             ZoneId.systemDefault()
         );
 
-        tokenRepository.upsertByUserId(user.getId(), newRefreshTokenHash, expiresAt);
+        tokenRepositoryPort.upsertByUserId(user.getId(), newRefreshTokenHash, expiresAt);
 
         return tokenInfo;
     }
@@ -57,7 +57,7 @@ public class TokenService implements TokenUseCase {
     @Override
     public TokenRefreshResponse refreshAccessToken(String refreshToken) {
         String refreshTokenHash = sha256Base64(refreshToken);
-        Token token = tokenRepository.findByRefreshTokenHash(refreshTokenHash)
+        Token token = tokenRepositoryPort.findByRefreshTokenHash(refreshTokenHash)
                 .orElseThrow(() -> new TokenException("Invalid refresh token"));
 
         if (!token.isValid()) {
@@ -79,7 +79,7 @@ public class TokenService implements TokenUseCase {
         );
 
         token.updateToken(newRefreshTokenHash, newRefreshExpiresAt);
-        tokenRepository.save(token);
+        tokenRepositoryPort.save(token);
 
         return TokenRefreshResponse.builder()
                 .accessToken(newAccessToken)

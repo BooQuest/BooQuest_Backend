@@ -1,7 +1,9 @@
 package com.booquest.booquest_api.adapter.out.auth;
 
 import com.booquest.booquest_api.domain.auth.model.Token;
+import jakarta.persistence.LockModeType;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -11,9 +13,15 @@ import java.util.Optional;
 
 @Repository
 public interface TokenJpaRepository extends JpaRepository<Token, Long> {
+    Token save(Token token);
+
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
     Optional<Token> findByRefreshToken(String refreshToken);
+
     Optional<Token> findByUserId(Long userId);
+
     long deleteByUserId(Long userId);
+
     void deleteByRefreshToken(String refreshToken);
 
     @Modifying
