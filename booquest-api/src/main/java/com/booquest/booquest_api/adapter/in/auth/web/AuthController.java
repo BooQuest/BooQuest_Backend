@@ -54,37 +54,20 @@ public class AuthController {
     }
 
     @PostMapping("/logout")
-    @Operation(summary = "로그아웃", description = "현재 세션의 리프레시 토큰을 무효화합니다. <br/>" +
+    @Operation(summary = "로그아웃 (현재 기기)", description = "현재 세션의 리프레시 토큰을 무효화합니다. <br/>" +
             "리프레시 토큰은 X-Refresh-Token 헤더로 전달 가능합니다.")
     public ApiResponse<LogoutResponse> logoutCurrent(@RequestHeader(value = "X-Refresh-Token") String refreshToken) {
         LogoutResponse response = logoutUseCase.logoutCurrentSession(refreshToken);
         return ApiResponse.success("로그아웃되었습니다.", response);
     }
 
-//    @PostMapping("/logout")
-//    @Operation(summary = "로그아웃 (현재 기기)", description = "현재 세션의 리프레시 토큰을 무효화합니다. " +
-//            "리프레시 토큰은 X-Refresh-Token 헤더 또는 RT 쿠키로 전달 가능합니다.")
-//    public ApiResponse<LogoutResponse> logoutCurrent(@RequestHeader(value = "X-Refresh-Token", required = false) String rtHeader,
-//                                                     @CookieValue(value = "RT", required = false) String rtCookie) {
-//        Long userId = currentUserIdIfAvailable();
-//        String rawRefreshToken = (rtHeader != null && !rtHeader.isBlank()) ? rtHeader : rtCookie;
-//        LogoutResponse response = logoutUseCase.logoutCurrentSession(rawRefreshToken);
-//        return ApiResponse.success("로그아웃되었습니다.", response);
-//    }
-//
-//    private Long currentUserIdIfAvailable() {
+//    @PostMapping("/logout/all")
+//    @Operation(summary = "모든 기기에서 로그아웃", description = "해당 계정의 모든 리프레시 토큰을 무효화합니다.")
+//    public ApiResponse<LogoutResponse> logoutAll() {
 //        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-//        if (auth == null || auth.getName() == null) return null;
-//        try { return Long.parseLong(auth.getName()); } catch (Exception ignored) { return null; }
+//        Long userId = Long.parseLong(auth.getName());
+//
+//        LogoutResponse response = logoutUseCase.logoutAllDevices(userId);
+//        return ApiResponse.success("모든 기기에서 로그아웃되었습니다.", response);
 //    }
-
-    @PostMapping("/logout/all")
-    @Operation(summary = "모든 기기에서 로그아웃", description = "해당 계정의 모든 리프레시 토큰을 무효화합니다.")
-    public ApiResponse<LogoutResponse> logoutAll() {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        Long userId = Long.parseLong(auth.getName());
-
-        LogoutResponse response = logoutUseCase.logoutAllDevices(userId);
-        return ApiResponse.success("모든 기기에서 로그아웃되었습니다.", response);
-    }
 }
