@@ -21,5 +21,13 @@ public interface SideJobRepositoryPort {
 
     Long findSelectedSideJobByUserId(Long userId);
 
+    void deleteAll(List<SideJob> sideJobs);
+
+    Optional<SideJob> findByIdAndUserId(Long sideJobId, Long userId);
+
+    void delete(SideJob sideJob);
+
+    Optional<SideJob> findById(Long sideJobSelectedId);
+
     long deleteByUserId(Long userId);
 }

@@ -64,8 +64,8 @@ public class AdService implements AdUseCase {
     private CompletedCheck checkUserPermissionAndStepCompleted(Long userId, Long stepId) {
         MissionStep step = missionStepRepositoryPort.findById(stepId)
                 .orElseThrow(() -> new EntityNotFoundException("Mission Step not found: " + stepId));
-        Mission mission = missionRepositoryPort.findById(step.getMissionId())
-                .orElseThrow(() -> new EntityNotFoundException("Mission not found: " + step.getMissionId()));
+        Mission mission = missionRepositoryPort.findById(step.getMission().getId())
+                .orElseThrow(() -> new EntityNotFoundException("Mission not found: " + step.getMission().getId()));
 
         if (!mission.getUserId().equals(userId)) {
             throw new IllegalArgumentException("You do not have permission to access this step");

@@ -8,6 +8,7 @@ import com.booquest.booquest_api.application.port.out.mission.MissionRepositoryP
 import com.booquest.booquest_api.application.port.out.sidejob.SideJobRepositoryPort;
 import com.booquest.booquest_api.domain.mission.enums.MissionStatus;
 import com.booquest.booquest_api.domain.mission.model.Mission;
+import com.booquest.booquest_api.domain.sidejob.model.SideJob;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -28,6 +29,9 @@ public class GenerateMissionService implements GenerateMissionUseCase {
     public List<Mission> generateMission(MissionGenerateRequestDto generateDto) {
         var sideJobSelectedId = generateDto.sideJobId();
         var userId = generateDto.userId();
+
+        SideJob sideJob = sideJobRepository.findById(sideJobSelectedId)
+                .orElseThrow(() -> new IllegalArgumentException("부업이 존재하지 않습니다"));
 
         // side job is_select false 로 update
         sideJobRepository.updateSelectedTrue(sideJobSelectedId);
@@ -50,7 +54,7 @@ public class GenerateMissionService implements GenerateMissionUseCase {
                     } else {
                         // 새로 추가
                         return Mission.builder()
-                                .sideJobId(sideJobSelectedId)
+                                .sideJob(sideJob)
                                 .userId(userId)
                                 .title(t.title())
                                 .status(MissionStatus.PLANNED)

@@ -35,7 +35,7 @@ public class MissionResponse {
 
         return MissionResponse.builder()
                 .id(mission.getId())
-                .sideJobId(mission.getSideJobId())
+                .sideJobId(mission.getSideJob().getId())
                 .title(mission.getTitle())
                 .status(mission.getStatus())
                 .orderNo(mission.getOrderNo())

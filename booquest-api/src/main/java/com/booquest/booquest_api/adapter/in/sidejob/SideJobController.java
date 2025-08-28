@@ -3,7 +3,7 @@ package com.booquest.booquest_api.adapter.in.sidejob;
 import com.booquest.booquest_api.adapter.in.onboarding.web.dto.SideJobResponseDto;
 import com.booquest.booquest_api.adapter.in.sidejob.dto.RegenerateAllSideJobRequest;
 import com.booquest.booquest_api.adapter.in.sidejob.dto.RegenerateSideJobRequest;
-import com.booquest.booquest_api.application.port.in.sidejob.RegenerateSideJobUseCase;
+import com.booquest.booquest_api.application.port.in.sidejob.DeleteSideJobUseCase;
 import com.booquest.booquest_api.application.port.in.sidejob.SelectSideJobUseCase;
 import com.booquest.booquest_api.common.response.ApiResponse;
 import com.booquest.booquest_api.common.util.JsonMapperUtils;
@@ -33,12 +33,14 @@ public class SideJobController {
 
     private final @Qualifier("aiWebClient") WebClient webClient;
 
-    private final RegenerateSideJobUseCase regenerateSideJobUseCase;
+    private final DeleteSideJobUseCase deleteSideJobUseCase;
     private final SelectSideJobUseCase selectSideJobUseCase;
 
     @PostMapping("/regenerate")
     @Operation(summary = "부업 목록 재생성", description = "요청 기준에 따라 부업 목록을 재생성합니다.")
     public ApiResponse<List<SideJobResponseDto>> regenerateAll(@RequestBody @Valid RegenerateAllSideJobRequest request) {
+
+        deleteSideJobUseCase.deleteAllSideJob(request.generateSideJobRequest().userId());
 
         String raw = webClient.post()                                   // POST로 호출해야 해서 필요
                 .uri("/ai/regenerate-side-job-all")                           // 호출할 AI 경로 지정 — 필요
@@ -58,6 +60,9 @@ public class SideJobController {
     @Operation(summary = "부업 재생성", description = "부업 ID로 지정한 부업을 재생성합니다.")
     public ApiResponse<SideJobResponseDto> regenerateById(@PathVariable Long sideJobId,
                                                           @RequestBody @Valid RegenerateSideJobRequest request) {
+
+        deleteSideJobUseCase.deleteSideJob(request.generateSideJobRequest().userId(), sideJobId);
+
         String raw = webClient.post()                                   // POST로 호출해야 해서 필요
                 .uri("/ai/regenerate-side-job/{sideJobId}", sideJobId )                           // 호출할 AI 경로 지정 — 필요
                 .contentType(MediaType.APPLICATION_JSON)                       // 요청 바디가 JSON임을 명시 — 필요

@@ -40,4 +40,6 @@ public interface SideJobRepository extends JpaRepository<SideJob, Long> {
     Optional<Long> findTopSelectedSideJobId(Long userId);
 
     long deleteByUserId(Long userId);
+
+    Optional<SideJob> findByIdAndUserId(Long id, Long userId);
 }

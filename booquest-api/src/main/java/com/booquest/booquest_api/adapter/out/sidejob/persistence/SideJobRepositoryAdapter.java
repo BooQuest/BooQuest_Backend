@@ -59,4 +59,24 @@ public class SideJobRepositoryAdapter implements SideJobRepositoryPort {
     public long deleteByUserId(Long userId) {
         return sideJobRepository.deleteByUserId(userId);
     }
+
+    @Override
+    public void deleteAll(List<SideJob> sideJobs) {
+        sideJobRepository.deleteAll(sideJobs);
+    }
+
+    @Override
+    public Optional<SideJob> findByIdAndUserId(Long sideJobId, Long userId) {
+        return sideJobRepository.findByIdAndUserId(sideJobId, userId);
+    }
+
+    @Override
+    public void delete(SideJob sideJob) {
+        sideJobRepository.delete(sideJob);
+    }
+
+    @Override
+    public Optional<SideJob> findById(Long sideJobId) {
+        return sideJobRepository.findById(sideJobId);
+    }
 }
