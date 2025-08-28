@@ -1,4 +1,4 @@
-package com.booquest.booquest_api.adapter.out.auth;
+package com.booquest.booquest_api.adapter.out.auth.persistence;
 
 import com.booquest.booquest_api.application.port.out.auth.TokenRepositoryPort;
 import com.booquest.booquest_api.domain.auth.model.Token;
@@ -12,7 +12,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class TokenRepositoryAdapter implements TokenRepositoryPort {
 
-    private final TokenJpaRepository tokenJpaRepository;
+    private final TokenRepository tokenJpaRepository;
 
     @Override
     public Token save(Token token) {
