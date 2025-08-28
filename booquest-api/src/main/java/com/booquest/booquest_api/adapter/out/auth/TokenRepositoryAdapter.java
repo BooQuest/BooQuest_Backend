@@ -10,7 +10,7 @@ import java.util.Optional;
 
 @Repository
 @RequiredArgsConstructor
-public class TokenRepositoryImpl implements TokenRepository {
+public class TokenRepositoryAdapter implements TokenRepository {
 
     private final TokenJpaRepository tokenJpaRepository;
 
