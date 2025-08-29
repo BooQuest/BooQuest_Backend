@@ -60,4 +60,8 @@ public interface MissionStepRepository extends JpaRepository<MissionStep, Long> 
     @Modifying(clearAutomatically = true, flushAutomatically = true)
     @Query("delete from MissionStep s where s.mission.id in ( select m.id from Mission m where m.userId = :userId )")
     int deleteByUserId(@Param("userId") Long userId);
+
+    @Modifying
+    @Query("DELETE FROM MissionStep ms WHERE ms.mission.id = :missionId")
+    void deleteAllByMissionId(Long missionId);
 }
