@@ -50,4 +50,9 @@ public class MissionStepRepositoryAdapter implements MissionStepRepositoryPort {
     public long deleteByUserId(Long userId) {
         return (long) missionStepRepository.deleteByUserId(userId);
     }
+
+    @Override
+    public void deleteAllByMissionId(Long missionId) {
+        missionStepRepository.deleteAllByMissionId(missionId);
+    }
 }

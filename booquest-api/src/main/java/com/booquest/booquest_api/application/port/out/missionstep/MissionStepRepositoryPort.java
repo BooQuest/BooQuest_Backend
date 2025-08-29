@@ -19,4 +19,6 @@ public interface MissionStepRepositoryPort {
     int countCompletedByUserAndSideJob(Long userId, Long userSideJobId);
 
     long deleteByUserId(Long userId);
+
+    void deleteAllByMissionId(Long missionId);
 }
