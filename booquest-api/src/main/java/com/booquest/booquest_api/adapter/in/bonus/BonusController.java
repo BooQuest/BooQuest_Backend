@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequiredArgsConstructor
@@ -21,8 +22,8 @@ public class BonusController {
     private final AdUseCase adUseCase;
 
     @PostMapping("/{stepId}/proof")
-    @Operation(summary = "인증하기", description = "부퀘스트 완료 후 링크/텍스트/사진으로 인증하여 추가 경험치를 받습니다. <br/><br/>" +
-            "proofType: LINK, TEXT, IMAGE <br/><br/>" +
+    @Operation(summary = "링크/텍스트 인증하기", description = "부퀘스트 완료 후 링크/텍스트로 인증하여 추가 경험치를 받습니다. <br/><br/>" +
+            "proofType: LINK, TEXT <br/><br/>" +
             "data.status 값 <br/>" +
             "- granted: 인증을 완료하고 추가 경험치를 지급 받았습니다. <br/>" +
             "- not-completed: 먼저 해당 스텝을 완료해주세요. <br/>" +
@@ -42,6 +43,25 @@ public class BonusController {
             default                 -> "처리되었습니다.";
         };
 
+        return ApiResponse.success(message, response);
+    }
+
+    @PostMapping(path = "/{stepId}/proof/image", consumes = "multipart/form-data")
+    @Operation(summary = "사진 인증하기", description = "이미지 1장을 업로드하여 인증하고 추가 경험치를 받습니다. <br/>" +
+            "이미지 크기 10MB 이하")
+    public ApiResponse<BonusResponse> proofImage(@PathVariable Long stepId, @RequestPart("file") MultipartFile file) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Long userId = Long.parseLong(auth.getName());
+
+        BonusResponse response = proofUseCase.submitImageProofAndGrantExp(userId, stepId, file);
+
+        String message = switch (response.status()) {
+            case GRANTED          -> "인증을 완료하고 추가 경험치를 지급 받았습니다.";
+            case NOT_COMPLETED    -> "먼저 해당 스텝을 완료해주세요.";
+            case BLOCKED_BY_AD    -> "해당 퀘스트는 이미 광고 보상으로 처리되어 인증 보상 지급이 불가합니다.";
+            case ALREADY_VERIFIED -> "이미 인증된 퀘스트입니다.";
+            default               -> "처리되었습니다.";
+        };
         return ApiResponse.success(message, response);
     }
 
