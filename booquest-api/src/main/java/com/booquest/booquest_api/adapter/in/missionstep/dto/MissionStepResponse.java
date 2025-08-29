@@ -11,7 +11,7 @@ public class MissionStepResponse {
     private Long id;
     private int seq;
     private String title;
-    private StepStatus status;
+//    private StepStatus status;
     private String detail;
 
     public static MissionStepResponse toResponse(MissionStep missionStep) {
@@ -19,7 +19,7 @@ public class MissionStepResponse {
                 .id(missionStep.getId())
                 .seq(missionStep.getSeq())
                 .title(missionStep.getTitle())
-                .status(missionStep.getStatus())
+//                .status(missionStep.getStatus())
                 .detail(missionStep.getDetail())
                 .build();
     }
