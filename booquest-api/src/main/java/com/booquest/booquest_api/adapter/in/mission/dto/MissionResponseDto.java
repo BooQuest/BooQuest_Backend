@@ -7,5 +7,6 @@ public record MissionResponseDto(
         String title,
         int order,
         @JsonProperty("design_notes")
-        String designNotes
+        String designNotes,
+        String guide
 ) {}

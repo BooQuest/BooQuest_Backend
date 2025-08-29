@@ -21,6 +21,7 @@ public class MissionResponse {
     private MissionStatus status;
     private int orderNo;
     private String designNotes;
+    private String guide;
     private int missionTotalExp;
     private List<MissionStepResponse> steps;
 
@@ -40,6 +41,7 @@ public class MissionResponse {
                 .status(mission.getStatus())
                 .orderNo(mission.getOrderNo())
                 .designNotes(mission.getDesignNotes())
+                .guide(mission.getGuide())
                 .missionTotalExp(missionTotalExp)
                 .steps(stepResponses)
                 .progress(progress)

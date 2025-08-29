@@ -13,6 +13,7 @@ public record MissionDetailResponseDto(
         String title,
         int order,
         String designNotes,
+        String guide,
         List<MissionStepResponseDto> missionSteps
 ) {
 
@@ -32,6 +33,7 @@ public record MissionDetailResponseDto(
                         entity.getTitle(),
                         entity.getOrderNo(),
                         entity.getDesignNotes(),
+                        entity.getGuide(),
                         stepDtos
                 );
         }

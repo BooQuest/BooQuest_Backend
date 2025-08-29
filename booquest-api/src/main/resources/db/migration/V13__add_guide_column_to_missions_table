@@ -1,0 +1,6 @@
+BEGIN;
+
+ALTER TABLE missions
+    ADD COLUMN guide TEXT;
+
+COMMIT;
