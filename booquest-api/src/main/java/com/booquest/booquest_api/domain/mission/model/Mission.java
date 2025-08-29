@@ -42,6 +42,9 @@ public class Mission extends AuditableEntity {
     @Column(name = "design_notes", columnDefinition = "TEXT")
     private String designNotes;
 
+    @Column(columnDefinition = "TEXT")
+    private String guide;
+
     @OneToMany(mappedBy = "mission", cascade = CascadeType.ALL, orphanRemoval = true)
     @OrderBy("seq ASC")
     private Set<MissionStep> steps = new LinkedHashSet<>();
