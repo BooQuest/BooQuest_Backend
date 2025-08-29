@@ -33,6 +33,7 @@ public class Mission extends AuditableEntity {
     private String title;
 
     @Enumerated(EnumType.STRING)
+    @JdbcTypeCode(SqlTypes.NAMED_ENUM)
     @Column(columnDefinition = "mission_status")
     private MissionStatus status = MissionStatus.PLANNED;
 
