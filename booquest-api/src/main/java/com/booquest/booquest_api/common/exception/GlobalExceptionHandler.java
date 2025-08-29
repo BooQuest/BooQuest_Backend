@@ -51,7 +51,6 @@ public class GlobalExceptionHandler {
     public ResponseEntity<?> handleGeneric(Exception ex) {
         log.error("[INTERNAL_ERROR] {}", ex.toString(), ex);
 
-        // ---- A안: JSON(Map)으로 반환 (가장 일반적) ----
         Map<String, Object> payload = Map.of(
                 "ok", false,
                 "status", 500,
@@ -61,11 +60,6 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(payload);
-
-        // ---- B안(최후의 안전장치): 직렬화마저 의심되면 TEXT로 반환 ----
-        // return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-        //         .contentType(MediaType.TEXT_PLAIN)
-        //         .body("[INTERNAL_ERROR] " + ex.getClass().getName() + ": " + safeMsg(ex));
     }
 
     private String safeMsg(Throwable t) {
