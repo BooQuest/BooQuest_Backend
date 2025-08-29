@@ -43,7 +43,6 @@ public class MissionStep extends AuditableEntity {
     private String title;
 
     @Enumerated(EnumType.STRING)
-    @JdbcTypeCode(SqlTypes.NAMED_ENUM)
     @Column(columnDefinition = "status")
     private StepStatus status = StepStatus.PLANNED;
 
