@@ -38,7 +38,7 @@ public class MissionResponse {
                 .id(mission.getId())
                 .sideJobId(mission.getSideJob().getId())
                 .title(mission.getTitle())
-                .status(mission.getStatus().name())
+//                .status(mission.getStatus().name())
                 .orderNo(mission.getOrderNo())
                 .designNotes(mission.getDesignNotes())
                 .guide(mission.getGuide())

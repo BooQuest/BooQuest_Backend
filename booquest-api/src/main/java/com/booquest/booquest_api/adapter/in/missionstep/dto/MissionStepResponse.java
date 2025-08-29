@@ -19,7 +19,7 @@ public class MissionStepResponse {
                 .id(missionStep.getId())
                 .seq(missionStep.getSeq())
                 .title(missionStep.getTitle())
-                .status(missionStep.getStatus().name())
+//                .status(missionStep.getStatus().name())
                 .detail(missionStep.getDetail())
                 .build();
     }
