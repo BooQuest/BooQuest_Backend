@@ -1,8 +1,9 @@
 package com.booquest.booquest_api.domain.missionstep.enums;
 
-import lombok.Getter;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 
-@Getter
+@JsonSerialize(using = ToStringSerializer.class)
 public enum StepStatus {
     PLANNED, IN_PROGRESS, COMPLETED, SKIPPED
 }
