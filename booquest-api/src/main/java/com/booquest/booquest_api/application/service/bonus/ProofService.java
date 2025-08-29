@@ -111,7 +111,7 @@ public class ProofService implements ProofUseCase {
 
     private void validateImage(MultipartFile file) {
         if (file.isEmpty()) throw new IllegalArgumentException("파일이 비어 있습니다.");
-        long max = 10 * 1024 * 1024; // 10MB 임의로 설정
+        long max = 5 * 1024 * 1024; // 5MB 임의로 설정
         if (file.getSize() > max) throw new IllegalArgumentException("파일이 너무 큽니다.");
         // content-type과 magic bytes 동시 체크 권장 (jpg, png, webp, heic 등 정책 결정)
     }

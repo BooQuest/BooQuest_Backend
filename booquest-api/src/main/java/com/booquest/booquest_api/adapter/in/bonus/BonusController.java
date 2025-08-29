@@ -48,7 +48,7 @@ public class BonusController {
 
     @PostMapping(path = "/{stepId}/proof/image", consumes = "multipart/form-data")
     @Operation(summary = "사진 인증하기", description = "이미지 1장을 업로드하여 인증하고 추가 경험치를 받습니다. <br/>" +
-            "이미지 크기 10MB 이하")
+            "이미지 크기 5MB 이하")
     public ApiResponse<BonusResponse> proofImage(@PathVariable Long stepId, @RequestPart("file") MultipartFile file) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         Long userId = Long.parseLong(auth.getName());
