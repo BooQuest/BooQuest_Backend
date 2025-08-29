@@ -7,7 +7,10 @@ import com.booquest.booquest_api.domain.sidejob.model.SideJob;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.JdbcType;
+import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.dialect.PostgreSQLEnumJdbcType;
+import org.hibernate.type.SqlTypes;
+
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -30,8 +33,8 @@ public class Mission extends AuditableEntity {
     private String title;
 
     @Enumerated(EnumType.STRING)
-    @JdbcType(PostgreSQLEnumJdbcType.class)
-    @Column(name = "status", columnDefinition = "mission_status", nullable = false)
+    @JdbcTypeCode(SqlTypes.NAMED_ENUM)
+    @Column(columnDefinition = "mission_status")
     private MissionStatus status = MissionStatus.PLANNED;
 
     @Column(name = "order_no", nullable = false)
