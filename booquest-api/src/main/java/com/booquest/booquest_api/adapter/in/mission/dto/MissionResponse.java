@@ -4,6 +4,7 @@ import com.booquest.booquest_api.adapter.in.missionstep.dto.MissionStepResponse;
 import com.booquest.booquest_api.domain.mission.model.Mission;
 import com.booquest.booquest_api.domain.mission.enums.MissionStatus;
 import com.booquest.booquest_api.domain.missionstep.model.MissionStep;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -18,7 +19,8 @@ public class MissionResponse {
     private Long id;
     private Long sideJobId;
     private String title;
-    private String status;
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
+    private MissionStatus status;
     private int orderNo;
     private String designNotes;
     private String guide;
@@ -38,7 +40,7 @@ public class MissionResponse {
                 .id(mission.getId())
                 .sideJobId(mission.getSideJob().getId())
                 .title(mission.getTitle())
-                .status(mission.getStatus() != null ? mission.getStatus().name() : null)
+                .status(mission.getStatus())
                 .orderNo(mission.getOrderNo())
                 .designNotes(mission.getDesignNotes())
                 .guide(mission.getGuide())
