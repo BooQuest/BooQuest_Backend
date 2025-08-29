@@ -31,6 +31,9 @@ spring:
     active: dev
 
 server:
+  error:
+    include-exception: true
+    include-stacktrace: always
   port: ${SERVER_PORT:8080}
 
 # --- AI 서버 설정 ---
@@ -44,6 +47,8 @@ logging:
     org.springframework.web: debug
     org.hibernate.SQL: debug
     org.hibernate.type.descriptor.sql: trace  # 쿼리 파라미터 출력
+    com.fasterxml.jackson: DEBUG
+    org.springframework.http.converter: DEBUG
 
 kakao:
   api:
