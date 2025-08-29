@@ -46,7 +46,7 @@ public class MissionStep extends AuditableEntity {
 
     @Enumerated(EnumType.STRING)
     @JdbcType(PostgreSQLEnumJdbcType.class)
-    @Column(name = "status", nullable = false)
+    @Column(name = "status", columnDefinition = "step_status", nullable = false)
     private StepStatus status = StepStatus.PLANNED;
 
     @Column(columnDefinition = "TEXT")
