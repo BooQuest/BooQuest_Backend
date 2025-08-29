@@ -2,7 +2,6 @@ package com.booquest.booquest_api.adapter.in.missionstep.dto;
 
 import com.booquest.booquest_api.domain.missionstep.model.MissionStep;
 import com.booquest.booquest_api.domain.missionstep.enums.StepStatus;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -12,7 +11,6 @@ public class MissionStepResponse {
     private Long id;
     private int seq;
     private String title;
-    @JsonFormat(shape = JsonFormat.Shape.STRING)
     private StepStatus status;
     private String detail;
 
