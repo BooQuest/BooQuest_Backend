@@ -1,11 +1,8 @@
 package com.booquest.booquest_api.domain.onboarding.enums;
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import lombok.Getter;
 
 @Getter
-@JsonSerialize(using = ToStringSerializer.class)
 public enum CategoryType {
     ECONOMY("경제·사회·재테크"),
     CULTURE("문화·예술"),

@@ -1,13 +1,10 @@
 package com.booquest.booquest_api.domain.onboarding.enums;
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-@JsonSerialize(using = ToStringSerializer.class)
 public enum StrengthType {
     CREATE("창작하기"),
     ORGANIZE("정리·전달하기"),

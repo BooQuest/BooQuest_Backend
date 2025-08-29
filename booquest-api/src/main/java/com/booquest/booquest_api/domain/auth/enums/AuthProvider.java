@@ -2,13 +2,9 @@ package com.booquest.booquest_api.domain.auth.enums;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 
 import java.util.Locale;
 
-
-@JsonSerialize(using = ToStringSerializer.class)
 public enum AuthProvider {
     KAKAO, GOOGLE, APPLE, NAVER;
 
