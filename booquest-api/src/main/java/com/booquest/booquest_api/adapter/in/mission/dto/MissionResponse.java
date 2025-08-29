@@ -18,7 +18,7 @@ public class MissionResponse {
     private Long id;
     private Long sideJobId;
     private String title;
-    private String status;
+    private MissionStatus status;
     private int orderNo;
     private String designNotes;
     private String guide;
@@ -38,7 +38,7 @@ public class MissionResponse {
                 .id(mission.getId())
                 .sideJobId(mission.getSideJob().getId())
                 .title(mission.getTitle())
-                .status(mission.getStatus() != null ? mission.getStatus().name() : null)
+                .status(mission.getStatus())
                 .orderNo(mission.getOrderNo())
                 .designNotes(mission.getDesignNotes())
                 .guide(mission.getGuide())

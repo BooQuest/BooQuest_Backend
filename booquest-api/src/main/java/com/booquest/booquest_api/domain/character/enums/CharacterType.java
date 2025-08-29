@@ -1,7 +1,12 @@
 package com.booquest.booquest_api.domain.character.enums;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
+
 import java.util.Arrays;
 
+
+@JsonSerialize(using = ToStringSerializer.class)
 public enum CharacterType {
     BLACK, WHITE;
 

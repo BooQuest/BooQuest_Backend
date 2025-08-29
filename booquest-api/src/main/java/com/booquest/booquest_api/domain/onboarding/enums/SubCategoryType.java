@@ -1,11 +1,14 @@
 package com.booquest.booquest_api.domain.onboarding.enums;
 
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
+@JsonSerialize(using = ToStringSerializer.class)
 public enum SubCategoryType {
 
     // ECONOMY

@@ -1,7 +1,11 @@
 package com.booquest.booquest_api.domain.bonus.enums;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 
+
+@JsonSerialize(using = ToStringSerializer.class)
 public enum BonusStatus {
     @JsonProperty("granted")           GRANTED,
     @JsonProperty("not-completed")     NOT_COMPLETED,
