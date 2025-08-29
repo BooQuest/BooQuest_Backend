@@ -39,8 +39,8 @@ public interface MissionRepository extends JpaRepository<Mission, Long> {
     from Mission m
     left join fetch m.steps s
     where m.userId = :userId
-      and (:status   is null or m.status = :status)
-      and (:sideJobId is null or m.sideJob.id = :sideJobId)
+        and (:sideJobId is null or m.sideJob.id = :sideJobId)
+        and (m.status = :status or :status is null)
     order by m.sideJob.id asc, m.orderNo asc, s.seq asc, m.id asc
     """)
     List<Mission> findListWithOptionalFilters(
