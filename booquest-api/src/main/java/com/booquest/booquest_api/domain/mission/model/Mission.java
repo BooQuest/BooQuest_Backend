@@ -34,7 +34,7 @@ public class Mission extends AuditableEntity {
 
     @Enumerated(EnumType.STRING)
     @JdbcTypeCode(SqlTypes.NAMED_ENUM)
-    @Column(columnDefinition = "mission_status")
+    @Column(name = "status")
     private MissionStatus status = MissionStatus.PLANNED;
 
     @Column(name = "order_no", nullable = false)
