@@ -50,7 +50,7 @@ public class CompleteMissionService implements CompleteMissionUseCase {
         missionRepository.save(mission);
 
         // 캐릭터에 경험치 적용
-        UserCharacter updatedCharacter = characterRewardService.applyExpDelta(userId, totalExpReward, levelingPolicy);
+        UserCharacter updatedCharacter = characterRewardService.applyExpDelta(userId, missionCompletionExpReward, levelingPolicy);
 
         // 레벨업 정보 계산
         int levelUpCount = updatedCharacter.getLevel() - previousLevel;

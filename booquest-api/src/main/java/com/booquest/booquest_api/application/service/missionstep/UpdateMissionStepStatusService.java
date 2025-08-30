@@ -2,14 +2,12 @@ package com.booquest.booquest_api.application.service.missionstep;
 
 import com.booquest.booquest_api.adapter.in.missionstep.dto.MissionStepUpdateStatusResponse;
 import com.booquest.booquest_api.application.port.in.missionstep.UpdateMissionStepStatusUseCase;
-import com.booquest.booquest_api.application.port.out.bonus.BonusStatusPort;
 import com.booquest.booquest_api.application.port.out.mission.MissionRepositoryPort;
 import com.booquest.booquest_api.application.port.out.missionstep.MissionStepRepositoryPort;
 import com.booquest.booquest_api.application.service.character.CharacterRewardService;
 import com.booquest.booquest_api.domain.character.enums.RewardType;
 import com.booquest.booquest_api.domain.character.model.UserCharacter;
 import com.booquest.booquest_api.domain.character.policy.CharacterRewardPolicy;
-import com.booquest.booquest_api.domain.character.policy.LevelingPolicy;
 import com.booquest.booquest_api.domain.mission.model.Mission;
 import com.booquest.booquest_api.domain.missionstep.enums.StepStatus;
 import com.booquest.booquest_api.domain.missionstep.model.MissionStep;
@@ -25,8 +23,6 @@ public class UpdateMissionStepStatusService implements UpdateMissionStepStatusUs
     private final MissionRepositoryPort missionRepository;
     private final CharacterRewardService characterRewardService;
     private final CharacterRewardPolicy characterRewardPolicy;
-    private final LevelingPolicy levelingPolicy;
-    private final BonusStatusPort bonusStatusPort;
 
     @Override
     @Transactional
@@ -38,30 +34,18 @@ public class UpdateMissionStepStatusService implements UpdateMissionStepStatusUs
         StepStatus oldStatus = step.getStatus();
 
         if (oldStatus == newStatus) {
-            return buildResponse(step, mission, userId, 0, false, 0, 0, 0, false, false);
+            RewardType rewardType = RewardType.NONE;
+            UserCharacter character = characterRewardService.applyReward(userId, rewardType);
+            int delta = characterRewardPolicy.expDeltaFor(rewardType); // 0
+            return buildResponse(step, character, delta);
         }
 
-        // 이전 레벨 저장
-        UserCharacter currentCharacter = characterRewardService.getCharacter(userId);
-        int previousLevel = currentCharacter.getLevel();
-
-        // 부퀘스트 상태 업데이트
         updateStepStatus(step, newStatus);
 
-        // 경험치 계산 및 적용 (부퀘스트 완료/취소만)
-        int totalExpDelta = calculateTotalExpDelta(step, oldStatus, newStatus, userId);
-
-        // 캐릭터에 경험치 적용
-        UserCharacter updatedCharacter = characterRewardService.applyExpDelta(userId, totalExpDelta, levelingPolicy);
-        
-        // 레벨업 정보 계산
-        int levelUpCount = updatedCharacter.getLevel() - previousLevel;
-        
-        // 광고/인증 보너스 상태 확인
-        boolean hasAdBonus = bonusStatusPort.hasAdBonus(stepId, userId);
-        boolean hasProofBonus = bonusStatusPort.hasProofBonus(stepId, userId);
-
-        return buildResponse(step, mission, userId, totalExpDelta, false, 0, levelUpCount, previousLevel, hasAdBonus, hasProofBonus);
+        RewardType rewardType = mapRewardType(oldStatus, newStatus);
+        UserCharacter character = characterRewardService.applyReward(userId, rewardType);
+        int delta = characterRewardPolicy.expDeltaFor(rewardType);
+        return buildResponse(step, character, delta);
     }
 
     private MissionStep getMissionStep(Long stepId) {
@@ -85,36 +69,14 @@ public class UpdateMissionStepStatusService implements UpdateMissionStepStatusUs
         missionStepRepository.save(step);
     }
 
-    private int calculateTotalExpDelta(MissionStep step, StepStatus oldStatus, StepStatus newStatus, Long userId) {
-        int baseExpDelta = 0;
-        
-        // 기본 부퀘스트 완료/취소 경험치
-        if (oldStatus != StepStatus.COMPLETED && newStatus == StepStatus.COMPLETED) {
-            baseExpDelta = characterRewardPolicy.expDeltaFor(RewardType.STEP_COMPLETED);
-        } else if (oldStatus == StepStatus.COMPLETED && newStatus != StepStatus.COMPLETED) {
-            baseExpDelta = characterRewardPolicy.expDeltaFor(RewardType.STEP_MARKED_INCOMPLETE);
-        }
-
-        // 광고/인증 보너스 경험치 추가
-        if (newStatus == StepStatus.COMPLETED) {
-            if (bonusStatusPort.hasAdBonus(step.getId(), userId)) {
-                baseExpDelta += characterRewardPolicy.expDeltaFor(RewardType.AD_WATCHED);
-            }
-            if (bonusStatusPort.hasProofBonus(step.getId(), userId)) {
-                baseExpDelta += characterRewardPolicy.expDeltaFor(RewardType.PROOF_VERIFIED);
-            }
-        }
-
-        return baseExpDelta;
+    private RewardType mapRewardType(StepStatus oldStatus, StepStatus newStatus) {
+        if (oldStatus != StepStatus.COMPLETED && newStatus == StepStatus.COMPLETED) return RewardType.STEP_COMPLETED;
+        if (oldStatus == StepStatus.COMPLETED && newStatus != StepStatus.COMPLETED) return RewardType.STEP_MARKED_INCOMPLETE;
+        return RewardType.NONE;
     }
 
-    private MissionStepUpdateStatusResponse buildResponse(MissionStep step, Mission mission, Long userId, 
-                                                        int expDelta, boolean missionCompleted, int missionExpReward,
-                                                        int levelUpCount, int previousLevel, 
-                                                        boolean hasAdBonus, boolean hasProofBonus) {
-        UserCharacter character = characterRewardService.getCharacter(userId);
-        return MissionStepUpdateStatusResponse.toResponse(step, character, expDelta, missionCompleted, 
-                                                        missionExpReward, levelUpCount, previousLevel, 
-                                                        hasAdBonus, hasProofBonus);
+    private MissionStepUpdateStatusResponse buildResponse(MissionStep step, UserCharacter character, int delta) {
+        return MissionStepUpdateStatusResponse.toResponse(step, character, delta);
     }
+
 }
