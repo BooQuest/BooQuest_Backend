@@ -5,11 +5,13 @@ import com.booquest.booquest_api.adapter.in.mission.dto.MissionDetailResponseDto
 import com.booquest.booquest_api.adapter.in.mission.dto.MissionGenerateRequestDto;
 import com.booquest.booquest_api.adapter.in.mission.dto.MissionProgressResponseDto;
 import com.booquest.booquest_api.adapter.in.mission.dto.MissionResponseDto;
+import com.booquest.booquest_api.adapter.in.mission.dto.MissionCompleteResponse;
 import com.booquest.booquest_api.application.port.in.mission.GetMissionListUseCase;
 import com.booquest.booquest_api.adapter.in.mission.dto.MissionResponse;
 import com.booquest.booquest_api.application.port.in.mission.GetMissionProgressUseCase;
 import com.booquest.booquest_api.application.port.in.mission.SelectMissionUseCase;
 import com.booquest.booquest_api.application.port.in.mission.StartMissionUseCase;
+import com.booquest.booquest_api.application.port.in.mission.CompleteMissionUseCase;
 import com.booquest.booquest_api.common.response.ApiResponse;
 import com.booquest.booquest_api.common.util.JsonMapperUtils;
 import com.booquest.booquest_api.domain.mission.enums.MissionStatus;
@@ -38,6 +40,7 @@ public class MissionController {
     private final SelectMissionUseCase selectMissionUseCase;
     private final GetMissionProgressUseCase getMissionProgressUseCase;
     private final StartMissionUseCase startMissionUseCase;
+    private final CompleteMissionUseCase completeMissionUseCase;
 
     @PostMapping()
     @Operation(summary = "메인퀘스트 생성", description = "메인퀘스트를 생성합니다.")
@@ -97,5 +100,16 @@ public class MissionController {
     public ApiResponse<Void> startMission(@PathVariable Long missionId) {
         startMissionUseCase.start(missionId);
         return ApiResponse.success("미션이 시작되었습니다");
+    }
+
+    @PostMapping("/{missionId}/complete")
+    @Operation(summary = "메인퀘스트 완료", description = "모든 부퀘스트가 완료된 메인퀘스트를 완료 처리합니다. </br>" +
+            "완료 시 부퀘스트 경험치, 광고/인증 보너스 경험치, 메인퀘스트 완료 경험치가 합산되어 캐릭터에 적용됩니다.")
+    public ApiResponse<MissionCompleteResponse> completeMission(@PathVariable Long missionId) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Long userId = Long.parseLong(auth.getName());
+
+        MissionCompleteResponse response = completeMissionUseCase.completeMission(missionId, userId);
+        return ApiResponse.success("메인퀘스트가 완료되었습니다.", response);
     }
 }

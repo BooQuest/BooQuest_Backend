@@ -16,6 +16,11 @@ public class MissionRepositoryAdapter implements MissionRepositoryPort {
     private final MissionRepository missionRepository;
 
     @Override
+    public Mission save(Mission mission) {
+        return missionRepository.save(mission);
+    }
+
+    @Override
     public List<Mission> saveAll(Iterable<Mission> missions) {
         return missionRepository.saveAll(missions);
     }

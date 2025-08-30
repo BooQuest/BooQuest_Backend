@@ -39,4 +39,23 @@ public class CharacterRewardService implements UpdateCharacterExpUseCase {
         }
         return userCharacter;
     }
+
+    @Transactional(readOnly = true)
+    public UserCharacter getCharacter(Long userId) {
+        return characterQueryPort.findByUserId(userId)
+                .orElseThrow(() -> new EntityNotFoundException("User character not found: " + userId));
+    }
+
+    @Transactional
+    public UserCharacter applyExpDelta(Long userId, int expDelta, LevelingPolicy levelingPolicy) {
+        UserCharacter userCharacter = characterQueryPort.findByUserId(userId)
+                .orElseThrow(() -> new EntityNotFoundException("User character not found: " + userId));
+        
+        if (expDelta != 0) {
+            userCharacter.applyExpDelta(expDelta, levelingPolicy);
+            characterCommandPort.save(userCharacter);
+        }
+        
+        return userCharacter;
+    }
 }
