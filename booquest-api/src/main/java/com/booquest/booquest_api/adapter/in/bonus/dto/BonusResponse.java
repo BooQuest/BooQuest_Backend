@@ -4,5 +4,6 @@ import com.booquest.booquest_api.domain.bonus.enums.BonusStatus;
 
 public record BonusResponse(
         BonusStatus status,
-        int additionalExp
+        int additionalExp,
+        int totalStepExp
 ) {}

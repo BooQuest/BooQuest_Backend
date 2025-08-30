@@ -12,6 +12,7 @@ import com.booquest.booquest_api.domain.bonus.enums.BonusStatus;
 import com.booquest.booquest_api.domain.bonus.model.AdView;
 import com.booquest.booquest_api.domain.character.enums.RewardType;
 import com.booquest.booquest_api.domain.character.policy.CharacterRewardPolicy;
+import com.booquest.booquest_api.domain.character.policy.StepExpCalculator;
 import com.booquest.booquest_api.domain.mission.model.Mission;
 import com.booquest.booquest_api.domain.missionstep.enums.StepStatus;
 import com.booquest.booquest_api.domain.missionstep.model.MissionStep;
@@ -29,21 +30,22 @@ public class AdService implements AdUseCase {
     private final ProofRepositoryPort proofRepositoryPort;
     private final UpdateCharacterExpUseCase updateCharacterExpUseCase;
     private final CharacterRewardPolicy rewardPolicy;
+    private final StepExpCalculator stepExpCalculator;
 
     @Override
     @Transactional
     public BonusResponse watchAdAndGrantExp(Long userId, Long stepId, AdRequest request) {
         var check = checkUserPermissionAndStepCompleted(userId, stepId);
         if (!check.completed) {
-            return new BonusResponse(BonusStatus.NOT_COMPLETED, 0);
+            return new BonusResponse(BonusStatus.NOT_COMPLETED, 0, 0);
         }
 
         if (proofRepositoryPort.existsByUserIdAndStepId(userId, stepId)) {
-            return new BonusResponse(BonusStatus.BLOCKED_BY_PROOF, 0);
+            return new BonusResponse(BonusStatus.BLOCKED_BY_PROOF, 0, 0);
         }
 
         if (adViewRepositoryPort.existsCompletedByUserIdAndStepId(userId, stepId)) {
-            return new BonusResponse(BonusStatus.ALREADY_WATCHED, 0);
+            return new BonusResponse(BonusStatus.ALREADY_WATCHED, 0, 0);
         }
 
         AdView adView = AdView.builder()
@@ -58,7 +60,8 @@ public class AdService implements AdUseCase {
         updateCharacterExpUseCase.applyReward(userId, RewardType.AD_WATCHED);
 
         int additionalExp = rewardPolicy.expDeltaFor(RewardType.AD_WATCHED);
-        return new BonusResponse(BonusStatus.GRANTED, additionalExp);
+        int totalStepExp = stepExpCalculator.calculateTotalStepExp(rewardPolicy);
+        return new BonusResponse(BonusStatus.GRANTED, additionalExp, totalStepExp);
     }
 
     private CompletedCheck checkUserPermissionAndStepCompleted(Long userId, Long stepId) {
