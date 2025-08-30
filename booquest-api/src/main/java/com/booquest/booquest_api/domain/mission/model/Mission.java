@@ -76,4 +76,22 @@ public class Mission extends AuditableEntity {
         this.status = MissionStatus.IN_PROGRESS;
         firstStep.start();
     }
+
+    public boolean isAllStepsCompleted() {
+        return steps.stream().allMatch(MissionStep::isCompleted);
+    }
+
+    public void complete() {
+        if (this.status != MissionStatus.IN_PROGRESS) {
+            throw new IllegalStateException("미션은 IN_PROGRESS 상태에서만 완료할 수 있습니다.");
+        }
+        if (!isAllStepsCompleted()) {
+            throw new IllegalStateException("모든 부퀘스트가 완료되어야 메인퀘스트를 완료할 수 있습니다.");
+        }
+        this.status = MissionStatus.COMPLETED;
+    }
+
+    public boolean isCompleted() {
+        return this.status == MissionStatus.COMPLETED;
+    }
 }

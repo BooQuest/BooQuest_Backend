@@ -48,6 +48,10 @@ public class MissionResponse {
                 .build();
     }
 
+    public static MissionResponse toResponse(Mission mission) {
+        return toResponse(mission, 0); // missionTotalExp는 0으로 설정
+    }
+
     private static MissionStepProgressResponse calculateProgress(Mission mission) {
         Set<MissionStep> steps = mission.getSteps();
 

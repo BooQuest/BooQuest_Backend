@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Optional;
 
 public interface MissionRepositoryPort {
+    Mission save(Mission mission);
+    
     List<Mission> saveAll(Iterable<Mission> missions);
 
     Optional<Mission> findByIdWithSteps(Long missionId);

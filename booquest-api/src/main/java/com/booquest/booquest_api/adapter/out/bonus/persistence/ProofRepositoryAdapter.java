@@ -31,4 +31,9 @@ public class ProofRepositoryAdapter implements ProofRepositoryPort {
     public long deleteByUserId(Long userId) {
         return proofJpaRepository.deleteByUserId(userId);
     }
+
+    @Override
+    public boolean existsByStepIdAndUserIdAndIsVerifiedTrue(Long stepId, Long userId) {
+        return proofJpaRepository.existsByStepIdAndUserIdAndIsVerifiedTrue(stepId, userId);
+    }
 }
