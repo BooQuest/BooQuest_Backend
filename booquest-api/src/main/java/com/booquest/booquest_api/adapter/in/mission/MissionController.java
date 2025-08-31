@@ -104,12 +104,28 @@ public class MissionController {
 
     @PostMapping("/{missionId}/complete")
     @Operation(summary = "메인퀘스트 완료", description = "모든 부퀘스트가 완료된 메인퀘스트를 완료 처리합니다. </br>" +
-            "완료 시 부퀘스트 경험치, 광고/인증 보너스 경험치, 메인퀘스트 완료 경험치가 합산되어 캐릭터에 적용됩니다.")
+            "완료 시 부퀘스트 경험치, 광고/인증 보너스 경험치, 메인퀘스트 완료 경험치가 합산되어 캐릭터에 적용됩니다. <br/><br/>" +
+            "data.status 값 <br/>" +
+            "- completed: 메인퀘스트가 완료되었습니다. <br/>" +
+            "- not-all-steps-completed: 모든 부퀘스트를 완료해주세요. <br/>" +
+            "- not-in-progress: 메인퀘스트를 먼저 시작해주세요. <br/>" +
+            "- already-completed: 이미 완료된 메인퀘스트입니다. <br/>" +
+            "- mission-not-found: 메인퀘스트를 찾을 수 없습니다.")
     public ApiResponse<MissionCompleteResponse> completeMission(@PathVariable Long missionId) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         Long userId = Long.parseLong(auth.getName());
 
         MissionCompleteResponse response = completeMissionUseCase.completeMission(missionId, userId);
-        return ApiResponse.success("메인퀘스트가 완료되었습니다.", response);
+
+        String message = switch (response.getStatus()) {
+            case COMPLETED                -> "메인퀘스트가 완료되었습니다.";
+            case NOT_ALL_STEPS_COMPLETED  -> "모든 부퀘스트를 완료해주세요.";
+            case NOT_IN_PROGRESS          -> "메인퀘스트를 먼저 시작해주세요.";
+            case ALREADY_COMPLETED        -> "이미 완료된 메인퀘스트입니다.";
+            case MISSION_NOT_FOUND        -> "메인퀘스트를 찾을 수 없습니다.";
+            default                       -> "처리되었습니다.";
+        };
+
+        return ApiResponse.success(message, response);
     }
 }

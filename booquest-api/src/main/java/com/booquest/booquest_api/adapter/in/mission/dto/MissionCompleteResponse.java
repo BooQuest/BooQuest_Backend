@@ -2,6 +2,7 @@ package com.booquest.booquest_api.adapter.in.mission.dto;
 
 import com.booquest.booquest_api.adapter.in.character.web.dto.UserCharacterResponse;
 import com.booquest.booquest_api.domain.character.model.UserCharacter;
+import com.booquest.booquest_api.domain.mission.enums.MissionCompleteStatus;
 import com.booquest.booquest_api.domain.mission.model.Mission;
 import lombok.Builder;
 import lombok.Getter;
@@ -9,6 +10,7 @@ import lombok.Getter;
 @Getter
 @Builder
 public class MissionCompleteResponse {
+    private MissionCompleteStatus status;
     private MissionResponse mission;
     private UserCharacterResponse character;
     private int totalExpReward; // 총 추가된 경험치 (부퀘스트 + 광고/인증 + 메인퀘스트 완료)
@@ -24,9 +26,20 @@ public class MissionCompleteResponse {
                                                    int bonusExpReward, int missionCompletionExpReward,
                                                    int levelUpCount, int previousLevel, 
                                                    boolean missionCompleted) {
+        return toResponse(MissionCompleteStatus.COMPLETED, mission, character, totalExpReward, 
+                         stepExpReward, bonusExpReward, missionCompletionExpReward, 
+                         levelUpCount, previousLevel, missionCompleted);
+    }
+
+    public static MissionCompleteResponse toResponse(MissionCompleteStatus status, Mission mission, UserCharacter character,
+                                                   int totalExpReward, int stepExpReward, 
+                                                   int bonusExpReward, int missionCompletionExpReward,
+                                                   int levelUpCount, int previousLevel, 
+                                                   boolean missionCompleted) {
         return MissionCompleteResponse.builder()
-                .mission(MissionResponse.toResponse(mission))
-                .character(UserCharacterResponse.toResponse(character))
+                .status(status)
+                .mission(mission != null ? MissionResponse.toResponse(mission) : null)
+                .character(character != null ? UserCharacterResponse.toResponse(character) : null)
                 .totalExpReward(totalExpReward)
                 .stepExpReward(stepExpReward)
                 .bonusExpReward(bonusExpReward)
