@@ -2,6 +2,7 @@ package com.booquest.booquest_api.application.service.auth;
 
 import com.booquest.booquest_api.adapter.in.auth.web.dto.SocialLoginResponse;
 import com.booquest.booquest_api.adapter.out.auth.oauth.KakaoOAuthClient;
+import com.booquest.booquest_api.adapter.out.auth.oauth.NaverOAuthClient;
 import com.booquest.booquest_api.application.port.in.auth.SocialLoginUseCase;
 import com.booquest.booquest_api.adapter.in.auth.web.token.dto.TokenInfo;
 import com.booquest.booquest_api.application.port.out.user.UserCommandPort;
@@ -21,6 +22,7 @@ import java.util.Optional;
 public class SocialLoginService implements SocialLoginUseCase {
 //    private final OAuthClientPort oAuthClient;
     private final KakaoOAuthClient kakaoOAuthClient;
+    private final NaverOAuthClient naverOAuthClient;
     private final UserQueryPort userQueryPort; // User 정보 확인용
     private final TokenService tokenService;
     private final UserCommandPort userCommandPort;
@@ -41,9 +43,9 @@ public class SocialLoginService implements SocialLoginUseCase {
     private SocialUser fetchSocialUser(String accessToken, AuthProvider provider) {
         return switch (provider) {
             case KAKAO -> kakaoOAuthClient.fetchUserInfo(accessToken);
+            case NAVER -> naverOAuthClient.fetchUserInfo(accessToken);
             // case GOOGLE -> googleOAuthClient.fetchUserInfo(accessToken);
             // case APPLE  -> appleOAuthClient.fetchUserInfo(accessToken);
-            // case NAVER  -> naverOAuthClient.fetchUserInfo(accessToken);
             default -> throw new IllegalArgumentException("Unsupported provider: " + provider);
         };
     }
