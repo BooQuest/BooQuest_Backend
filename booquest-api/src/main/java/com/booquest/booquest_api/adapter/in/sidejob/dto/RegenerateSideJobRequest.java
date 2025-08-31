@@ -11,12 +11,10 @@ public record RegenerateSideJobRequest(RegenerateFeedbackData feedbackData, @Val
     @RequiredArgsConstructor
     @Getter
     public enum FeedbackType{
-        LOW_PROFITABILITY("수익성이 낮아보여요"),
-        NO_INTEREST("흥미가 생기지 않아요"),
-        NOT_MY_STYLE("성향과 맞지 않아요"),
-        TAKES_TOO_MUCH_TIME("시간이 너무 많이 필요해요"),
-        NOT_FEASIBLE("할 수 있는 일이 아니에요"),
-        TOO_EXPENSIVE("초기 비용이 부담돼요"),
+        LOW_PROFITABILITY("주제가 마음에 들지 않아요"),
+        NOT_INTERESTING("플랫폼이 마음에 들지 않아요"),
+        TOO_TIME_CONSUMING("시간이 너무 많이 들어요"),
+        CHANGE_TO_OTHER("다른걸로 바꿔주세요"),
         NONE("없음");
 
         private final String label;
