@@ -9,6 +9,7 @@ import com.booquest.booquest_api.domain.character.enums.RewardType;
 import com.booquest.booquest_api.domain.character.model.UserCharacter;
 import com.booquest.booquest_api.domain.character.policy.CharacterRewardPolicy;
 import com.booquest.booquest_api.domain.character.policy.LevelingPolicy;
+import com.booquest.booquest_api.domain.mission.enums.MissionCompleteStatus;
 import com.booquest.booquest_api.domain.mission.enums.MissionStatus;
 import com.booquest.booquest_api.domain.mission.model.Mission;
 import com.booquest.booquest_api.domain.missionstep.model.MissionStep;
@@ -31,34 +32,52 @@ public class CompleteMissionService implements CompleteMissionUseCase {
     @Override
     @Transactional
     public MissionCompleteResponse completeMission(Long missionId, Long userId) {
-        Mission mission = getMission(missionId);
-        checkUserPermission(mission, userId);
-        checkMissionCanBeCompleted(mission);
+        try {
+            Mission mission = getMission(missionId);
+            checkUserPermission(mission, userId);
+            checkMissionCanBeCompleted(mission);
 
-        // 이전 레벨 저장
-        UserCharacter currentCharacter = characterRewardService.getCharacter(userId);
-        int previousLevel = currentCharacter.getLevel();
+            // 이전 레벨 저장
+            UserCharacter currentCharacter = characterRewardService.getCharacter(userId);
+            int previousLevel = currentCharacter.getLevel();
 
-        // 경험치 계산
-        int stepExpReward = calculateStepExpReward(mission);
-        int bonusExpReward = calculateBonusExpReward(mission, userId);
-        int missionCompletionExpReward = characterRewardPolicy.expDeltaFor(RewardType.MISSION_COMPLETED);
-        int totalExpReward = stepExpReward + bonusExpReward + missionCompletionExpReward;
+            // 경험치 계산
+            int stepExpReward = calculateStepExpReward(mission);
+            int bonusExpReward = calculateBonusExpReward(mission, userId);
+            int missionCompletionExpReward = characterRewardPolicy.expDeltaFor(RewardType.MISSION_COMPLETED);
+            int totalExpReward = stepExpReward + bonusExpReward + missionCompletionExpReward;
 
-        // 메인퀘스트 완료 처리
-        mission.complete();
-        missionRepository.save(mission);
+            // 메인퀘스트 완료 처리
+            mission.complete();
+            missionRepository.save(mission);
 
-        // 캐릭터에 경험치 적용
-        UserCharacter updatedCharacter = characterRewardService.applyExpDelta(userId, missionCompletionExpReward, levelingPolicy);
+            // 캐릭터에 경험치 적용
+            UserCharacter updatedCharacter = characterRewardService.applyExpDelta(userId, missionCompletionExpReward, levelingPolicy);
 
-        // 레벨업 정보 계산
-        int levelUpCount = updatedCharacter.getLevel() - previousLevel;
+            // 레벨업 정보 계산
+            int levelUpCount = updatedCharacter.getLevel() - previousLevel;
 
-        return MissionCompleteResponse.toResponse(
-                mission, updatedCharacter, totalExpReward, stepExpReward,
-                bonusExpReward, missionCompletionExpReward, levelUpCount, previousLevel, true
-        );
+            return MissionCompleteResponse.toResponse(
+                    MissionCompleteStatus.COMPLETED, mission, updatedCharacter, totalExpReward, stepExpReward,
+                    bonusExpReward, missionCompletionExpReward, levelUpCount, previousLevel, true
+            );
+        } catch (EntityNotFoundException e) {
+            return MissionCompleteResponse.toResponse(
+                    MissionCompleteStatus.MISSION_NOT_FOUND, null, null, 0, 0, 0, 0, 0, 0, false
+            );
+        } catch (IllegalStateException e) {
+            MissionCompleteStatus status;
+            if (e.getMessage().contains("already completed")) {
+                status = MissionCompleteStatus.ALREADY_COMPLETED;
+            } else if (e.getMessage().contains("must be in progress")) {
+                status = MissionCompleteStatus.NOT_IN_PROGRESS;
+            } else {
+                status = MissionCompleteStatus.NOT_ALL_STEPS_COMPLETED;
+            }
+            return MissionCompleteResponse.toResponse(
+                    status, null, null, 0, 0, 0, 0, 0, 0, false
+            );
+        }
     }
 
     private Mission getMission(Long missionId) {
@@ -76,6 +95,9 @@ public class CompleteMissionService implements CompleteMissionUseCase {
         MissionStatus status = mission.getStatus();
         if (status == MissionStatus.COMPLETED) {
             throw new IllegalStateException("Mission is already completed");
+        }
+        if (status != MissionStatus.IN_PROGRESS) {
+            throw new IllegalStateException("Mission must be in progress to be completed");
         }
         if (!mission.isAllStepsCompleted()) {
             throw new IllegalStateException("All mission steps must be completed before completing the mission");
