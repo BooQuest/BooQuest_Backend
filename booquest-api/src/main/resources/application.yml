@@ -59,6 +59,10 @@ kakao:
   api:
     user-info-url: https://kapi.kakao.com/v2/user/me
 
+naver:
+  api:
+    user-info-url: https://openapi.naver.com/v1/nid/me
+
 jwt:
   secret: ${JWT_SECRET}
   access-token-ttl-seconds: 3600
