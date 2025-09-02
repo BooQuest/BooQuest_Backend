@@ -74,4 +74,9 @@ public class MissionRepositoryAdapter implements MissionRepositoryPort {
     public long deleteByUserId(Long userId) {
         return (long) missionRepository.deleteByUserId(userId);
     }
+
+    @Override
+    public List<Mission> findBySideJobId(Long sideJobId) {
+        return missionRepository.findMissionsBySideJobId(sideJobId);
+    }
 }
