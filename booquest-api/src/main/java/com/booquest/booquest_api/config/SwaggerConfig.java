@@ -6,8 +6,12 @@ import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
+import io.swagger.v3.oas.models.servers.Server;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import java.util.List;
 
 @OpenAPIDefinition(
         info = @Info(
@@ -18,6 +22,9 @@ import org.springframework.context.annotation.Configuration;
 )
 @Configuration
 public class SwaggerConfig {
+        @Value("${app.openapi.server-url:/}")
+        private String serverUrl;
+
         @Bean
         public OpenAPI openAPI() {
                 SecurityScheme bearerAuth = new SecurityScheme()
@@ -34,7 +41,10 @@ public class SwaggerConfig {
 
                 SecurityRequirement globalRequirement = new SecurityRequirement().addList("bearerAuth");
 
+                Server server = new Server().url(serverUrl).description("OpenAPI base URL");
+
                 return new OpenAPI()
+                        .servers(List.of(server))
                         .components(new Components()
                                 .addSecuritySchemes("bearerAuth", bearerAuth)
                                 .addSecuritySchemes("refreshAuth", refreshAuth))
