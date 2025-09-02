@@ -12,12 +12,17 @@ import com.booquest.booquest_api.application.port.in.mission.GetMissionProgressU
 import com.booquest.booquest_api.application.port.in.mission.SelectMissionUseCase;
 import com.booquest.booquest_api.application.port.in.mission.StartMissionUseCase;
 import com.booquest.booquest_api.application.port.in.mission.CompleteMissionUseCase;
+import com.booquest.booquest_api.application.port.in.sidejob.SelectSideJobUseCase;
+import com.booquest.booquest_api.application.port.in.sidejob.UpdateSideJobUseCase;
 import com.booquest.booquest_api.common.response.ApiResponse;
 import com.booquest.booquest_api.common.util.JsonMapperUtils;
 import com.booquest.booquest_api.domain.mission.enums.MissionStatus;
+import com.booquest.booquest_api.domain.mission.model.Mission;
+import com.booquest.booquest_api.domain.sidejob.model.SideJob;
 import com.fasterxml.jackson.core.type.TypeReference;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.util.ArrayList;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.MediaType;
@@ -41,10 +46,24 @@ public class MissionController {
     private final GetMissionProgressUseCase getMissionProgressUseCase;
     private final StartMissionUseCase startMissionUseCase;
     private final CompleteMissionUseCase completeMissionUseCase;
+    private final SelectSideJobUseCase selectSideJobUseCase;
+    private final UpdateSideJobUseCase updateSideJobUseCase;
 
     @PostMapping()
     @Operation(summary = "메인퀘스트 생성", description = "메인퀘스트를 생성합니다.")
     public ApiResponse<List<MissionResponseDto>> generate(@RequestBody MissionGenerateRequestDto requestDto) {
+        // 유저의 모든 사이드잡 가져와서 선택 초기화
+        List<SideJob> sideJobs = clearAllSideJobsSelected(requestDto);
+
+        // 존재하는 미션이 있는지 확인
+        List<Mission> existedMissions = selectMissionUseCase.selectMissionBySideJobId(requestDto.sideJobId());
+
+        if (!existedMissions.isEmpty()){
+            return ApiResponse.success("이미 생성된 미션이 존재합니다.",
+                    handleExistedMissions(requestDto, sideJobs, existedMissions));
+        }
+
+        // 미션이 없으면 AI로 생성 요청
         String raw = webClient.post()                                   // POST로 호출해야 해서 필요
                 .uri("/ai/generate-mission")                        // 호출할 AI 경로 지정 — 필요
                 .contentType(MediaType.APPLICATION_JSON)                // 요청 바디가 JSON임을 명시 — 필요
@@ -56,6 +75,27 @@ public class MissionController {
         List<MissionResponseDto> missions = JsonMapperUtils.parse(raw, new TypeReference<>() {});
 
         return ApiResponse.success("미션이 생성되었습니다.", missions);
+    }
+
+    private List<MissionResponseDto> handleExistedMissions(MissionGenerateRequestDto requestDto,
+                                                            List<SideJob> sideJobs, List<Mission> existedMissions) {
+        // 선택된 sideJob을 찾아서 markSelected
+        SideJob target = sideJobs.stream()
+                .filter(s -> s.getId().equals(requestDto.sideJobId()))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("해당 sideJob이 존재하지 않습니다."));
+
+        updateSideJobUseCase.markSelected(target);
+
+        return existedMissions.stream()
+                .map(MissionResponseDto::fromEntity)
+                .toList();
+    }
+
+    private List<SideJob> clearAllSideJobsSelected(MissionGenerateRequestDto requestDto) {
+        List<SideJob> sideJobs = selectSideJobUseCase.selectSideJobsByUserId(requestDto.userId());
+        updateSideJobUseCase.clearAllSelected(sideJobs);
+        return sideJobs;
     }
 
     @GetMapping

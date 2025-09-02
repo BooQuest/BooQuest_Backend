@@ -71,8 +71,7 @@ public class JwtTokenProvider implements JwtTokenPort {
     }
 
     @Override
-    public TokenInfo generateTestToken() {
-        long fakeUserId = Math.abs(UUID.randomUUID().getMostSignificantBits());
+    public TokenInfo generateTestToken(long fakeUserId) {
         String fakeEmail = "tester-" + fakeUserId + "@example.test";
 
         Date now = new Date();

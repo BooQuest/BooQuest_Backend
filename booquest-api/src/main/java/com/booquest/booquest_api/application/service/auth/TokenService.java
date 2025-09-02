@@ -52,8 +52,8 @@ public class TokenService implements TokenUseCase {
     }
 
     @Override
-    public TokenInfo issueTestToken() {
-        return jwtTokenPort.generateTestToken();
+    public TokenInfo issueTestToken(long fakeUserId) {
+        return jwtTokenPort.generateTestToken(fakeUserId);
     }
 
     @Override

@@ -6,6 +6,6 @@ import com.booquest.booquest_api.domain.user.model.User;
 
 public interface TokenUseCase {
     TokenInfo issueToken(User user);
-    TokenInfo issueTestToken();
+    TokenInfo issueTestToken(long fakeUserId);
     TokenRefreshResponse refreshAccessToken(String refreshToken);
 }

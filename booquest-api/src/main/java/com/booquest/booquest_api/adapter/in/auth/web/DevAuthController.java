@@ -8,7 +8,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Profile;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @Profile({"local","dev"})
@@ -22,8 +24,8 @@ public class DevAuthController {
 
     @PostMapping("/test-token")
     @Operation(summary = "테스트용 토큰 발급", description = "테스트용 토큰을 발급합니다.")
-    public ApiResponse<TokenInfo> issueTestToken() {
-        TokenInfo response = tokenUseCase.issueTestToken();
+    public ApiResponse<TokenInfo> issueTestToken(@RequestParam Long userId) {
+        TokenInfo response = tokenUseCase.issueTestToken(userId);
         return ApiResponse.success("테스트용 토큰이 발급되었습니다.", response);
     }
 }

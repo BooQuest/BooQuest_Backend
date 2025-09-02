@@ -47,4 +47,12 @@ public class SideJob extends AuditableEntity {
     @OneToMany(mappedBy = "sideJob", cascade = CascadeType.ALL, orphanRemoval = true)
     @OrderBy("orderNo ASC")
     private Set<Mission> missions = new LinkedHashSet<>();
+
+    public void clearIsSelected() {
+        this.isSelected = false;
+    }
+
+    public void markSelected() {
+        this.isSelected = true;
+    }
 }

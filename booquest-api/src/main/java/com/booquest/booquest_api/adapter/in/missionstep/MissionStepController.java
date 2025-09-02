@@ -10,6 +10,7 @@ import com.booquest.booquest_api.application.port.in.missionstep.SelectMissionSt
 import com.booquest.booquest_api.application.port.in.missionstep.UpdateMissionStepStatusUseCase;
 import com.booquest.booquest_api.common.response.ApiResponse;
 import com.booquest.booquest_api.common.util.JsonMapperUtils;
+import com.booquest.booquest_api.domain.missionstep.model.MissionStep;
 import com.fasterxml.jackson.core.type.TypeReference;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -45,6 +46,17 @@ public class MissionStepController {
     @Operation(summary = "부퀘스트 생성", description = "부퀘스트를 생성합니다.")
     public ApiResponse<List<MissionStepResponseDto>> generate(
             @RequestBody @Valid MissionStepGenerateRequestDto requestDto) {
+        //해당 미션의 부퀘스트를 조회
+        List<MissionStep> existedSteps = selectMissionStepUseCase.selectMissionStepsByMissionId(requestDto.missionId());
+
+        if (!existedSteps.isEmpty()) {
+            List<MissionStepResponseDto> missionSteps = existedSteps.stream()
+                    .map(MissionStepResponseDto::fromEntity)
+                    .toList();
+
+            return ApiResponse.success("부퀘스트가 이미 존재합니다.", missionSteps);
+        }
+
         String raw = webClient.post()                                   // POST로 호출해야 해서 필요
                 .uri("/ai/generate-mission-step")                   // 호출할 AI 경로 지정 — 필요
                 .contentType(MediaType.APPLICATION_JSON)                // 요청 바디가 JSON임을 명시 — 필요
@@ -53,8 +65,7 @@ public class MissionStepController {
                 .bodyToMono(String.class)                               // 응답 바디를 “문자열”로 그대로 받음(파싱 없음) — 필요
                 .block();
 
-        List<MissionStepResponseDto> missionSteps = JsonMapperUtils.parse(raw, new TypeReference<>() {
-        });
+        List<MissionStepResponseDto> missionSteps = JsonMapperUtils.parse(raw, new TypeReference<>() {});
 
         return ApiResponse.success("부퀘스트가 생성되었습니다.", missionSteps);
     }

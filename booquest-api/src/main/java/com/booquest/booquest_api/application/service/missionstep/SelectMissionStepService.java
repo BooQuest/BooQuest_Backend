@@ -4,6 +4,7 @@ import com.booquest.booquest_api.application.port.in.missionstep.SelectMissionSt
 import com.booquest.booquest_api.application.port.out.missionstep.MissionStepRepositoryPort;
 import com.booquest.booquest_api.domain.missionstep.model.MissionStep;
 import jakarta.persistence.EntityNotFoundException;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -16,5 +17,10 @@ public class SelectMissionStepService implements SelectMissionStepUseCase {
     public MissionStep selectMissionStep(Long stepId) {
         return missionStepRepository.findById(stepId)
                 .orElseThrow(() -> new EntityNotFoundException("Mission Step not found: " + stepId));
+    }
+
+    @Override
+    public List<MissionStep> selectMissionStepsByMissionId(Long missionId) {
+        return missionStepRepository.findByMissionId(missionId);
     }
 }
