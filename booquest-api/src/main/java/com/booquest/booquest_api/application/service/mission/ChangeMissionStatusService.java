@@ -2,7 +2,6 @@ package com.booquest.booquest_api.application.service.mission;
 
 import com.booquest.booquest_api.application.port.in.mission.StartMissionUseCase;
 import com.booquest.booquest_api.application.port.out.mission.MissionRepositoryPort;
-import com.booquest.booquest_api.domain.mission.enums.MissionStatus;
 import com.booquest.booquest_api.domain.mission.model.Mission;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
