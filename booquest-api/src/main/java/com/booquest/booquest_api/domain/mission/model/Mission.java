@@ -67,14 +67,8 @@ public class Mission extends AuditableEntity {
             throw new IllegalStateException("미션을 시작하려면 5개의 미션 스텝이 필요합니다.");
         }
 
-        // 첫 번째 step을 찾아서 시작
-        MissionStep firstStep = steps.stream()
-                .filter(step -> step.getSeq() == 1)
-                .findFirst()
-                .orElseThrow(() -> new IllegalStateException("첫 번째 미션 스텝(seq=1)이 존재하지 않습니다."));
-
         this.status = MissionStatus.IN_PROGRESS;
-        firstStep.start();
+        steps.forEach(MissionStep::start);
     }
 
     public boolean isAllStepsCompleted() {
