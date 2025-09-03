@@ -79,4 +79,10 @@ public class MissionRepositoryAdapter implements MissionRepositoryPort {
     public List<Mission> findBySideJobId(Long sideJobId) {
         return missionRepository.findMissionsBySideJobId(sideJobId);
     }
+
+    @Override
+    public Integer findOrderNoById(Long missionId) {
+        return missionRepository.findOrderNoById(missionId)
+                .orElseThrow(() -> new IllegalArgumentException("orderNo가 존재하지 않습니다."));
+    }
 }

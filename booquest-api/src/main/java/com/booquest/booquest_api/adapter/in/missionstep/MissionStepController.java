@@ -5,12 +5,15 @@ import com.booquest.booquest_api.adapter.in.missionstep.dto.MissionStepResponseD
 import com.booquest.booquest_api.adapter.in.missionstep.dto.MissionStepUpdateStatusRequest;
 import com.booquest.booquest_api.adapter.in.missionstep.dto.MissionStepUpdateStatusResponse;
 import com.booquest.booquest_api.adapter.in.missionstep.dto.RegenerateMissionStepRequest;
+import com.booquest.booquest_api.application.port.in.mission.SelectMissionUseCase;
 import com.booquest.booquest_api.application.port.in.missionstep.DeleteMissionStepUseCase;
 import com.booquest.booquest_api.application.port.in.missionstep.SelectMissionStepUseCase;
 import com.booquest.booquest_api.application.port.in.missionstep.UpdateMissionStepStatusUseCase;
+import com.booquest.booquest_api.application.port.in.sidejob.SelectSideJobUseCase;
 import com.booquest.booquest_api.common.response.ApiResponse;
 import com.booquest.booquest_api.common.util.JsonMapperUtils;
 import com.booquest.booquest_api.domain.missionstep.model.MissionStep;
+import com.booquest.booquest_api.domain.sidejob.model.SideJob;
 import com.fasterxml.jackson.core.type.TypeReference;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -41,6 +44,11 @@ public class MissionStepController {
     private final SelectMissionStepUseCase selectMissionStepUseCase;
     private final UpdateMissionStepStatusUseCase updateMissionStepStatusUseCase;
     private final DeleteMissionStepUseCase deleteMissionStepUseCase;
+    private final SelectMissionUseCase selectMissionUseCase;
+    private final SelectSideJobUseCase selectSideJobUseCase;
+
+    record MissionStepAiRequestDto(long userId, Long missionId, String missionTitle, String missionDesignNotes,
+                                   int orderNo, String sideJobTitle, String sideJobDescription) {}
 
     @PostMapping()
     @Operation(summary = "부퀘스트 생성", description = "부퀘스트를 생성합니다.")
@@ -57,10 +65,19 @@ public class MissionStepController {
             return ApiResponse.success("부퀘스트가 이미 존재합니다.", missionSteps);
         }
 
+        SideJob sideJob = selectSideJobUseCase.getSelectedSideJobsByUserId(requestDto.userId());
+        int orderNo = selectMissionUseCase.selectOrderNoByMissionId(requestDto.missionId());
+
+        MissionStepAiRequestDto aiRequest = new MissionStepAiRequestDto(
+                requestDto.userId(), requestDto.missionId(), requestDto.missionTitle(), requestDto.missionDesignNotes(),
+                orderNo, sideJob.getTitle(), sideJob.getDescription()
+        );
+
+
         String raw = webClient.post()                                   // POST로 호출해야 해서 필요
                 .uri("/ai/generate-mission-step")                   // 호출할 AI 경로 지정 — 필요
                 .contentType(MediaType.APPLICATION_JSON)                // 요청 바디가 JSON임을 명시 — 필요
-                .bodyValue(requestDto)                                     // 보낼 페이로드 지정 — 필요
+                .bodyValue(aiRequest)                                     // 보낼 페이로드 지정 — 필요
                 .retrieve()                                             // 요청 실행 트리거 — 필요
                 .bodyToMono(String.class)                               // 응답 바디를 “문자열”로 그대로 받음(파싱 없음) — 필요
                 .block();

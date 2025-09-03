@@ -25,5 +25,11 @@ public class SelectSideJobService implements SelectSideJobUseCase {
         return sideJobRepository.findTop3ByUserIdOrderByCreatedAtDesc(userId);
     }
 
+    @Override
+    public SideJob getSelectedSideJobsByUserId(Long userId) {
+        return sideJobRepository.findSelectedSideJobByUserId(userId)
+                .orElseThrow(() -> new EntityNotFoundException("SideJob not found"));
+    }
+
 
 }

@@ -8,4 +8,6 @@ public interface SelectSideJobUseCase {
     SideJob selectSideJob(Long sideJobId);
 
     List<SideJob> selectSideJobsByUserId(Long userId);
+
+    SideJob getSelectedSideJobsByUserId(Long userId);
 }

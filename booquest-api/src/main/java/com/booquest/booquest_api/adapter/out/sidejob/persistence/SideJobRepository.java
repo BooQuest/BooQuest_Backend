@@ -42,4 +42,7 @@ public interface SideJobRepository extends JpaRepository<SideJob, Long> {
     long deleteByUserId(Long userId);
 
     Optional<SideJob> findByIdAndUserId(Long id, Long userId);
+
+    @Query("select s from SideJob s where s.userId = :userId and s.isSelected = true")
+    Optional<SideJob> findSelectedSideJobByUserId(Long userId);
 }

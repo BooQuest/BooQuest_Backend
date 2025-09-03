@@ -19,7 +19,7 @@ public interface SideJobRepositoryPort {
 
     List<SideJob> findTop3ByUserIdOrderByCreatedAtDesc(Long userId);
 
-    Long findSelectedSideJobByUserId(Long userId);
+    Long findSelectedSideJobIdByUserId(Long userId);
 
     void deleteAll(List<SideJob> sideJobs);
 
@@ -30,4 +30,6 @@ public interface SideJobRepositoryPort {
     Optional<SideJob> findById(Long sideJobSelectedId);
 
     long deleteByUserId(Long userId);
+
+    Optional<SideJob> findSelectedSideJobByUserId(Long userId);
 }

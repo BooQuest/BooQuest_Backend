@@ -57,4 +57,7 @@ public interface MissionRepository extends JpaRepository<Mission, Long> {
     @Modifying(clearAutomatically = true, flushAutomatically = true)
     @Query("delete from Mission m where m.userId = :userId")
     int deleteByUserId(@Param("userId") Long userId);
+
+    @Query("select m.orderNo from Mission m where m.id = :missionId")
+    Optional<Integer> findOrderNoById(Long missionId);
 }
