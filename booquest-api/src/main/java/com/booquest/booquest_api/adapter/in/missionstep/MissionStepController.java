@@ -1,9 +1,11 @@
 package com.booquest.booquest_api.adapter.in.missionstep;
 
+import com.booquest.booquest_api.adapter.in.missionstep.dto.MissionStepAiRequestDto;
 import com.booquest.booquest_api.adapter.in.missionstep.dto.MissionStepGenerateRequestDto;
 import com.booquest.booquest_api.adapter.in.missionstep.dto.MissionStepResponseDto;
 import com.booquest.booquest_api.adapter.in.missionstep.dto.MissionStepUpdateStatusRequest;
 import com.booquest.booquest_api.adapter.in.missionstep.dto.MissionStepUpdateStatusResponse;
+import com.booquest.booquest_api.adapter.in.missionstep.dto.RegenerateMissionStepAIRequest;
 import com.booquest.booquest_api.adapter.in.missionstep.dto.RegenerateMissionStepRequest;
 import com.booquest.booquest_api.application.port.in.mission.SelectMissionUseCase;
 import com.booquest.booquest_api.application.port.in.missionstep.DeleteMissionStepUseCase;
@@ -47,9 +49,6 @@ public class MissionStepController {
     private final SelectMissionUseCase selectMissionUseCase;
     private final SelectSideJobUseCase selectSideJobUseCase;
 
-    record MissionStepAiRequestDto(long userId, Long missionId, String missionTitle, String missionDesignNotes,
-                                   int orderNo, String sideJobTitle, String sideJobDescription) {}
-
     @PostMapping()
     @Operation(summary = "부퀘스트 생성", description = "부퀘스트를 생성합니다.")
     public ApiResponse<List<MissionStepResponseDto>> generate(
@@ -65,14 +64,7 @@ public class MissionStepController {
             return ApiResponse.success("부퀘스트가 이미 존재합니다.", missionSteps);
         }
 
-        SideJob sideJob = selectSideJobUseCase.getSelectedSideJobsByUserId(requestDto.userId());
-        int orderNo = selectMissionUseCase.selectOrderNoByMissionId(requestDto.missionId());
-
-        MissionStepAiRequestDto aiRequest = new MissionStepAiRequestDto(
-                requestDto.userId(), requestDto.missionId(), requestDto.missionTitle(), requestDto.missionDesignNotes(),
-                orderNo, sideJob.getTitle(), sideJob.getDescription()
-        );
-
+        MissionStepAiRequestDto aiRequest = generateMissionStepAiRequestDto(requestDto);
 
         String raw = webClient.post()                                   // POST로 호출해야 해서 필요
                 .uri("/ai/generate-mission-step")                   // 호출할 AI 경로 지정 — 필요
@@ -85,6 +77,16 @@ public class MissionStepController {
         List<MissionStepResponseDto> missionSteps = JsonMapperUtils.parse(raw, new TypeReference<>() {});
 
         return ApiResponse.success("부퀘스트가 생성되었습니다.", missionSteps);
+    }
+
+    private MissionStepAiRequestDto generateMissionStepAiRequestDto(MissionStepGenerateRequestDto requestDto) {
+        SideJob sideJob = selectSideJobUseCase.getSelectedSideJobsByUserId(requestDto.userId());
+        int orderNo = selectMissionUseCase.selectOrderNoByMissionId(requestDto.missionId());
+
+        return new MissionStepAiRequestDto(
+                requestDto.userId(), requestDto.missionId(), requestDto.missionTitle(), requestDto.missionDesignNotes(),
+                orderNo, sideJob.getTitle(), sideJob.getDescription()
+        );
     }
 
     @GetMapping("/{stepId}")
@@ -112,6 +114,10 @@ public class MissionStepController {
     @Operation(summary = "부퀘스트 목록 재생성", description = "유저 피드백에 따라 부퀘스트 목록을 재생성합니다.")
     public ApiResponse<List<MissionStepResponseDto>> regenerateAll(@RequestBody @Valid RegenerateMissionStepRequest request) {
 
+        MissionStepAiRequestDto aiRequest = generateMissionStepAiRequestDto(request.generateMissionStep());
+        RegenerateMissionStepAIRequest missionStepAIRequest = new RegenerateMissionStepAIRequest(
+                request.feedbackData(), aiRequest);
+
         //이전 부퀘스트 삭제
         deleteMissionStepUseCase.deleteAllByMissionId(request.generateMissionStep().missionId());
         //부퀘스트 생성 요청
@@ -119,7 +125,7 @@ public class MissionStepController {
         String raw = webClient.post()                                   // POST로 호출해야 해서 필요
                 .uri("/ai/regenerate-mission-step")                           // 호출할 AI 경로 지정 — 필요
                 .contentType(MediaType.APPLICATION_JSON)                       // 요청 바디가 JSON임을 명시 — 필요
-                .bodyValue(request)                                             // 보낼 페이로드 지정 — 필요
+                .bodyValue(missionStepAIRequest)                                             // 보낼 페이로드 지정 — 필요
                 .retrieve()                                                    // 요청 실행 트리거 — 필요
                 .bodyToMono(String.class)                                      // 응답 바디를 “문자열”로 그대로 받음(파싱 없음) — 필요
                 .block();
