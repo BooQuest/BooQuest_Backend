@@ -3,8 +3,10 @@ package com.booquest.booquest_api.application.port.out.mission;
 import com.booquest.booquest_api.domain.mission.model.Mission;
 import com.booquest.booquest_api.domain.mission.enums.MissionStatus;
 
+import jakarta.persistence.criteria.CriteriaBuilder.In;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.data.jpa.repository.Query;
 
 public interface MissionRepositoryPort {
     Mission save(Mission mission);
@@ -32,4 +34,6 @@ public interface MissionRepositoryPort {
     long deleteByUserId(Long userId);
 
     List<Mission> findBySideJobId(Long sideJobId);
+
+    Integer findOrderNoById(Long missionId);
 }

@@ -24,4 +24,9 @@ public class SelectMissionService implements SelectMissionUseCase {
     public List<Mission> selectMissionBySideJobId(Long sideJobId) {
         return missionRepository.findBySideJobId(sideJobId);
     }
+
+    @Override
+    public int selectOrderNoByMissionId(Long missionId) {
+        return missionRepository.findOrderNoById(missionId);
+    }
 }

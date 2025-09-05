@@ -8,4 +8,6 @@ public interface SelectMissionUseCase {
     Mission selectMission(Long missionId);
 
     List<Mission> selectMissionBySideJobId(Long sideJobId);
+
+    int selectOrderNoByMissionId(Long missionId);
 }
