@@ -28,7 +28,7 @@ public class GetUserSideJobSummaryService implements GetUserSideJobSummaryUseCas
 
         BigDecimal totalIncome = incomeRepositoryPort.sumByUserAndSideJob(userId, userSideJobId);
 
-        int completedQuestCount = missionStepRepositoryPort.countCompletedByUserAndSideJob(userId, userSideJobId);
+        int completedQuestCount = missionStepRepositoryPort.countCompletedByUserAndSideJob(userId, userSideJob.getSideJobId());
 
         int daysToFirstIncome = 0;
         LocalDate startedDate = null;
