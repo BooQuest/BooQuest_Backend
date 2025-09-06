@@ -51,4 +51,9 @@ public class UserSideJob extends AuditableEntity {
     @JoinColumn(name = "sidejob_id")  // Mission 테이블의 FK 컬럼 이름
     @OrderBy("orderNo ASC")
     private Set<Mission> missions = new LinkedHashSet<>();
+
+    public void complete() {
+        endedAt = LocalDateTime.now();
+        status = UserSideJobStatus.COMPLETED;
+    }
 }

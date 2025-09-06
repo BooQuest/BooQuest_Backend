@@ -4,6 +4,7 @@ import com.booquest.booquest_api.adapter.in.mission.dto.MissionCompleteResponse;
 import com.booquest.booquest_api.application.port.in.mission.CompleteMissionUseCase;
 import com.booquest.booquest_api.application.port.out.bonus.BonusStatusPort;
 import com.booquest.booquest_api.application.port.out.mission.MissionRepositoryPort;
+import com.booquest.booquest_api.application.port.out.usersidejob.UserSideJobRepositoryPort;
 import com.booquest.booquest_api.application.service.character.CharacterRewardService;
 import com.booquest.booquest_api.domain.character.enums.RewardType;
 import com.booquest.booquest_api.domain.character.model.UserCharacter;
@@ -13,12 +14,13 @@ import com.booquest.booquest_api.domain.mission.enums.MissionCompleteStatus;
 import com.booquest.booquest_api.domain.mission.enums.MissionStatus;
 import com.booquest.booquest_api.domain.mission.model.Mission;
 import com.booquest.booquest_api.domain.missionstep.model.MissionStep;
+import com.booquest.booquest_api.domain.sidejob.model.SideJob;
+import com.booquest.booquest_api.domain.usersidejob.model.UserSideJob;
 import jakarta.persistence.EntityNotFoundException;
+import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -28,6 +30,7 @@ public class CompleteMissionService implements CompleteMissionUseCase {
     private final CharacterRewardPolicy characterRewardPolicy;
     private final LevelingPolicy levelingPolicy;
     private final BonusStatusPort bonusStatusPort;
+    private final UserSideJobRepositoryPort userSideJobRepositoryPort;
 
     @Override
     @Transactional
@@ -57,6 +60,11 @@ public class CompleteMissionService implements CompleteMissionUseCase {
             // 레벨업 정보 계산
             int levelUpCount = updatedCharacter.getLevel() - previousLevel;
 
+            //5단계 메인퀘스트를 클리어하면 부업과 유저 부업을 완료 처리
+            if (mission.getOrderNo() == 5){
+                clearSideJob(mission);
+            }
+
             return MissionCompleteResponse.toResponse(
                     MissionCompleteStatus.COMPLETED, mission, updatedCharacter, totalExpReward, stepExpReward,
                     bonusExpReward, missionCompletionExpReward, levelUpCount, previousLevel, true
@@ -78,6 +86,15 @@ public class CompleteMissionService implements CompleteMissionUseCase {
                     status, null, null, 0, 0, 0, 0, 0, 0, false
             );
         }
+    }
+
+    private void clearSideJob(Mission mission) {
+        SideJob sideJob = mission.getSideJob();
+        sideJob.complete();
+        UserSideJob userSideJob = userSideJobRepositoryPort.findBySideJobId(sideJob.getId())
+                .orElseThrow(() -> new IllegalArgumentException("No UserSideJob By SideJob Id"));
+
+        userSideJob.complete();
     }
 
     private Mission getMission(Long missionId) {

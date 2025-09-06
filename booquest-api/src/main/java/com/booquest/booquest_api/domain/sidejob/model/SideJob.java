@@ -55,4 +55,8 @@ public class SideJob extends AuditableEntity {
     public void markSelected() {
         this.isSelected = true;
     }
+
+    public void complete() {
+        this.endedAt = LocalDateTime.now();
+    }
 }
