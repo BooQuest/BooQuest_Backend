@@ -15,4 +15,6 @@ public interface UserSideJobRepositoryPort {
     Optional<UserSideJob> findLatestSideJobForStatus(Long userId);
 
     long deleteByUserId(Long userId);
+
+    Optional<UserSideJob> findBySideJobId(Long id);
 }

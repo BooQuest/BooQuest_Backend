@@ -56,4 +56,6 @@ public interface UserSideJobRepository extends JpaRepository<UserSideJob, Long> 
                                                 @Param("status") UserSideJobStatus status);
 
     long deleteByUserId(Long userId);
+
+    Optional<UserSideJob> findBySideJobId(Long sideJobId);
 }
