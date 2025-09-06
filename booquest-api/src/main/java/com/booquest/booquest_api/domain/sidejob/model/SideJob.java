@@ -59,4 +59,12 @@ public class SideJob extends AuditableEntity {
     public void complete() {
         this.endedAt = LocalDateTime.now();
     }
+
+    public boolean isAllMissionCompleted() {
+        for (Mission mission : missions) {
+            if(!mission.isCompleted())
+                return false;
+        }
+        return true;
+    }
 }

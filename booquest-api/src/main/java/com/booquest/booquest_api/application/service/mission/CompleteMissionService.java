@@ -60,8 +60,8 @@ public class CompleteMissionService implements CompleteMissionUseCase {
             // 레벨업 정보 계산
             int levelUpCount = updatedCharacter.getLevel() - previousLevel;
 
-            //5단계 메인퀘스트를 클리어하면 부업과 유저 부업을 완료 처리
-            if (mission.getOrderNo() == 5){
+            //전체 메인퀘스트를 클리어하면 부업과 유저 부업을 완료 처리
+            if (mission.getSideJob().isAllMissionCompleted()){
                 clearSideJob(mission);
             }
 
