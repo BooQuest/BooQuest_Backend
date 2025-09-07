@@ -36,7 +36,8 @@ public class UserController {
         UserResponse base = getUserUseCase.getUserFromAuth(auth);
 
         var character = characterQueryPort.findByUserId(base.getId()).orElse(null);
-        var withCharacter = UserResponse.withCharacterType(base, character.getCharacterType());
+        var characterType = (character != null) ? character.getCharacterType() : null;
+        var withCharacter = UserResponse.withCharacterType(base, characterType);
 
         UserResponse userResponse = provideOnboardingStatus(withCharacter);
         return ApiResponse.success("사용자 정보가 조회되었습니다.", userResponse);
