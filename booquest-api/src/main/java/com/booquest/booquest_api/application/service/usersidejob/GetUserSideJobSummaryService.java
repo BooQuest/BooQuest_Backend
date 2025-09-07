@@ -30,7 +30,7 @@ public class GetUserSideJobSummaryService implements GetUserSideJobSummaryUseCas
 
         int completedQuestCount = missionStepRepositoryPort.countCompletedByUserAndSideJob(userId, userSideJob.getSideJobId());
 
-        int daysToFirstIncome = 0;
+        int daysToFirstIncome = 1;
         LocalDate startedDate = null;
         if (userSideJob.getCreatedAt() != null) {
             startedDate = userSideJob.getCreatedAt().toLocalDate();
@@ -40,7 +40,7 @@ public class GetUserSideJobSummaryService implements GetUserSideJobSummaryUseCas
 
         if (startedDate != null && firstIncomeDate != null) {
             long diff = firstIncomeDate.toEpochDay() - startedDate.toEpochDay(); // ChronoUnit 없이 '일수' 차이
-            daysToFirstIncome = (int) Math.max(diff, 0);    // 같은 날을 1일로 보려면: daysToFirstIncome += 1;
+            daysToFirstIncome = (int) Math.max(diff, 1);    // 같은 날을 1일로 보려면: daysToFirstIncome += 1;
         }
 
         return UserSideJobSummaryResponse.toResponse(userSideJob, totalIncome, completedQuestCount, daysToFirstIncome);
