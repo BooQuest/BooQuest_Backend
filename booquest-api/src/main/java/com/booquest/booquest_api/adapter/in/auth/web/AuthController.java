@@ -9,7 +9,6 @@ import com.booquest.booquest_api.application.port.in.auth.SocialLoginUseCase;
 import com.booquest.booquest_api.application.port.in.auth.TokenUseCase;
 import com.booquest.booquest_api.adapter.in.auth.web.token.dto.TokenRefreshResponse;
 import com.booquest.booquest_api.application.port.in.onboarding.CheckSideJobStatusUseCase;
-import com.booquest.booquest_api.application.port.out.character.CharacterQueryPort;
 import com.booquest.booquest_api.common.response.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -27,30 +26,14 @@ public class AuthController {
     private final TokenUseCase tokenUseCase;
     private final CheckSideJobStatusUseCase checkSideJobStatusUseCase;
     private final LogoutUseCase logoutUseCase;
-    private final CharacterQueryPort characterQueryPort;
 
     @PostMapping("/login")
     @Operation(summary = "소셜 로그인", description = "소셜 액세스 토큰을 검증하고 서비스 토큰을 발급합니다. 사용자 정보와 온보딩 진행 상태를 반환합니다.")
     public ApiResponse<SocialLoginResponse> socialLogin(@Valid @RequestBody SocialLoginRequest request) {
-        SocialLoginResponse resp = socialLoginUseCase.login(request.getAccessToken(), request.getProvider());
+        SocialLoginResponse response = socialLoginUseCase.login(request.getAccessToken(), request.getProvider());
 
-        // 기존대로 온보딩 상태 합성
-        SocialLoginResponse tmp = provideOnboardingStatus(resp);
+        SocialLoginResponse loginResponse = provideOnboardingStatus(response);
 
-        // 캐릭터 타입 조회
-        var userId = tmp.getUserInfo().getUserId();
-        var character = characterQueryPort.findByUserId(userId).orElse(null);
-
-        // userInfo 재구성(기존 필드 + characterType)
-        var enrichedUserInfo = SocialLoginResponse.UserInfo.builder()
-                .userId(tmp.getUserInfo().getUserId())
-                .email(tmp.getUserInfo().getEmail())
-                .nickname(tmp.getUserInfo().getNickname())
-                .profileImageUrl(tmp.getUserInfo().getProfileImageUrl())
-                .characterType(character != null ? character.getCharacterType() : null)
-                .build();
-
-        var loginResponse = SocialLoginResponse.of(tmp.getTokenInfo(), enrichedUserInfo, tmp.getOnboardingProgressInfo());
         return ApiResponse.success("로그인에 성공했습니다.", loginResponse);
     }
 

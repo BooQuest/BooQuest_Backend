@@ -5,9 +5,12 @@ import com.booquest.booquest_api.adapter.out.auth.oauth.KakaoOAuthClient;
 import com.booquest.booquest_api.adapter.out.auth.oauth.NaverOAuthClient;
 import com.booquest.booquest_api.application.port.in.auth.SocialLoginUseCase;
 import com.booquest.booquest_api.adapter.in.auth.web.token.dto.TokenInfo;
+import com.booquest.booquest_api.application.port.out.character.CharacterQueryPort;
 import com.booquest.booquest_api.application.port.out.user.UserCommandPort;
 import com.booquest.booquest_api.application.port.out.user.UserQueryPort;
 import com.booquest.booquest_api.domain.auth.enums.AuthProvider;
+import com.booquest.booquest_api.domain.character.enums.CharacterType;
+import com.booquest.booquest_api.domain.character.model.UserCharacter;
 import com.booquest.booquest_api.domain.user.model.SocialUser;
 import com.booquest.booquest_api.domain.user.model.User;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +29,7 @@ public class SocialLoginService implements SocialLoginUseCase {
     private final UserQueryPort userQueryPort; // User 정보 확인용
     private final TokenService tokenService;
     private final UserCommandPort userCommandPort;
+    private final CharacterQueryPort characterQueryPort;
 
     @Override
     public SocialLoginResponse login(String accessToken, AuthProvider provider) {
@@ -37,7 +41,11 @@ public class SocialLoginService implements SocialLoginUseCase {
 
         TokenInfo tokenInfo = tokenService.issueToken(user);
 
-        return buildResponse(tokenInfo, user);
+        var characterType = characterQueryPort.findByUserId(user.getId())
+                .map(UserCharacter::getCharacterType) // 없으면 Optional.empty()
+                .orElse(null);
+
+        return buildResponse(tokenInfo, user, characterType);
     }
 
     private SocialUser fetchSocialUser(String accessToken, AuthProvider provider) {
@@ -71,7 +79,7 @@ public class SocialLoginService implements SocialLoginUseCase {
         return userCommandPort.save(user);
     }
 
-    private SocialLoginResponse buildResponse(TokenInfo tokenInfo, User user) {
+    private SocialLoginResponse buildResponse(TokenInfo tokenInfo, User user, CharacterType characterType) {
         return SocialLoginResponse.builder()
                 .tokenInfo(SocialLoginResponse.TokenInfo.builder()
                         .accessToken(tokenInfo.getAccessToken())
@@ -84,6 +92,7 @@ public class SocialLoginService implements SocialLoginUseCase {
                         .email(user.getEmail())
                         .nickname(user.getNickname())
                         .profileImageUrl(user.getProfileImageUrl())
+                        .characterType(characterType)
                         .build())
                 .build();
     }
