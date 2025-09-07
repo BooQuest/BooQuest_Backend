@@ -33,8 +33,9 @@ public class GetUserSideJobProgressService implements GetUserSideJobProgressUseC
     public UserSideJobProgressResponse getUserSideJobProgress(Long userId) {
         // 1. 최신 진행중 사용자 부업(UserSideJob) 1건 조회
         UserSideJob userSideJob = userSideJobRepositoryPort
-                .findLatestSideJobForStatus(userId)
-                .orElseThrow(() -> new EntityNotFoundException("No IN_PROGRESS side job for user: " + userId));
+                .findLatestSideJobInProgress(userId)
+                .or(() -> userSideJobRepositoryPort.findLatestSideJobAnyStatus(userId))
+                .orElseThrow(() -> new EntityNotFoundException("No side job for user: " + userId));
 
         Long sideJobId = userSideJob.getSideJobId();
         String title = userSideJob.getTitle();

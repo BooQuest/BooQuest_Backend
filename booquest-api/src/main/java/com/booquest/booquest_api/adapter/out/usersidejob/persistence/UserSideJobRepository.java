@@ -58,4 +58,8 @@ public interface UserSideJobRepository extends JpaRepository<UserSideJob, Long> 
     long deleteByUserId(Long userId);
 
     Optional<UserSideJob> findBySideJobId(Long sideJobId);
+
+    Optional<UserSideJob> findTopByUserIdAndStatusOrderByUpdatedAtDesc(Long userId, UserSideJobStatus status);
+
+    Optional<UserSideJob> findTopByUserIdOrderByUpdatedAtDesc(Long userId);
 }

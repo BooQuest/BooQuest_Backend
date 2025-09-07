@@ -47,6 +47,16 @@ public class UserSideJobRepositoryAdapter implements UserSideJobRepositoryPort, 
     }
 
     @Override
+    public Optional<UserSideJob> findLatestSideJobInProgress(Long userId) {
+        return userSideJobRepository.findTopByUserIdAndStatusOrderByUpdatedAtDesc(userId, UserSideJobStatus.IN_PROGRESS);
+    }
+
+    @Override
+    public Optional<UserSideJob> findLatestSideJobAnyStatus(Long userId) {
+        return userSideJobRepository.findTopByUserIdOrderByUpdatedAtDesc(userId);
+    }
+
+    @Override
     public int countCompletedSideJobsByUserId(Long userId) {
         return (int) userSideJobRepository.countCompletedByUserId(userId, UserSideJobStatus.COMPLETED);
     }

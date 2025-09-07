@@ -17,4 +17,8 @@ public interface UserSideJobRepositoryPort {
     long deleteByUserId(Long userId);
 
     Optional<UserSideJob> findBySideJobId(Long id);
+
+    Optional<UserSideJob> findLatestSideJobInProgress(Long userId);
+
+    Optional<UserSideJob> findLatestSideJobAnyStatus(Long userId); // 최신 1건 (상태 무관)
 }
