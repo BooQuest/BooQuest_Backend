@@ -65,14 +65,14 @@ naver:
 
 oauth:
   kakao:
-    admin-key: ${KAKAO_ADMIN_KEY:}
+    admin-key: ${KAKAO_ADMIN_KEY}
     unlink-url: https://kapi.kakao.com/v1/user/unlink
     timeout-ms: 4000
     retry:
       max-attempts: 1
   naver:
-    client-id: ${NAVER_CLIENT_ID:}
-    client-secret: ${NAVER_CLIENT_SECRET:}
+    client-id: ${NAVER_CLIENT_ID}
+    client-secret: ${NAVER_CLIENT_SECRET}
     token-url: https://nid.naver.com/oauth2.0/token
     timeout-ms: 4000
     retry:
