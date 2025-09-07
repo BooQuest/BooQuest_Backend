@@ -23,5 +23,6 @@ public class DeleteAccountResponse {
     private long deletedUserCharacters;
     private long deletedUserStats;
     private boolean userDeleted;
+    private boolean socialUnlinked;
     private Instant deletedAt;
 }

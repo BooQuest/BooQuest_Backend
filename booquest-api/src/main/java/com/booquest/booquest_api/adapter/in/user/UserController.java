@@ -62,7 +62,7 @@ public class UserController {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         Long userId = Long.parseLong(auth.getName());
 
-        DeleteAccountResponse result = deleteAccountUseCase.deleteUserCompletely(userId);
+        DeleteAccountResponse result = deleteAccountUseCase.deleteUserCompletely(userId, providerAccessToken);
         return ApiResponse.success("계정이 탈퇴되었습니다.", result);
     }
 }

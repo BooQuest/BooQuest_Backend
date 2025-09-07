@@ -2,6 +2,7 @@ package com.booquest.booquest_api.application.service.user;
 
 import com.booquest.booquest_api.adapter.in.user.web.dto.DeleteAccountResponse;
 import com.booquest.booquest_api.application.port.in.user.DeleteAccountUseCase;
+import com.booquest.booquest_api.application.port.out.auth.SocialUnlinkPort;
 import com.booquest.booquest_api.application.port.out.auth.TokenRepositoryPort;
 import com.booquest.booquest_api.application.port.out.bonus.AdViewRepositoryPort;
 import com.booquest.booquest_api.application.port.out.bonus.ProofRepositoryPort;
@@ -17,6 +18,7 @@ import com.booquest.booquest_api.application.port.out.user.UserCommandPort;
 import com.booquest.booquest_api.application.port.out.user.UserQueryPort;
 import com.booquest.booquest_api.application.port.out.usersidejob.UserSideJobRepositoryPort;
 import com.booquest.booquest_api.application.port.out.userstat.UserStatRepositoryPort;
+import jakarta.annotation.Nullable;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -44,11 +46,12 @@ public class DeleteAccountService implements DeleteAccountUseCase {
     private final CharacterCommandPort characterCommandPort;
     private final UserStatRepositoryPort userStatRepositoryPort;
 //    private final StoragePort StoragePort; // S3 등 외부파일 삭제용
+    private final SocialUnlinkPort socialUnlinkPort;
 
     @Override
-    public DeleteAccountResponse deleteUserCompletely(Long userId) {
+    public DeleteAccountResponse deleteUserCompletely(Long userId, @Nullable String providerAccessToken) {
         // 0) 존재/권한 체크
-        userQueryPort.findById(userId)
+        var user = userQueryPort.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException("User not found: " + userId));
 
         // proofs가 외부 스토리지(S3)에 파일을 가지고 있으면 먼저 object 삭제
@@ -79,7 +82,11 @@ public class DeleteAccountService implements DeleteAccountUseCase {
         long deletedUserCharacters = characterCommandPort.deleteByUserId(userId);
         long deletedUserStats = userStatRepositoryPort.deleteByUserId(userId);
 
+        // 6) 사용자 삭제
         boolean userDeleted = userCommandPort.deleteById(userId) > 0;
+
+        // 7) 소셜 Unlink
+        boolean socialUnlinked = socialUnlinkPort.unlink(user.getProvider(), user.getProviderUserId(), providerAccessToken);
 
         return DeleteAccountResponse.builder()
                 .deletedUserSideJobs(deletedUserSideJobs)
@@ -96,6 +103,7 @@ public class DeleteAccountService implements DeleteAccountUseCase {
                 .deletedUserCharacters(deletedUserCharacters)
                 .deletedUserStats(deletedUserStats)
                 .userDeleted(userDeleted)
+                .socialUnlinked(socialUnlinked)
                 .deletedAt(Instant.now())
                 .build();
     }
