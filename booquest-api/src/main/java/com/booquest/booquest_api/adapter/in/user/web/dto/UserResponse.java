@@ -2,6 +2,7 @@ package com.booquest.booquest_api.adapter.in.user.web.dto;
 
 import com.booquest.booquest_api.adapter.in.onboarding.web.dto.OnboardingProgressInfo;
 import com.booquest.booquest_api.domain.auth.enums.AuthProvider;
+import com.booquest.booquest_api.domain.character.enums.CharacterType;
 import com.booquest.booquest_api.domain.user.model.User;
 import lombok.Builder;
 import lombok.Getter;
@@ -17,6 +18,7 @@ public class UserResponse {
     private String socialNickname;
     private String profileImageUrl;
     private OnboardingProgressInfo onboardingProgressInfo;
+    private CharacterType characterType;
 
     public static UserResponse toResponse(User user) {
         return UserResponse.builder()
@@ -40,6 +42,21 @@ public class UserResponse {
                 .socialNickname(userResponse.getSocialNickname())
                 .profileImageUrl(userResponse.getProfileImageUrl())
                 .onboardingProgressInfo(onboardingProgressInfo)
+                .characterType(userResponse.getCharacterType())
+                .build();
+    }
+
+    public static UserResponse withCharacterType(UserResponse base, CharacterType type) {
+        return UserResponse.builder()
+                .id(base.getId())
+                .provider(base.getProvider())
+                .providerUserId(base.getProviderUserId())
+                .email(base.getEmail())
+                .nickname(base.getNickname())
+                .socialNickname(base.getSocialNickname())
+                .profileImageUrl(base.getProfileImageUrl())
+                .onboardingProgressInfo(base.getOnboardingProgressInfo())
+                .characterType(type)
                 .build();
     }
 }

@@ -1,6 +1,7 @@
 package com.booquest.booquest_api.adapter.in.auth.web.dto;
 
 import com.booquest.booquest_api.adapter.in.onboarding.web.dto.OnboardingProgressInfo;
+import com.booquest.booquest_api.domain.character.enums.CharacterType;
 import lombok.*;
 
 @Getter
@@ -32,6 +33,7 @@ public class SocialLoginResponse {
         private String email;
         private String nickname;
         private String profileImageUrl;
+        private CharacterType characterType;
     }
 
     public static SocialLoginResponse of(TokenInfo tokenInfo, UserInfo userInfo,
