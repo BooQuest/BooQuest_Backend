@@ -47,7 +47,7 @@ public class AuthController {
                 .email(tmp.getUserInfo().getEmail())
                 .nickname(tmp.getUserInfo().getNickname())
                 .profileImageUrl(tmp.getUserInfo().getProfileImageUrl())
-                .characterType(character.getCharacterType())
+                .characterType(character != null ? character.getCharacterType() : null)
                 .build();
 
         var loginResponse = SocialLoginResponse.of(tmp.getTokenInfo(), enrichedUserInfo, tmp.getOnboardingProgressInfo());
