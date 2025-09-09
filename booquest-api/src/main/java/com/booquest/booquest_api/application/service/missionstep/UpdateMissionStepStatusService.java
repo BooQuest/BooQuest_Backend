@@ -35,17 +35,21 @@ public class UpdateMissionStepStatusService implements UpdateMissionStepStatusUs
 
         if (oldStatus == newStatus) {
             RewardType rewardType = RewardType.NONE;
+            UserCharacter before = characterRewardService.getCharacter(userId);
+            int previousLevel = before.getLevel();
             UserCharacter character = characterRewardService.applyReward(userId, rewardType);
             int delta = characterRewardPolicy.expDeltaFor(rewardType); // 0
-            return buildResponse(step, character, delta);
+            return buildResponse(step, character, delta, previousLevel);
         }
 
         updateStepStatus(step, newStatus);
 
         RewardType rewardType = mapRewardType(oldStatus, newStatus);
+        UserCharacter before = characterRewardService.getCharacter(userId);
+        int previousLevel = before.getLevel();
         UserCharacter character = characterRewardService.applyReward(userId, rewardType);
         int delta = characterRewardPolicy.expDeltaFor(rewardType);
-        return buildResponse(step, character, delta);
+        return buildResponse(step, character, delta, previousLevel);
     }
 
     private MissionStep getMissionStep(Long stepId) {
@@ -75,8 +79,8 @@ public class UpdateMissionStepStatusService implements UpdateMissionStepStatusUs
         return RewardType.NONE;
     }
 
-    private MissionStepUpdateStatusResponse buildResponse(MissionStep step, UserCharacter character, int delta) {
-        return MissionStepUpdateStatusResponse.toResponse(step, character, delta);
+    private MissionStepUpdateStatusResponse buildResponse(MissionStep step, UserCharacter character, int delta, int previousLevel) {
+        return MissionStepUpdateStatusResponse.toResponse(step, character, delta, previousLevel);
     }
 
 }

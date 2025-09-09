@@ -41,15 +41,15 @@ public class ProofService implements ProofUseCase {
     public BonusResponse submitProofAndGrantExp(Long userId, Long stepId, ProofRequest request) {
         var check = checkUserPermissionAndStepCompleted(userId, stepId);
         if (!check.completed) {
-            return new BonusResponse(BonusStatus.NOT_COMPLETED, 0, 0);
+            return new BonusResponse(BonusStatus.NOT_COMPLETED, 0, 0, false, 0);
         }
 
         if (adViewRepositoryPort.existsCompletedByUserIdAndStepId(userId, stepId)) {
-            return new BonusResponse(BonusStatus.BLOCKED_BY_AD, 0, 0);
+            return new BonusResponse(BonusStatus.BLOCKED_BY_AD, 0, 0, false, 0);
         }
 
         if (proofRepositoryPort.existsByUserIdAndStepId(userId, stepId)) {
-            return new BonusResponse(BonusStatus.ALREADY_VERIFIED, 0, 0);
+            return new BonusResponse(BonusStatus.ALREADY_VERIFIED, 0, 0, false, 0);
         }
 
         Proof proof = Proof.builder()
@@ -61,11 +61,14 @@ public class ProofService implements ProofUseCase {
                 .build();
         proofRepositoryPort.save(proof);
 
-        updateCharacterExpUseCase.applyReward(userId, RewardType.PROOF_VERIFIED);
+        var before = updateCharacterExpUseCase.applyReward(userId, RewardType.NONE);
+        int previousLevel = before.getLevel();
+        var after = updateCharacterExpUseCase.applyReward(userId, RewardType.PROOF_VERIFIED);
 
         int additionalExp = rewardPolicy.expDeltaFor(RewardType.PROOF_VERIFIED);
         int totalStepExp = stepExpCalculator.calculateTotalStepExp(rewardPolicy);
-        return new BonusResponse(BonusStatus.GRANTED, additionalExp, totalStepExp);
+        boolean leveledUp = after.getLevel() > previousLevel;
+        return new BonusResponse(BonusStatus.GRANTED, additionalExp, totalStepExp, leveledUp, after.getLevel());
     }
 
     private CompletedCheck checkUserPermissionAndStepCompleted(Long userId, Long stepId) {
@@ -86,11 +89,11 @@ public class ProofService implements ProofUseCase {
     @Transactional
     public BonusResponse submitImageProofAndGrantExp(Long userId, Long stepId, MultipartFile file) {
         var check = checkUserPermissionAndStepCompleted(userId, stepId);
-        if (!check.completed) return new BonusResponse(BonusStatus.NOT_COMPLETED, 0, 0);
+        if (!check.completed) return new BonusResponse(BonusStatus.NOT_COMPLETED, 0, 0, false, 0);
         if (adViewRepositoryPort.existsCompletedByUserIdAndStepId(userId, stepId))
-            return new BonusResponse(BonusStatus.BLOCKED_BY_AD, 0, 0);
+            return new BonusResponse(BonusStatus.BLOCKED_BY_AD, 0, 0, false, 0);
         if (proofRepositoryPort.existsByUserIdAndStepId(userId, stepId))
-            return new BonusResponse(BonusStatus.ALREADY_VERIFIED, 0, 0);
+            return new BonusResponse(BonusStatus.ALREADY_VERIFIED, 0, 0, false, 0);
 
         validateImage(file); // mime, size, 확장자, 매직바이트 등
 
@@ -107,10 +110,13 @@ public class ProofService implements ProofUseCase {
                 .build();
         proofRepositoryPort.save(proof);
 
-        updateCharacterExpUseCase.applyReward(userId, RewardType.PROOF_VERIFIED);
+        var before = updateCharacterExpUseCase.applyReward(userId, RewardType.NONE);
+        int previousLevel = before.getLevel();
+        var after = updateCharacterExpUseCase.applyReward(userId, RewardType.PROOF_VERIFIED);
         int additionalExp = rewardPolicy.expDeltaFor(RewardType.PROOF_VERIFIED);
         int totalStepExp = stepExpCalculator.calculateTotalStepExp(rewardPolicy);
-        return new BonusResponse(BonusStatus.GRANTED, additionalExp, totalStepExp);
+        boolean leveledUp = after.getLevel() > previousLevel;
+        return new BonusResponse(BonusStatus.GRANTED, additionalExp, totalStepExp, leveledUp, after.getLevel());
     }
 
     private void validateImage(MultipartFile file) {

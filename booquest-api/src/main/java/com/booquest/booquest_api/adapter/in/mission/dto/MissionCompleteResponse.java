@@ -20,6 +20,8 @@ public class MissionCompleteResponse {
     private int levelUpCount; // 레벨업 횟수
     private int previousLevel; // 이전 레벨
     private boolean missionCompleted; // 메인퀘스트 완료 여부
+    private boolean leveledUp; // 이번 처리에서 레벨업 여부
+    private int currentLevel; // 레벨업 후 최종 레벨
 
     public static MissionCompleteResponse toResponse(Mission mission, UserCharacter character,
                                                    int totalExpReward, int stepExpReward, 
@@ -47,6 +49,8 @@ public class MissionCompleteResponse {
                 .levelUpCount(levelUpCount)
                 .previousLevel(previousLevel)
                 .missionCompleted(missionCompleted)
+                .leveledUp(levelUpCount > 0)
+                .currentLevel(character != null ? character.getLevel() : 0)
                 .build();
     }
-} 
+}
