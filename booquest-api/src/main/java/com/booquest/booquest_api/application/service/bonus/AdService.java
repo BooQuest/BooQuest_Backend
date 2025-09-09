@@ -37,15 +37,15 @@ public class AdService implements AdUseCase {
     public BonusResponse watchAdAndGrantExp(Long userId, Long stepId, AdRequest request) {
         var check = checkUserPermissionAndStepCompleted(userId, stepId);
         if (!check.completed) {
-            return new BonusResponse(BonusStatus.NOT_COMPLETED, 0, 0);
+            return new BonusResponse(BonusStatus.NOT_COMPLETED, 0, 0, false, 0);
         }
 
         if (proofRepositoryPort.existsByUserIdAndStepId(userId, stepId)) {
-            return new BonusResponse(BonusStatus.BLOCKED_BY_PROOF, 0, 0);
+            return new BonusResponse(BonusStatus.BLOCKED_BY_PROOF, 0, 0, false, 0);
         }
 
         if (adViewRepositoryPort.existsCompletedByUserIdAndStepId(userId, stepId)) {
-            return new BonusResponse(BonusStatus.ALREADY_WATCHED, 0, 0);
+            return new BonusResponse(BonusStatus.ALREADY_WATCHED, 0, 0, false, 0);
         }
 
         AdView adView = AdView.builder()
@@ -57,11 +57,14 @@ public class AdService implements AdUseCase {
                 .build();
         adViewRepositoryPort.save(adView);
 
-        updateCharacterExpUseCase.applyReward(userId, RewardType.AD_WATCHED);
+        var before = updateCharacterExpUseCase.applyReward(userId, RewardType.NONE);
+        int previousLevel = before.getLevel();
+        var after = updateCharacterExpUseCase.applyReward(userId, RewardType.AD_WATCHED);
 
         int additionalExp = rewardPolicy.expDeltaFor(RewardType.AD_WATCHED);
         int totalStepExp = stepExpCalculator.calculateTotalStepExp(rewardPolicy);
-        return new BonusResponse(BonusStatus.GRANTED, additionalExp, totalStepExp);
+        boolean leveledUp = after.getLevel() > previousLevel;
+        return new BonusResponse(BonusStatus.GRANTED, additionalExp, totalStepExp, leveledUp, after.getLevel());
     }
 
     private CompletedCheck checkUserPermissionAndStepCompleted(Long userId, Long stepId) {
