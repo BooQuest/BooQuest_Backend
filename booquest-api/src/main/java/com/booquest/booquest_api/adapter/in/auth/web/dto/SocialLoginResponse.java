@@ -32,6 +32,7 @@ public class SocialLoginResponse {
         private Long userId;
         private String email;
         private String nickname;
+        private String socialNickname;
         private String profileImageUrl;
         private CharacterType characterType;
     }
