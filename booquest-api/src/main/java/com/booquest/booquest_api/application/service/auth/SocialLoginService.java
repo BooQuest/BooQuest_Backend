@@ -68,6 +68,8 @@ public class SocialLoginService implements SocialLoginUseCase {
     }
 
     private User registerNewUser(AuthProvider provider, SocialUser socialUser) {
+        // 새로운 유저 로그인 시 nickname, socialNickname 모두 소셜 닉네임으로 초기화됨
+        // 아직 온보딩을 거치지 않은 상태라 입력받은 닉네임이 없기 때문
         User user = User.builder()
                 .provider(provider)
                 .providerUserId(socialUser.getProviderId())
@@ -91,6 +93,7 @@ public class SocialLoginService implements SocialLoginUseCase {
                         .userId(user.getId())
                         .email(user.getEmail())
                         .nickname(user.getNickname())
+                        .socialNickname(user.getSocialNickname())
                         .profileImageUrl(user.getProfileImageUrl())
                         .characterType(characterType)
                         .build())
