@@ -97,7 +97,6 @@ jobs:
             --name "$CONTAINER" \
             --restart unless-stopped \
             --network "$NET" \
-            -p "${APP_PORT}:${APP_PORT}" \
             -v "${CONFIG_DIR}:/app/config" \
             -v /var/lib/booquest/uploads:/var/lib/booquest/uploads:rw \
             --user 1001:1001 \
