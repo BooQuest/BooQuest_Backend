@@ -23,6 +23,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 @Component
 @RequiredArgsConstructor
@@ -40,6 +41,7 @@ public class AppleOAuthClient implements OAuthClientPort {
     public SocialUser fetchUserInfo(String code) {
         try {
             String clientSecret = secretGenerator.generate();
+            log.info("Apple client_secret = {}", clientSecret);
 
             MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
             formData.add("grant_type", "authorization_code");
@@ -47,13 +49,19 @@ public class AppleOAuthClient implements OAuthClientPort {
             formData.add("client_id", clientId);
             formData.add("client_secret", clientSecret);
 
-            AppleTokenResponse tokenResponse = webClient.post()
+            AppleTokenResponse tokenResponse;
+            try {
+            tokenResponse = webClient.post()
                     .uri("https://appleid.apple.com/auth/token")
                     .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                     .bodyValue(formData)
                     .retrieve()
                     .bodyToMono(AppleTokenResponse.class)
                     .block();
+            } catch (WebClientResponseException e) {
+                log.error("[AppleOAuth] 토큰 요청 실패: {}", e.getResponseBodyAsString(), e);
+                throw new RuntimeException("Apple 로그인 실패 - 토큰 요청 실패", e);
+            }
 
             SignedJWT signedJWT = SignedJWT.parse(tokenResponse.getIdToken());
             var claims = new DefaultJWTProcessor<SecurityContext>()

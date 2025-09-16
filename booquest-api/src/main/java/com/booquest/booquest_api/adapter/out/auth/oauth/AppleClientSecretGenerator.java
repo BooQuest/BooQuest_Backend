@@ -4,7 +4,7 @@ import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.JWSAlgorithm;
 import com.nimbusds.jose.JWSHeader;
 import com.nimbusds.jose.JWSSigner;
-import com.nimbusds.jose.crypto.RSASSASigner;
+import com.nimbusds.jose.crypto.ECDSASigner;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 import java.security.KeyFactory;
@@ -40,7 +40,7 @@ public class AppleClientSecretGenerator {
             long now = Instant.now().getEpochSecond();
             long exp = now + 86400 * 180; // 180일
 
-            JWSSigner signer = new RSASSASigner(getPrivateKey());
+            JWSSigner signer = new ECDSASigner(getPrivateKey());
 
             JWTClaimsSet claimsSet = new JWTClaimsSet.Builder()
                     .issuer(teamId)
