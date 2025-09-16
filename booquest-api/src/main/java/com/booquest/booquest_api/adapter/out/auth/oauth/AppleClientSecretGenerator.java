@@ -68,8 +68,10 @@ public class AppleClientSecretGenerator {
 
     private ECPrivateKey getPrivateKey() {
         try {
-            String pkcs8Pem = privateKey.replace("-----BEGIN PRIVATE KEY-----", "")
+            String pkcs8Pem = privateKey
+                    .replace("-----BEGIN PRIVATE KEY-----", "")
                     .replace("-----END PRIVATE KEY-----", "")
+                    .replace("\\n", "")
                     .replaceAll("\\s+", "");
 
             byte[] decoded = Base64.getDecoder().decode(pkcs8Pem);
