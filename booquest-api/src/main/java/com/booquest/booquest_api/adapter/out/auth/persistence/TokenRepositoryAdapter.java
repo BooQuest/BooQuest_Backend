@@ -1,6 +1,7 @@
 package com.booquest.booquest_api.adapter.out.auth.persistence;
 
 import com.booquest.booquest_api.application.port.out.auth.TokenRepositoryPort;
+import com.booquest.booquest_api.domain.auth.model.AppleRefreshToken;
 import com.booquest.booquest_api.domain.auth.model.Token;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -13,6 +14,7 @@ import java.util.Optional;
 public class TokenRepositoryAdapter implements TokenRepositoryPort {
 
     private final TokenRepository tokenRepository;
+    private final AppleRefreshTokenRepository appleRefreshTokenRepository;
 
     @Override
     public Token save(Token token) {
@@ -42,5 +44,15 @@ public class TokenRepositoryAdapter implements TokenRepositoryPort {
     @Override
     public int upsertByUserId(Long userId, String refreshTokenHash, LocalDateTime expiresAt) {
         return tokenRepository.upsertByUserId(userId, refreshTokenHash, java.sql.Timestamp.valueOf(expiresAt));
+    }
+
+    @Override
+    public void saveAppleRefreshToken(AppleRefreshToken appleRefreshToken) {
+        appleRefreshTokenRepository.save(appleRefreshToken);
+    }
+
+    @Override
+    public Optional<String> findRefreshTokenByUserId(Long userId) {
+        return appleRefreshTokenRepository.findByUserId(userId);
     }
 }
