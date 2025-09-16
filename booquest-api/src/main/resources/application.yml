@@ -67,7 +67,7 @@ apple:
   auth:
     issuer: https://appleid.apple.com
     jwks-uri: https://appleid.apple.com/auth/keys
-    audience: com.your.bundle.id  # 실제 앱의 번들 ID로 교체
+    audience: com.booquest.app  # 앱의 번들 ID
     client-id: ${APPLE_CLIENT_ID}  # 서비스 ID
     team-id: ${APPLE_TEAM_ID}  # Apple Developer Team ID
     key-id: ${APPLE_KEY_ID}  # AuthKey_XXXXXX.p8의 키 ID
