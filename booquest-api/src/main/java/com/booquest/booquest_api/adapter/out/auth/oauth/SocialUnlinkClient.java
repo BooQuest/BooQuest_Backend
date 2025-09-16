@@ -37,6 +37,11 @@ public class SocialUnlinkClient implements SocialUnlinkPort {
                 }
                 return naverUnlinkPort.unlinkByAccessToken(providerAccessToken);
             }
+            case APPLE -> {
+                // Apple은 서버 측에서 unlink 불가 → 단순 성공 처리
+                log.info("[SocialUnlink] Apple은 서버에서 unlink 불가. providerUserId={}", providerUserId);
+                return true;
+            }
             default -> {
                 log.info("[SocialUnlink] Unsupported provider={}, treat as success", provider);
                 return true;
