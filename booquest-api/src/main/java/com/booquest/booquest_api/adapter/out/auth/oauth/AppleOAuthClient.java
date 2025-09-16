@@ -1,60 +1,83 @@
 package com.booquest.booquest_api.adapter.out.auth.oauth;
 
+import com.booquest.booquest_api.adapter.out.auth.oauth.dto.AppleTokenResponse;
 import com.booquest.booquest_api.application.port.out.auth.OAuthClientPort;
 import com.booquest.booquest_api.domain.auth.enums.AuthProvider;
 import com.booquest.booquest_api.domain.user.model.SocialUser;
+import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.JWSAlgorithm;
 import com.nimbusds.jose.jwk.source.RemoteJWKSet;
+import com.nimbusds.jose.proc.BadJOSEException;
 import com.nimbusds.jose.proc.JWSVerificationKeySelector;
 import com.nimbusds.jose.proc.SecurityContext;
 import com.nimbusds.jwt.SignedJWT;
 import com.nimbusds.jwt.proc.ConfigurableJWTProcessor;
 import com.nimbusds.jwt.proc.DefaultJWTProcessor;
 import java.net.URL;
+import java.text.ParseException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.reactive.function.client.WebClient;
 
-@Slf4j
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class AppleOAuthClient implements OAuthClientPort {
 
-    @Value("${apple.api.jwks-uri}")
-    private String jwksUri;
+    @Value("${apple.auth.client-id}")
+    private String clientId;
+
+    private final AppleClientSecretGenerator secretGenerator;
+
+    private final WebClient webClient;
 
     @Override
-    public SocialUser fetchUserInfo(String identityToken) {
+    public SocialUser fetchUserInfo(String code) {
         try {
-            SignedJWT signedJWT = SignedJWT.parse(identityToken);
+            String clientSecret = secretGenerator.generate();
 
-            // 공개 키로 서명 검증
-            JWSVerificationKeySelector<SecurityContext> keySelector = new JWSVerificationKeySelector<>(
-                    JWSAlgorithm.RS256, new RemoteJWKSet<>(new URL(jwksUri))
-            );
+            MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
+            formData.add("grant_type", "authorization_code");
+            formData.add("code", code);
+            formData.add("client_id", clientId);
+            formData.add("client_secret", clientSecret);
 
-            ConfigurableJWTProcessor<SecurityContext> jwtProcessor = new DefaultJWTProcessor<>();
-            jwtProcessor.setJWSKeySelector(keySelector);
+            AppleTokenResponse tokenResponse = webClient.post()
+                    .uri("https://appleid.apple.com/auth/token")
+                    .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                    .bodyValue(formData)
+                    .retrieve()
+                    .bodyToMono(AppleTokenResponse.class)
+                    .block();
 
-            var claims = jwtProcessor.process(signedJWT, null);
+            SignedJWT signedJWT = SignedJWT.parse(tokenResponse.getIdToken());
+            var claims = new DefaultJWTProcessor<SecurityContext>()
+                    .process(signedJWT, null);
 
             String email = claims.getStringClaim("email");
-            String userId = claims.getSubject(); // sub 필드 (고유 식별자)
+            String userId = claims.getSubject();
+            String refreshToken = tokenResponse.getRefreshToken();
 
-            log.info("Apple 로그인 응답: email={}, sub={}", email, userId);
+            log.info("Apple 로그인 완료: sub={}, email={}", userId, email);
 
             return SocialUser.builder()
                     .email(email)
-                    .nickname(null) // 애플은 nickname 미제공
+                    .nickname(null)
                     .provider(AuthProvider.APPLE)
                     .providerId(userId)
                     .profileImageUrl(null)
+                    .refreshToken(refreshToken)
                     .build();
-
-        } catch (Exception e) {
-            log.error("Apple identity token 처리 중 오류", e);
-            throw new RuntimeException("Apple 로그인 실패", e);
+        } catch (JOSEException | ParseException | BadJOSEException e) {
+            log.error("Apple 로그인 실패 - 토큰 파싱 오류", e);
+        } catch (RuntimeException e) {
+            log.error("Apple 로그인 실패 - 통신 또는 처리 오류", e);
         }
+        return null; // 또는 throw new CustomOAuthException("Apple 로그인 실패");
     }
 }

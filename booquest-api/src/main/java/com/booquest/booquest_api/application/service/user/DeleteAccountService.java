@@ -48,12 +48,7 @@ public class DeleteAccountService implements DeleteAccountUseCase {
 //    private final StoragePort StoragePort; // S3 등 외부파일 삭제용
     private final SocialUnlinkPort socialUnlinkPort;
 
-    @Override
-    public DeleteAccountResponse deleteUserCompletely(Long userId, @Nullable String providerAccessToken) {
-        // 0) 존재/권한 체크
-        var user = userQueryPort.findById(userId)
-                .orElseThrow(() -> new EntityNotFoundException("User not found: " + userId));
-
+    public DeleteAccountResponse deleteAllUserData(Long userId) {
         // proofs가 외부 스토리지(S3)에 파일을 가지고 있으면 먼저 object 삭제
         // StoragePort.deleteAllForUser(userId);
 
@@ -85,9 +80,6 @@ public class DeleteAccountService implements DeleteAccountUseCase {
         // 6) 사용자 삭제
         boolean userDeleted = userCommandPort.deleteById(userId) > 0;
 
-        // 7) 소셜 Unlink
-        boolean socialUnlinked = socialUnlinkPort.unlink(user.getProvider(), user.getProviderUserId(), providerAccessToken);
-
         return DeleteAccountResponse.builder()
                 .deletedUserSideJobs(deletedUserSideJobs)
                 .deletedSideJobs(deletedSideJobs)
@@ -103,8 +95,33 @@ public class DeleteAccountService implements DeleteAccountUseCase {
                 .deletedUserCharacters(deletedUserCharacters)
                 .deletedUserStats(deletedUserStats)
                 .userDeleted(userDeleted)
-                .socialUnlinked(socialUnlinked)
                 .deletedAt(Instant.now())
+                .build();
+    }
+
+    @Override
+    public DeleteAccountResponse deleteUserCompletely(Long userId, @Nullable String providerAccessToken) {
+        var user = userQueryPort.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("User not found: " + userId));
+
+        DeleteAccountResponse result = deleteAllUserData(userId);
+        boolean socialUnlinked = socialUnlinkPort.unlink(user.getProvider(), user.getProviderUserId(), providerAccessToken);
+
+        return result.toBuilder()
+                .socialUnlinked(socialUnlinked)
+                .build();
+    }
+
+    @Override
+    public DeleteAccountResponse deleteAppleUserCompletely(Long userId) {
+        var user = userQueryPort.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("User not found: " + userId));
+
+        DeleteAccountResponse result = deleteAllUserData(userId);
+        boolean socialUnlinked = socialUnlinkPort.unlinkApple(userId);
+
+        return result.toBuilder()
+                .socialUnlinked(socialUnlinked)
                 .build();
     }
 }

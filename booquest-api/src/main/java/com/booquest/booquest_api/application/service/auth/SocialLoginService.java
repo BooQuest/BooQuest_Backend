@@ -6,10 +6,12 @@ import com.booquest.booquest_api.adapter.out.auth.oauth.KakaoOAuthClient;
 import com.booquest.booquest_api.adapter.out.auth.oauth.NaverOAuthClient;
 import com.booquest.booquest_api.application.port.in.auth.SocialLoginUseCase;
 import com.booquest.booquest_api.adapter.in.auth.web.token.dto.TokenInfo;
+import com.booquest.booquest_api.application.port.out.auth.TokenRepositoryPort;
 import com.booquest.booquest_api.application.port.out.character.CharacterQueryPort;
 import com.booquest.booquest_api.application.port.out.user.UserCommandPort;
 import com.booquest.booquest_api.application.port.out.user.UserQueryPort;
 import com.booquest.booquest_api.domain.auth.enums.AuthProvider;
+import com.booquest.booquest_api.domain.auth.model.AppleRefreshToken;
 import com.booquest.booquest_api.domain.character.enums.CharacterType;
 import com.booquest.booquest_api.domain.character.model.UserCharacter;
 import com.booquest.booquest_api.domain.user.model.SocialUser;
@@ -32,6 +34,7 @@ public class SocialLoginService implements SocialLoginUseCase {
     private final TokenService tokenService;
     private final UserCommandPort userCommandPort;
     private final CharacterQueryPort characterQueryPort;
+    private final TokenRepositoryPort tokenRepositoryPort;
 
     @Override
     public SocialLoginResponse login(String accessToken, AuthProvider provider) {
@@ -80,7 +83,18 @@ public class SocialLoginService implements SocialLoginUseCase {
                 .socialNickname(socialUser.getNickname())    // 소셜 로그인 닉네임
                 .profileImageUrl(socialUser.getProfileImageUrl())
                 .build();
-        return userCommandPort.save(user);
+
+        User savedUser = userCommandPort.save(user);
+
+        if (provider == AuthProvider.APPLE) {
+            AppleRefreshToken appleRefreshToken = AppleRefreshToken.builder()
+                    .userId(savedUser.getId())
+                    .refreshToken(socialUser.getRefreshToken())
+                    .build();
+
+            tokenRepositoryPort.saveAppleRefreshToken(appleRefreshToken);
+        }
+        return savedUser;
     }
 
     private SocialLoginResponse buildResponse(TokenInfo tokenInfo, User user, CharacterType characterType) {

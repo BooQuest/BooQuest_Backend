@@ -68,7 +68,17 @@ apple:
     issuer: https://appleid.apple.com
     jwks-uri: https://appleid.apple.com/auth/keys
     audience: com.your.bundle.id  # 실제 앱의 번들 ID로 교체
-    client-id: ${APPLE_CLIENT_ID}  # 앱에서 발급받은 서비스 ID (optional)
+    client-id: ${APPLE_CLIENT_ID}  # 서비스 ID
+    team-id: ${APPLE_TEAM_ID}  # Apple Developer Team ID
+    key-id: ${APPLE_KEY_ID}  # AuthKey_XXXXXX.p8의 키 ID
+    private-key: |
+      -----BEGIN PRIVATE KEY-----
+      ${APPLE_PRIVATE_KEY}
+      -----END PRIVATE KEY-----
+    revoke-url: https://appleid.apple.com/auth/revoke
+    timeout-ms: 4000
+    retry:
+      max-attempts: 1
 
 oauth:
   kakao:
