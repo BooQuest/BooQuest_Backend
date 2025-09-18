@@ -1,5 +1,6 @@
 package com.booquest.booquest_api.application.port.out.auth;
 
+import com.booquest.booquest_api.domain.auth.model.AppleRefreshToken;
 import com.booquest.booquest_api.domain.auth.model.Token;
 
 import java.time.LocalDateTime;
@@ -17,4 +18,8 @@ public interface TokenRepositoryPort {
     int deleteByRefreshTokenHash(String refreshTokenHash);
 
     int upsertByUserId(Long userId, String refreshTokenHash, LocalDateTime expiresAt);
+
+    void saveAppleRefreshToken(AppleRefreshToken appleRefreshToken);
+
+    Optional<String> findRefreshTokenByUserId(Long userId);
 }

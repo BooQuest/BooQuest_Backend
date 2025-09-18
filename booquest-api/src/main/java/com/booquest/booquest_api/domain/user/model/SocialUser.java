@@ -14,4 +14,5 @@ public class SocialUser {
     private final AuthProvider provider; // e.g., KAKAO, GOOGLE
     private final String providerId;
     private final String profileImageUrl;
+    private final String refreshToken;
 }
