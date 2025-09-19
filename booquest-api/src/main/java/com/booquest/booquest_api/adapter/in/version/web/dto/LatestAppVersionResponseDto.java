@@ -1,4 +1,4 @@
 package com.booquest.booquest_api.adapter.in.version.web.dto;
 
-public record LatestAppVersionResponseDto(String latestVersion, int latestBuildNumber){
+public record LatestAppVersionResponseDto(String latestVersion, int latestBuildNumber, String description, boolean isForceUpdate){
 }
