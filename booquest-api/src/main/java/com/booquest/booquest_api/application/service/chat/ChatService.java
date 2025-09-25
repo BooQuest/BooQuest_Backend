@@ -33,6 +33,9 @@ import reactor.core.publisher.Mono;
 @RequiredArgsConstructor
 public class ChatService implements ChatUseCases {
 
+    private static final int DAILY_CHAT_LIMIT = 10;
+    private static final String USER_ROLE = "user";
+
     private final ChatConversationRepositoryPort conversationRepositoryPort;
     private final ChatMessageRepositoryPort messageRepositoryPort;
     private final @Qualifier("aiWebClient") WebClient aiWebClient;
@@ -40,6 +43,15 @@ public class ChatService implements ChatUseCases {
     @Override
     @Transactional
     public ChatSendResponse sendMessage(Long userId, ChatSendCommand command) {
+        boolean isOverLimit = isOverDailyUsageLimit(userId);
+
+        if (isOverLimit) {
+            return ChatSendResponse.builder()
+                    .conversationId(null)
+                    .message("챗봇 대화는 하루 10회까지 가능합니다.")
+                    .build();
+        }
+
         ChatConversation conversation = ensureConversation(userId, command.getConversationId(), command.getMessage());
 
         // save user message
@@ -146,6 +158,21 @@ public class ChatService implements ChatUseCases {
                 .title(conv.getTitle())
                 .messages(items)
                 .build();
+    }
+
+    private boolean isOverDailyUsageLimit(Long userId) {
+        LocalDate today = LocalDate.now();
+        LocalDateTime startOfDay = today.atStartOfDay();
+        LocalDateTime nextDayStart = today.plusDays(1).atStartOfDay();
+
+        long usedCount = messageRepositoryPort.countUserMessagesForUserBetween(
+                userId,
+                USER_ROLE,
+                startOfDay,
+                nextDayStart
+        );
+
+        return usedCount >= DAILY_CHAT_LIMIT;
     }
 
 //    private ChatConversation ensureConversation(Long userId, UUID conversationId, String firstMessage) {
