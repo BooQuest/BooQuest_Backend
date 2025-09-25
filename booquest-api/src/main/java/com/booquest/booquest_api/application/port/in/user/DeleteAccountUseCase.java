@@ -5,4 +5,6 @@ import jakarta.annotation.Nullable;
 
 public interface DeleteAccountUseCase {
     DeleteAccountResponse deleteUserCompletely(Long userId, @Nullable String providerAccessToken);
+
+    DeleteAccountResponse deleteAppleUserCompletely(Long userId);
 }

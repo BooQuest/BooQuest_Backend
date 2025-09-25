@@ -71,4 +71,14 @@ public class UserController {
         DeleteAccountResponse result = deleteAccountUseCase.deleteUserCompletely(userId, providerAccessToken);
         return ApiResponse.success("계정이 탈퇴되었습니다.", result);
     }
+
+    @DeleteMapping("/me/apple")
+    @Operation(summary = "애플 계정 탈퇴", description = "서버에 저장된 refresh_token으로 애플 계정을 revoke한 후 사용자 데이터를 삭제합니다.")
+    public ApiResponse<DeleteAccountResponse> deleteAppleUser() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Long userId = Long.parseLong(auth.getName());
+
+        DeleteAccountResponse result = deleteAccountUseCase.deleteAppleUserCompletely(userId);
+        return ApiResponse.success("Apple 계정이 탈퇴되었습니다.", result);
+    }
 }
