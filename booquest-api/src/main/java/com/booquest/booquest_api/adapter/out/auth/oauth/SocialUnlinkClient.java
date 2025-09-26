@@ -1,8 +1,10 @@
 package com.booquest.booquest_api.adapter.out.auth.oauth;
 
+import com.booquest.booquest_api.application.port.out.auth.AppleUnlinkPort;
 import com.booquest.booquest_api.application.port.out.auth.KakaoUnlinkPort;
 import com.booquest.booquest_api.application.port.out.auth.NaverUnlinkPort;
 import com.booquest.booquest_api.application.port.out.auth.SocialUnlinkPort;
+import com.booquest.booquest_api.application.port.out.auth.TokenRepositoryPort;
 import com.booquest.booquest_api.domain.auth.enums.AuthProvider;
 import jakarta.annotation.Nullable;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +17,8 @@ import org.springframework.stereotype.Component;
 public class SocialUnlinkClient implements SocialUnlinkPort {
     private final KakaoUnlinkPort kakaoUnlinkPort;
     private final NaverUnlinkPort naverUnlinkPort;
+    private final AppleUnlinkPort appleUnlinkPort;
+    private final TokenRepositoryPort tokenRepositoryPort;
 
     @Override
     public boolean unlink(AuthProvider provider, String providerUserId, @Nullable String providerAccessToken) {
@@ -42,5 +46,17 @@ public class SocialUnlinkClient implements SocialUnlinkPort {
                 return true;
             }
         }
+    }
+
+    @Override
+    public boolean unlinkApple(Long userId) {
+        // refreshToken이 유효할 때 처리
+        return tokenRepositoryPort.findRefreshTokenByUserId(userId)
+                .filter(token -> !token.isBlank())
+                .map(appleUnlinkPort::revokeToken)
+                .orElseGet(() -> {
+                    log.warn("[SocialUnlink] Apple refresh_token not found or blank for userId={}", userId);
+                    return false;
+                });
     }
 }
