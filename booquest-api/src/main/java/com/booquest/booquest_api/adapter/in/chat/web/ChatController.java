@@ -22,9 +22,9 @@ public class ChatController {
     private final ChatUseCases chatUseCases;
 
     @PostMapping
-    @Operation(summary = "챗봇 대화", description = "사용자의 메시지를 보내고 AI의 응답을 받습니다. \n\n" +
-            "첫 대화일 경우 conversationId는 null로 보냅니다. 이어지는 대화일 경우 conversationId를 보내야 합니다. \n\n" +
-            "챗봇 대화는 사용자 당 하루 10회까지만 가능합니다. 10회 초과일 경우 conversationId는 null로 반환됩니다.")
+    @Operation(summary = "챗봇 대화", description = "사용자의 메시지를 보내고 AI의 응답을 받습니다. <br/><br/>" +
+            "- 첫 대화일 경우 conversationId는 null로 보냅니다. 이어지는 대화일 경우 conversationId를 보내야 합니다. <br/>" +
+            "- 챗봇 대화는 사용자 당 하루 10회까지만 가능합니다. 10회 초과일 경우 conversationId는 null로 반환됩니다.")
     public ApiResponse<ChatSendResponse> send(@Valid @RequestBody ChatSendCommand request) {
         if (request.getMessage() == null || request.getMessage().isBlank()) {
             throw new IllegalArgumentException("message must not be blank");
