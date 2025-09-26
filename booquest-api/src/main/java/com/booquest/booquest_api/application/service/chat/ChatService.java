@@ -90,9 +90,12 @@ public class ChatService implements ChatUseCases {
                 .build();
         messageRepositoryPort.save(assistantMsg);
 
-        // update title if empty
-        conversation.updateTitleIfEmpty(truncateTitle(command.getMessage()));
-        conversationRepositoryPort.save(conversation);
+        // update title if empty - call AI for title summarization
+        if (conversation.getTitle() == null || conversation.getTitle().isBlank()) {
+            String summarizedTitle = generateTitleFromAI(command.getMessage());
+            conversation.updateTitleIfEmpty(summarizedTitle);
+            conversationRepositoryPort.save(conversation);
+        }
 
         return ChatSendResponse.builder()
                 .conversationId(conversation.getId())
@@ -197,19 +200,49 @@ public class ChatService implements ChatUseCases {
                     .orElseThrow(() -> new IllegalArgumentException("Conversation not found"));
         }
 
-        // 2) 새 대화 생성: 첫 메시지로 제목 생성, updatedAt도 함께 세팅(엔티티 @PrePersist 권장)
-        String title = truncateTitle(firstMessage); // firstMessage null/blank 허용 시 방어
+        // 2) 새 대화 생성: AI로 제목 요약 생성
+        String summarizedTitle = generateTitleFromAI(firstMessage);
         ChatConversation conv = ChatConversation.builder()
                 .userId(userId)
-                .title(title)
+                .title(summarizedTitle)
                 .build();
         return conversationRepositoryPort.save(conv);
     }
 
+    private String generateTitleFromAI(String message) {
+        if (message == null || message.isBlank()) {
+            return "새 대화";
+        }
+        
+        try {
+            AiTitleRequest req = new AiTitleRequest(message);
+            AiTitleResponse aiRes = aiWebClient.post()
+                    .uri("/ai/title/summarize")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .bodyValue(req)
+                    .exchangeToMono(res -> {
+                        if (res.statusCode().is2xxSuccessful()) return res.bodyToMono(AiTitleResponse.class);
+                        return res.bodyToMono(String.class).defaultIfEmpty("")
+                                .flatMap(body -> {
+                                    log.error("AI POST /ai/title/summarize -> {} body={}", res.statusCode(), body);
+                                    return Mono.error(new RuntimeException("AI title error " + res.statusCode() + " : " + body));
+                                });
+                    })
+                    .block();
+            
+            return aiRes != null && aiRes.getTitle() != null && !aiRes.getTitle().isBlank() 
+                ? aiRes.getTitle() 
+                : truncateTitle(message);
+        } catch (Exception e) {
+            log.warn("AI title generation failed, using truncated message: {}", e.getMessage());
+            return truncateTitle(message);
+        }
+    }
+    
     private String truncateTitle(String message) {
-        if (message == null) return null;
+        if (message == null) return "새 대화";
         String trimmed = message.trim();
-        return trimmed.length() > 30 ? trimmed.substring(0, 30) : trimmed;
+        return trimmed.length() > 30 ? trimmed.substring(0, 30) + "..." : trimmed;
     }
 
     // Internal DTOs for AI service
@@ -224,5 +257,17 @@ public class ChatService implements ChatUseCases {
     @NoArgsConstructor
     static class AiChatResponse {
         private String message;
+    }
+    
+    @Getter
+    @AllArgsConstructor
+    static class AiTitleRequest {
+        private String message;
+    }
+    
+    @Getter
+    @NoArgsConstructor
+    static class AiTitleResponse {
+        private String title;
     }
 }
