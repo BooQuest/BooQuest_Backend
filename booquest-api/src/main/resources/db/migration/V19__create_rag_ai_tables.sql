@@ -1,7 +1,5 @@
--- 1. pgvector 확장 설치
-CREATE EXTENSION IF NOT EXISTS vector;
 
--- 2. 사용자 온보딩 프로필 테이블
+-- 사용자 온보딩 프로필 테이블
 CREATE TABLE IF NOT EXISTS onboarding_profiles (
     id SERIAL PRIMARY KEY,
     user_id INTEGER NOT NULL,
@@ -17,57 +15,6 @@ CREATE TABLE IF NOT EXISTS onboarding_profiles (
 -- 인덱스 생성
 CREATE INDEX IF NOT EXISTS idx_onboarding_profiles_user_id ON onboarding_profiles(user_id);
 CREATE INDEX IF NOT EXISTS idx_onboarding_profiles_created_at ON onboarding_profiles(created_at);
-
--- 3. 사이드잡 테이블
-CREATE TABLE IF NOT EXISTS side_jobs (
-    id SERIAL PRIMARY KEY,
-    user_id INTEGER NOT NULL,
-    title VARCHAR(255) NOT NULL,
-    description TEXT NOT NULL,
-    prompt_meta TEXT,
-    is_selected BOOLEAN DEFAULT FALSE,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
-);
-
--- 인덱스 생성
-CREATE INDEX IF NOT EXISTS idx_side_jobs_user_id ON side_jobs(user_id);
-CREATE INDEX IF NOT EXISTS idx_side_jobs_created_at ON side_jobs(created_at);
-CREATE INDEX IF NOT EXISTS idx_side_jobs_is_selected ON side_jobs(is_selected);
-
--- 4. 미션 테이블
-CREATE TABLE IF NOT EXISTS missions (
-    id SERIAL PRIMARY KEY,
-    user_id INTEGER NOT NULL,
-    sidejob_id INTEGER,
-    title VARCHAR(255) NOT NULL,
-    order_no INTEGER NOT NULL,
-    design_notes TEXT,
-    guide TEXT, -- JSON 문자열로 저장
-    status VARCHAR(50) DEFAULT 'PLANNED',
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
-);
-
--- 인덱스 생성
-CREATE INDEX IF NOT EXISTS idx_missions_user_id ON missions(user_id);
-CREATE INDEX IF NOT EXISTS idx_missions_sidejob_id ON missions(sidejob_id);
-CREATE INDEX IF NOT EXISTS idx_missions_status ON missions(status);
-CREATE INDEX IF NOT EXISTS idx_missions_created_at ON missions(created_at);
-
--- 5. 미션 스텝 테이블
-CREATE TABLE IF NOT EXISTS mission_steps (
-    id SERIAL PRIMARY KEY,
-    mission_id INTEGER NOT NULL,
-    seq INTEGER NOT NULL,
-    title VARCHAR(255) NOT NULL,
-    detail TEXT NOT NULL,
-    status VARCHAR(50) DEFAULT 'PLANNED',
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
-);
-
--- 인덱스 생성
-CREATE INDEX IF NOT EXISTS idx_mission_steps_mission_id ON mission_steps(mission_id);
-CREATE INDEX IF NOT EXISTS idx_mission_steps_status ON mission_steps(status);
-CREATE INDEX IF NOT EXISTS idx_mission_steps_created_at ON mission_steps(created_at);
 
 -- 6. SNS 트렌드 테이블 (스케줄링에서 사용)
 CREATE TABLE IF NOT EXISTS sns_trends (
@@ -92,7 +39,7 @@ CREATE INDEX IF NOT EXISTS idx_sns_trends_trend_type ON sns_trends(trend_type);
 CREATE INDEX IF NOT EXISTS idx_sns_trends_is_active ON sns_trends(is_active);
 CREATE INDEX IF NOT EXISTS idx_sns_trends_created_at ON sns_trends(created_at);
 
--- 7. 트렌드 임베딩 테이블 (벡터 검색용)
+-- 트렌드 임베딩 테이블 (벡터 검색용)
 CREATE TABLE IF NOT EXISTS trend_embeddings (
     id SERIAL PRIMARY KEY,
     trend_uuid UUID NOT NULL,
