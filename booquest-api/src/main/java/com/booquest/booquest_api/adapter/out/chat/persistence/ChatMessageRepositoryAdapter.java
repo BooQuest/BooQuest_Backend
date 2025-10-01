@@ -26,11 +26,11 @@ public class ChatMessageRepositoryAdapter implements ChatMessageRepositoryPort {
 
     @Override
     public long countUserMessagesForUserBetween(Long userId, String role, LocalDateTime startInclusive, LocalDateTime endExclusive) {
-        return repository.countByConversation_UserIdAndRoleAndCreatedAtGreaterThanEqualAndCreatedAtLessThan(
-                userId,
-                role,
-                startInclusive,
-                endExclusive
-        );
+        return repository.countByConversation_UserIdAndRoleAndCreatedAtGreaterThanEqualAndCreatedAtLessThan(userId, role, startInclusive, endExclusive);
+    }
+
+    @Override
+    public long deleteByUserId(Long userId) {
+        return repository.deleteByUserId(userId);
     }
 }

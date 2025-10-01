@@ -1,6 +1,7 @@
 package com.booquest.booquest_api.application.service.chat;
 
 import com.booquest.booquest_api.adapter.in.chat.web.dto.*;
+import com.booquest.booquest_api.application.port.in.chat.ChatDeleteResult;
 import com.booquest.booquest_api.application.port.in.chat.ChatUseCases;
 import com.booquest.booquest_api.application.port.out.chat.ChatConversationRepositoryPort;
 import com.booquest.booquest_api.application.port.out.chat.ChatMessageRepositoryPort;
@@ -161,6 +162,17 @@ public class ChatService implements ChatUseCases {
                 .title(conv.getTitle())
                 .messages(items)
                 .build();
+    }
+
+    @Override
+    @Transactional
+    public ChatDeleteResult deleteAllChatDataForUser(Long userId) {
+        // 메시지 먼저 삭제 (외래키 제약조건 때문에)
+        long deletedMessages = messageRepositoryPort.deleteByUserId(userId);
+        // 대화 삭제
+        long deletedConversations = conversationRepositoryPort.deleteByUserId(userId);
+
+        return new ChatDeleteResult(deletedMessages, deletedConversations);
     }
 
     private boolean isOverDailyUsageLimit(Long userId) {
