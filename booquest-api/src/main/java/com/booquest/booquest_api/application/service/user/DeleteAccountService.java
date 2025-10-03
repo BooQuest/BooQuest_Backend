@@ -1,5 +1,6 @@
 package com.booquest.booquest_api.application.service.user;
 
+import com.booquest.booquest_api.application.port.in.chat.ChatDeleteResult;
 import com.booquest.booquest_api.adapter.in.user.web.dto.DeleteAccountResponse;
 import com.booquest.booquest_api.application.port.in.user.DeleteAccountUseCase;
 import com.booquest.booquest_api.application.port.out.auth.SocialUnlinkPort;
@@ -18,6 +19,7 @@ import com.booquest.booquest_api.application.port.out.user.UserCommandPort;
 import com.booquest.booquest_api.application.port.out.user.UserQueryPort;
 import com.booquest.booquest_api.application.port.out.usersidejob.UserSideJobRepositoryPort;
 import com.booquest.booquest_api.application.port.out.userstat.UserStatRepositoryPort;
+import com.booquest.booquest_api.application.port.in.chat.ChatUseCases;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -45,6 +47,7 @@ public class DeleteAccountService implements DeleteAccountUseCase {
     private final StepProgressRepositoryPort stepProgressRepositoryPort;
     private final CharacterCommandPort characterCommandPort;
     private final UserStatRepositoryPort userStatRepositoryPort;
+    private final ChatUseCases chatUseCases;
 //    private final StoragePort StoragePort; // S3 등 외부파일 삭제용
     private final SocialUnlinkPort socialUnlinkPort;
 
@@ -77,7 +80,10 @@ public class DeleteAccountService implements DeleteAccountUseCase {
         long deletedUserCharacters = characterCommandPort.deleteByUserId(userId);
         long deletedUserStats = userStatRepositoryPort.deleteByUserId(userId);
 
-        // 6) 사용자 삭제
+        // 6) 채팅 데이터
+        ChatDeleteResult deletedChat = chatUseCases.deleteAllChatDataForUser(userId);
+
+        // 7) 사용자 삭제
         boolean userDeleted = userCommandPort.deleteById(userId) > 0;
 
         return DeleteAccountResponse.builder()
@@ -94,6 +100,8 @@ public class DeleteAccountService implements DeleteAccountUseCase {
                 .deletedStepProgress(deletedStepProgress)
                 .deletedUserCharacters(deletedUserCharacters)
                 .deletedUserStats(deletedUserStats)
+                .deletedChatMessages(deletedChat.deletedMessages())
+                .deletedChatConversations(deletedChat.deletedConversations())
                 .userDeleted(userDeleted)
                 .deletedAt(Instant.now())
                 .build();

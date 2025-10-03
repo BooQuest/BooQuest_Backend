@@ -39,4 +39,9 @@ public class ChatConversationRepositoryAdapter implements ChatConversationReposi
     public List<ChatConversation> findByUserIdAndCreatedAtBetween(Long userId, LocalDateTime start, LocalDateTime end) {
         return repository.findByUserIdAndCreatedAtBetweenOrderByCreatedAtDesc(userId, start, end);
     }
+
+    @Override
+    public long deleteByUserId(Long userId) {
+        return repository.deleteByUserId(userId);
+    }
 }
