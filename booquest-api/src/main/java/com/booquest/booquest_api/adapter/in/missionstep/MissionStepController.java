@@ -8,6 +8,7 @@ import com.booquest.booquest_api.adapter.in.missionstep.dto.MissionStepUpdateSta
 import com.booquest.booquest_api.adapter.in.missionstep.dto.RegenerateMissionStepAIRequest;
 import com.booquest.booquest_api.adapter.in.missionstep.dto.RegenerateMissionStepRequest;
 import com.booquest.booquest_api.application.port.in.mission.SelectMissionUseCase;
+import com.booquest.booquest_api.application.port.in.missionstep.CreateMissionStepUseCase;
 import com.booquest.booquest_api.application.port.in.missionstep.DeleteMissionStepUseCase;
 import com.booquest.booquest_api.application.port.in.missionstep.SelectMissionStepUseCase;
 import com.booquest.booquest_api.application.port.in.missionstep.UpdateMissionStepStatusUseCase;
@@ -48,6 +49,7 @@ public class MissionStepController {
     private final DeleteMissionStepUseCase deleteMissionStepUseCase;
     private final SelectMissionUseCase selectMissionUseCase;
     private final SelectSideJobUseCase selectSideJobUseCase;
+    private final CreateMissionStepUseCase createMissionStepUseCase;
 
     @PostMapping()
     @Operation(summary = "부퀘스트 생성", description = "부퀘스트를 생성합니다.")
@@ -64,17 +66,19 @@ public class MissionStepController {
             return ApiResponse.success("부퀘스트가 이미 존재합니다.", missionSteps);
         }
 
-        MissionStepAiRequestDto aiRequest = generateMissionStepAiRequestDto(requestDto);
+//        MissionStepAiRequestDto aiRequest = generateMissionStepAiRequestDto(requestDto);
+//
+//        String raw = webClient.post()                                   // POST로 호출해야 해서 필요
+//                .uri("/ai/generate-mission-step")                   // 호출할 AI 경로 지정 — 필요
+//                .contentType(MediaType.APPLICATION_JSON)                // 요청 바디가 JSON임을 명시 — 필요
+//                .bodyValue(aiRequest)                                     // 보낼 페이로드 지정 — 필요
+//                .retrieve()                                             // 요청 실행 트리거 — 필요
+//                .bodyToMono(String.class)                               // 응답 바디를 “문자열”로 그대로 받음(파싱 없음) — 필요
+//                .block();
+//
+//        List<MissionStepResponseDto> missionSteps = JsonMapperUtils.parse(raw, new TypeReference<>() {});
 
-        String raw = webClient.post()                                   // POST로 호출해야 해서 필요
-                .uri("/ai/generate-mission-step")                   // 호출할 AI 경로 지정 — 필요
-                .contentType(MediaType.APPLICATION_JSON)                // 요청 바디가 JSON임을 명시 — 필요
-                .bodyValue(aiRequest)                                     // 보낼 페이로드 지정 — 필요
-                .retrieve()                                             // 요청 실행 트리거 — 필요
-                .bodyToMono(String.class)                               // 응답 바디를 “문자열”로 그대로 받음(파싱 없음) — 필요
-                .block();
-
-        List<MissionStepResponseDto> missionSteps = JsonMapperUtils.parse(raw, new TypeReference<>() {});
+        List<MissionStepResponseDto> missionSteps = createMissionStepUseCase.createMissionSteps(requestDto.missionId());
 
         return ApiResponse.success("부퀘스트가 생성되었습니다.", missionSteps);
     }

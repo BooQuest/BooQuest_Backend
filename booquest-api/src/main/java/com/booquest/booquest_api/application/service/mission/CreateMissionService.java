@@ -4,7 +4,7 @@ import com.booquest.booquest_api.adapter.in.mission.dto.MissionResponseDto;
 import com.booquest.booquest_api.application.port.in.mission.CreateMissionUseCase;
 import com.booquest.booquest_api.application.port.out.mission.MissionRepositoryPort;
 import com.booquest.booquest_api.application.port.out.sidejob.SideJobRepositoryPort;
-import com.booquest.booquest_api.domain.mission.enums.MainQuest;
+import com.booquest.booquest_api.domain.mission.enums.MainMission;
 import com.booquest.booquest_api.domain.mission.enums.MissionStatus;
 import com.booquest.booquest_api.domain.mission.model.Mission;
 import com.booquest.booquest_api.domain.sidejob.model.SideJob;
@@ -30,10 +30,10 @@ public class CreateMissionService implements CreateMissionUseCase {
                     .sideJob(sideJob)
                     .userId(userId)
                     .orderNo(i)
-                    .title(MainQuest.getTitleByOrderNo(i))
-                    .designNotes(MainQuest.getDesignNotesByOrderNo(i))
+                    .title(MainMission.getTitleByOrderNo(i))
+                    .designNotes(MainMission.getDesignNotesByOrderNo(i))
                     .status(MissionStatus.PLANNED)
-                    .guide(MainQuest.getGuideByOrderNo(i))
+                    .guide(MainMission.getGuideByOrderNo(i))
                     .build();
 
             missions.add(mission);

@@ -5,7 +5,7 @@ import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public enum MainQuest {
+public enum MainMission {
     FIRST(1, "채널 세팅", "채널을 개설하고 기본 세팅을 완료한 후 방향성을 기획한다",
             List.of("채널 카테고리·주제 기획", "타깃 정의 및 업로드 플랫폼 선정", "계정 개설 및 프로필 세팅", "벤치마킹할 채널/계정 분석", "콘텐츠 제작에 필요한 준비물과 제작 방법 점검"),
             List.of("직장인 재테크, 대학생 브이로그, 육아 용품 소개와 같이 주제가 명확하면 좋습니다.", "메인 플랫폼을 우선 정하고, 보조 홍보용으로 함께 운영할 한두 개의 플랫폼도 추가하면 좋습니다.",
@@ -40,33 +40,42 @@ public enum MainQuest {
     private final int orderNo;
     private final String title;
     private final String designNotes;
-    private final List<String> sideQuests;
+    private final List<String> missionSteps;
     private final List<String> guides;
 
     public static String getTitleByOrderNo(int orderNo) {
-        for (MainQuest mainQuest : MainQuest.values()) {
-            if (mainQuest.orderNo == orderNo) {
-                return mainQuest.title;
+        for (MainMission mainMission : MainMission.values()) {
+            if (mainMission.orderNo == orderNo) {
+                return mainMission.title;
             }
         }
         throw new IllegalArgumentException("존재하지 않는 단계입니다.");
     }
 
     public static String getDesignNotesByOrderNo(int orderNo) {
-        for (MainQuest mainQuest : MainQuest.values()) {
-            if (mainQuest.orderNo == orderNo) {
-                return mainQuest.designNotes;
+        for (MainMission mainMission : MainMission.values()) {
+            if (mainMission.orderNo == orderNo) {
+                return mainMission.designNotes;
             }
         }
         throw new IllegalArgumentException("존재하지 않는 단계입니다.");
     }
 
     public static String getGuideByOrderNo(int orderNo) {
-        for (MainQuest mainQuest : MainQuest.values()) {
-            if (mainQuest.orderNo == orderNo) {
-                return mainQuest.guides.stream()
-                        .map((guide) -> (mainQuest.guides.indexOf(guide) + 1) + ". " + guide)
+        for (MainMission mainMission : MainMission.values()) {
+            if (mainMission.orderNo == orderNo) {
+                return mainMission.guides.stream()
+                        .map((guide) -> (mainMission.guides.indexOf(guide) + 1) + ". " + guide)
                         .collect(Collectors.joining("\n"));
+            }
+        }
+        throw new IllegalArgumentException("존재하지 않는 단계입니다.");
+    }
+
+    public static String getMissionSteps(int orderNo, int missionOrderNo) {
+        for (MainMission mainMission : MainMission.values()) {
+            if (mainMission.orderNo == missionOrderNo) {
+                return mainMission.missionSteps.get(orderNo - 1);
             }
         }
         throw new IllegalArgumentException("존재하지 않는 단계입니다.");
