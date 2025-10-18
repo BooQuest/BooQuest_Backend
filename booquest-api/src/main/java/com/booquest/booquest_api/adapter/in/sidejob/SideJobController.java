@@ -3,6 +3,8 @@ package com.booquest.booquest_api.adapter.in.sidejob;
 import com.booquest.booquest_api.adapter.in.onboarding.web.dto.SideJobResponseDto;
 import com.booquest.booquest_api.adapter.in.sidejob.dto.RegenerateAllSideJobRequest;
 import com.booquest.booquest_api.adapter.in.sidejob.dto.RegenerateSideJobRequest;
+import com.booquest.booquest_api.adapter.in.sidejob.dto.ValidCustomSideJobRequest;
+import com.booquest.booquest_api.application.port.in.sidejob.CreateSideJobUseCase;
 import com.booquest.booquest_api.application.port.in.sidejob.DeleteSideJobUseCase;
 import com.booquest.booquest_api.application.port.in.sidejob.SelectSideJobUseCase;
 import com.booquest.booquest_api.common.response.ApiResponse;
@@ -16,7 +18,10 @@ import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -35,6 +40,7 @@ public class SideJobController {
 
     private final DeleteSideJobUseCase deleteSideJobUseCase;
     private final SelectSideJobUseCase selectSideJobUseCase;
+    private final CreateSideJobUseCase createSideJobUseCase;
 
     @PostMapping("/regenerate")
     @Operation(summary = "부업 목록 재생성", description = "요청 기준에 따라 부업 목록을 재생성합니다.")
@@ -88,5 +94,28 @@ public class SideJobController {
         }
 
         return ApiResponse.success("부업들을 조회하였습니다", response);
+    }
+
+    @PostMapping("/custom")
+    @Operation(summary = "사용자가 직접 부업을 입력", description = "사용자가 부업을 입력하고 ai로 입력을 검증합니다")
+    public ApiResponse<SideJobResponseDto> createCustomSideJob(@RequestBody ValidCustomSideJobRequest request) {
+        Boolean isValid = webClient.post()
+                .uri("/ai/custom")
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(request)
+                .retrieve()
+                .bodyToMono(Boolean.class)
+                .block();
+
+        if (Boolean.FALSE.equals(isValid)) {
+            return ApiResponse.fail(HttpStatus.BAD_REQUEST.value(), "SNS와 연관된 부업을 입력해야 합니다.");
+        }
+
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Long userId = Long.parseLong(auth.getName());
+
+        SideJob sideJob = createSideJobUseCase.create(request.sideJob(), userId);
+
+        return ApiResponse.success("사용할 수 있는 부업입니다.", SideJobResponseDto.fromEntity(sideJob));
     }
 }
