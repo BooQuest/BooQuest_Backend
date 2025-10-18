@@ -6,6 +6,7 @@ import com.booquest.booquest_api.adapter.in.mission.dto.MissionGenerateRequestDt
 import com.booquest.booquest_api.adapter.in.mission.dto.MissionProgressResponseDto;
 import com.booquest.booquest_api.adapter.in.mission.dto.MissionResponseDto;
 import com.booquest.booquest_api.adapter.in.mission.dto.MissionCompleteResponse;
+import com.booquest.booquest_api.application.port.in.mission.CreateMissionUseCase;
 import com.booquest.booquest_api.application.port.in.mission.GetMissionListUseCase;
 import com.booquest.booquest_api.adapter.in.mission.dto.MissionResponse;
 import com.booquest.booquest_api.application.port.in.mission.GetMissionProgressUseCase;
@@ -48,6 +49,7 @@ public class MissionController {
     private final CompleteMissionUseCase completeMissionUseCase;
     private final SelectSideJobUseCase selectSideJobUseCase;
     private final UpdateSideJobUseCase updateSideJobUseCase;
+    private final CreateMissionUseCase createMissionUseCase;
 
     @PostMapping()
     @Operation(summary = "메인퀘스트 생성", description = "메인퀘스트를 생성합니다.")
@@ -63,16 +65,18 @@ public class MissionController {
                     handleExistedMissions(requestDto, sideJobs, existedMissions));
         }
 
-        // 미션이 없으면 AI로 생성 요청
-        String raw = webClient.post()                                   // POST로 호출해야 해서 필요
-                .uri("/ai/generate-mission")                        // 호출할 AI 경로 지정 — 필요
-                .contentType(MediaType.APPLICATION_JSON)                // 요청 바디가 JSON임을 명시 — 필요
-                .bodyValue(requestDto)                                     // 보낼 페이로드 지정 — 필요
-                .retrieve()                                             // 요청 실행 트리거 — 필요
-                .bodyToMono(String.class)                               // 응답 바디를 “문자열”로 그대로 받음(파싱 없음) — 필요
-                .block();
+//        // 미션이 없으면 AI로 생성 요청
+//        String raw = webClient.post()                                   // POST로 호출해야 해서 필요
+//                .uri("/ai/generate-mission")                        // 호출할 AI 경로 지정 — 필요
+//                .contentType(MediaType.APPLICATION_JSON)                // 요청 바디가 JSON임을 명시 — 필요
+//                .bodyValue(requestDto)                                     // 보낼 페이로드 지정 — 필요
+//                .retrieve()                                             // 요청 실행 트리거 — 필요
+//                .bodyToMono(String.class)                               // 응답 바디를 “문자열”로 그대로 받음(파싱 없음) — 필요
+//                .block();
+//
+//        List<MissionResponseDto> missions = JsonMapperUtils.parse(raw, new TypeReference<>() {});
 
-        List<MissionResponseDto> missions = JsonMapperUtils.parse(raw, new TypeReference<>() {});
+        List<MissionResponseDto> missions = createMissionUseCase.createMission(requestDto.sideJobId(), requestDto.userId());
 
         return ApiResponse.success("미션이 생성되었습니다.", missions);
     }
