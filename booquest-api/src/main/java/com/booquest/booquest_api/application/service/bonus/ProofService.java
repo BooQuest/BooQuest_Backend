@@ -4,7 +4,7 @@ import com.booquest.booquest_api.adapter.in.bonus.dto.BonusResponse;
 import com.booquest.booquest_api.adapter.in.bonus.dto.ProofRequest;
 import com.booquest.booquest_api.application.port.in.bonus.ProofUseCase;
 import com.booquest.booquest_api.application.port.in.character.UpdateCharacterExpUseCase;
-import com.booquest.booquest_api.application.port.in.storage.ImageStoragePort;
+import com.booquest.booquest_api.application.port.in.storage.LocalImageStoragePort;
 import com.booquest.booquest_api.application.port.out.bonus.AdViewRepositoryPort;
 import com.booquest.booquest_api.application.port.out.bonus.ProofRepositoryPort;
 import com.booquest.booquest_api.application.port.out.mission.MissionRepositoryPort;
@@ -34,7 +34,7 @@ public class ProofService implements ProofUseCase {
     private final UpdateCharacterExpUseCase updateCharacterExpUseCase;
     private final CharacterRewardPolicy rewardPolicy;
     private final StepExpCalculator stepExpCalculator;
-    private final ImageStoragePort imageStoragePort;
+    private final LocalImageStoragePort localImageStoragePort;
 
     @Override
     @Transactional
@@ -98,7 +98,7 @@ public class ProofService implements ProofUseCase {
         validateImage(file); // mime, size, 확장자, 매직바이트 등
 
         // 저장
-        var stored = imageStoragePort.storeProofImage(userId, stepId, file);
+        var stored = localImageStoragePort.storeProofImage(userId, stepId, file);
 
         // 저장된 URL/키로 Proof 생성
         Proof proof = Proof.builder()

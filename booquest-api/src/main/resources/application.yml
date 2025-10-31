@@ -102,3 +102,15 @@ springdoc:
   swagger-ui:
     tags-sorter: alpha
     operations-sorter: alpha
+
+# --- 앱 설정 ---
+app:
+#  upload:
+#    root: ${APP_UPLOAD_ROOT}
+  ncp:
+    access-key: ${NCP_ACCESS_KEY}
+    secret-key: ${NCP_SECRET_KEY}
+    endpoint: ${NCP_ENDPOINT:https://kr.object.ncloudstorage.com}
+    region: ${NCP_REGION:kr-standard}
+    bucket:
+      name: ${NCP_BUCKET_NAME}

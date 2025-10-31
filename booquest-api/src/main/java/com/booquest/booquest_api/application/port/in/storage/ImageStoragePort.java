@@ -1,9 +1,17 @@
 package com.booquest.booquest_api.application.port.in.storage;
 
-import org.springframework.web.multipart.MultipartFile;
+import com.booquest.booquest_api.application.port.in.record.PresignedUploadResponse;
+
+import java.time.Duration;
 
 public interface ImageStoragePort {
-    record StoredObject(String key, String publicUrl, long size, String contentType) {}
-    StoredObject storeProofImage(Long userId, Long stepId, MultipartFile file);
-    void delete(String key); // 실패 시 롤백/정리용
+    /**
+     * 업로드용 presigned PUT URL 생성
+     */
+    PresignedUploadResponse createPresignedPutUrl(String objectKey, String contentType, int expiresSec);
+
+    /**
+     * 조회용 presigned GET URL 생성
+     */
+    String createPresignedGetUrl(String objectKey, Duration expires);
 }
