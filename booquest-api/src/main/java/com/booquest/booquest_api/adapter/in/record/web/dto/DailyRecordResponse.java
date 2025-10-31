@@ -16,8 +16,11 @@ public class DailyRecordResponse {
     @Schema(description = "기록 내용")
     String content;
 
-    @Schema(description = "이미지 URL")
-    String imageUrl;
+    @Schema(description = "이미지 Object Key")
+    String imageObjectKey;
+
+    @Schema(description = "이미지 조회용 presigned URL")
+    String imagePresignedUrl;
 
     @Schema(description = "XP 지급 여부")
     boolean xpGranted;

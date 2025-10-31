@@ -9,10 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface DailyRecordRepositoryPort {
-
-    boolean existsByUserIdAndDate(Long userId, LocalDate date);
-
-    long countByUserIdAndDateBetween(Long userId, LocalDate from, LocalDate to);
+    Optional<DailyRecord> findByIdAndUserId(Long recordId, Long userId);
 
     /**
      * 특정 기간 내 '기록이 존재하는 날짜'만 간단 Projection으로 조회
@@ -29,8 +26,4 @@ public interface DailyRecordRepositoryPort {
     Optional<DailyRecord> findByUserIdAndRecordDate(Long userId, LocalDate recordDate);
     
     List<DailyRecord> findByUserIdAndRecordDateBetween(Long userId, LocalDate startDate, LocalDate endDate);
-    
-    boolean existsByUserIdAndRecordDate(Long userId, LocalDate recordDate);
-    
-    List<DailyRecord> findByUserIdOrderByRecordDateDesc(Long userId, int limit);
 }

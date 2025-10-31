@@ -5,4 +5,5 @@ import com.booquest.booquest_api.domain.character.model.UserCharacter;
 
 public interface UpdateCharacterExpUseCase {
     UserCharacter applyReward(Long userId, RewardType type);
+    void revertReward(Long userId, RewardType rewardType);
 }

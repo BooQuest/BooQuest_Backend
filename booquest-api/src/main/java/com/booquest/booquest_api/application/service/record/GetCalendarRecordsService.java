@@ -44,7 +44,7 @@ public class GetCalendarRecordsService implements GetCalendarRecordsUseCase {
 
             boolean hasRecord = rec != null;
             boolean xpGranted = rec != null && rec.isXpGranted();
-            String imageUrl   = rec != null ? rec.getImageUrl() : null;
+            String imageUrl   = rec != null ? rec.getImageObjectKey() : null;
 
             days.add(new CalendarDayRecord(day, hasRecord, imageUrl, xpGranted));
         }
