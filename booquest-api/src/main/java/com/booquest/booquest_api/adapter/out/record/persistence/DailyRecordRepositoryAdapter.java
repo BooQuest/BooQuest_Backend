@@ -13,46 +13,31 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class DailyRecordRepositoryAdapter implements DailyRecordRepositoryPort {
 
-    private final DailyRecordRepository dailyRecordJpaRepository;
+    private final DailyRecordRepository dailyRecordRepository;
 
     @Override
-    public boolean existsByUserIdAndDate(Long userId, LocalDate date) {
-        return false;
-    }
-
-    @Override
-    public long countByUserIdAndDateBetween(Long userId, LocalDate from, LocalDate to) {
-        return 0;
+    public Optional<DailyRecord> findByIdAndUserId(Long recordId, Long userId) {
+        return dailyRecordRepository.findByIdAndUserId(recordId, userId);
     }
 
     @Override
     public List<LocalDate> findAllRecordDatesByUserIdAndDateBetween(Long userId, LocalDate from, LocalDate to) {
-        List<LocalDate> dates = dailyRecordJpaRepository.findAllRecordDatesByUserIdAndRecordDateBetween(userId, from, to);
+        List<LocalDate> dates = dailyRecordRepository.findAllRecordDatesByUserIdAndRecordDateBetween(userId, from, to);
         return dates != null ? dates : List.of();
     }
 
     @Override
     public DailyRecord save(DailyRecord record) {
-        return dailyRecordJpaRepository.save(record);
+        return dailyRecordRepository.save(record);
     }
 
     @Override
     public Optional<DailyRecord> findByUserIdAndRecordDate(Long userId, LocalDate recordDate) {
-        return dailyRecordJpaRepository.findByUserIdAndRecordDate(userId, recordDate);
+        return dailyRecordRepository.findByUserIdAndRecordDate(userId, recordDate);
     }
 
     @Override
     public List<DailyRecord> findByUserIdAndRecordDateBetween(Long userId, LocalDate startDate, LocalDate endDate) {
-        return dailyRecordJpaRepository.findByUserIdAndRecordDateBetween(userId, startDate, endDate);
-    }
-
-    @Override
-    public boolean existsByUserIdAndRecordDate(Long userId, LocalDate recordDate) {
-        return dailyRecordJpaRepository.existsByUserIdAndRecordDate(userId, recordDate);
-    }
-
-    @Override
-    public List<DailyRecord> findByUserIdOrderByRecordDateDesc(Long userId, int limit) {
-        return dailyRecordJpaRepository.findByUserIdOrderByRecordDateDesc(userId, limit);
+        return dailyRecordRepository.findByUserIdAndRecordDateBetween(userId, startDate, endDate);
     }
 }

@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
@@ -38,34 +39,17 @@ public class DailyRecordController {
         return ApiResponse.success("부업 활동 기록 요약 정보가 조회되었습니다.", response);
     }
 
-//    @PostMapping
-//    @Operation(summary = "오늘의 부업 활동 기록 생성",
-//               description = "텍스트와 이미지 URL로 오늘의 부업 활동을 기록하고 경험치 5XP를 지급받습니다. 해당 경험치는 하루 1회만 받을 수 있습니다.</br></br></br>" +
-//                       "Request Body 예시 1. 텍스트만 기록</br>" +
-//                       "{" +
-//                       "  \"content\": \"오늘은 프리랜서 디자인 작업을 완료했습니다.\"," +
-//                       "  \"objectKey\": null" +
-//                       "}</br></br>" +
-//                       "Request Body 예시 2. 텍스트, 이미지 기록</br>" +
-//                       "{" +
-//                       "  \"content\": \"오늘 부업으로 썸네일 디자인 작업을 끝냈어요.\"," +
-//                       "  \"objectKey\": \"records/123/2025-10-30/07c12f1d-78a3-4b4b-8f12-cc93125bde54.jpg\"" +
-//                       "}</br></br>" +
-//                       "Request Body 예시 3. 이미지만 기록</br>" +
-//                       "{" +
-//                       "  \"content\": null," +
-//                       "  \"objectKey\": \"records/123/2025-10-30/07c12f1d-78a3-4b4b-8f12-cc93125bde54.jpg\"" +
-//                       "}</br></br>")
-//    public ApiResponse<DailyRecordResponse> createRecord(@Valid @RequestBody CreateRecordRequest request) {
-//        Long userId = getUserId();
-//
-//        DailyRecordResponse response = createRecordUseCase.createRecord(userId, request);
-//        String message = response.isXpGranted() ?
-//            "기록이 저장되고 경험치 5XP가 지급되었습니다." :
-//            "기록이 저장되었습니다.";
-//
-//        return ApiResponse.success(message, response);
-//    }
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @Operation(summary = "오늘의 부업 활동 기록 생성",
+            description = "텍스트와 이미지 URL로 오늘의 부업 활동을 기록하고 경험치 5XP를 지급받습니다. 해당 경험치는 하루 1회만 받을 수 있습니다.")
+    public ApiResponse<DailyRecordResponse> createRecord(@Valid @ModelAttribute CreateRecordRequest request) {
+        Long userId = getUserId();
+
+        DailyRecordResponse response = createRecordUseCase.createRecord(userId, request.getContent(), request.getFile());
+        String message = response.isXpGranted() ? "부업 활동 기록이 저장되고 경험치 5XP가 지급되었습니다." : "부업 활동 기록이 저장되었습니다.";
+
+        return ApiResponse.success(message, response);
+    }
 
     @GetMapping("/calendar")
     @Operation(summary = "오늘의 부업 활동 기록 조회 (캘린더 형식)",
@@ -98,49 +82,33 @@ public class DailyRecordController {
         return ApiResponse.success("해당 날짜의 부업 활동 기록이 조회되었습니다.", response);
     }
 
-//    @PutMapping("/{recordId}")
-//    @Operation(summary = "오늘의 기록 수정",
-//            description = "텍스트와 이미지 URL로 오늘의 부업 활동을 기록합니다. 하루 1회만 XP를 받을 수 있습니다.")
-//    public ApiResponse<UpdateRecordResponse> updateRecord(@Valid @RequestBody UpdateRecordRequest request) {
-//        Long userId = getUserId();
-//
-//        UpdateRecordResponse response = updateRecordUseCase.updateRecord(userId, request);
-//        String message = "기록이 수정되었습니다.";
-//        return ApiResponse.success(message, response);
-//    }
+    @PutMapping(value = "/{recordId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @Operation(summary = "오늘의 부업 활동 기록 수정",
+            description = "부업 활동 기록을 수정합니다.</br>" +
+                    "- content만 보내면 내용만 수정되고 기존 이미지는 그대로 둡니다.</br>" +
+                    "- file을 업로드하면 기존 이미지는 삭제되고 새 이미지로 교체됩니다. (removeImage=false 여야 함)</br>" +
+                    "- removeImage=true 를 보내면 기존 이미지를 삭제합니다. (file과 상관없이)</br>" +
+                    "경험치는 더이상 지급되지 않습니다.")
+    public ApiResponse<UpdateRecordResponse> updateRecord(@PathVariable Long recordId, @Valid @ModelAttribute UpdateRecordRequest request) {
+        Long userId = getUserId();
 
-//    @DeleteMapping("/{recordId}")
-//    @Operation(summary = "부업 활동 기록 삭제",
-//            description = "부업 활동 기록을 삭제합니다.")
-//    public ApiResponse<DeleteRecordResponse> deleteRecord(@PathVariable Long recordId) {
-//        Long userId = getUserId();
-//        DeleteRecordResponse response = deleteRecordUseCase.deleteRecord(userId, recordId);
-//        String message = response.getRecordDate() + "일자 기록이 삭제되었습니다.";
-//
-//        return ApiResponse.success(message, response);
-//    }
+        UpdateRecordResponse response = updateRecordUseCase.updateRecord(userId, recordId, request);
+        String message = "부업 활동 기록이 수정되었습니다.";
+        return ApiResponse.success(message, response);
+    }
 
-//    @GetMapping("/recent")
-//    @Operation(summary = "최근 기록 목록 조회",
-//               description = "최근 기록들을 날짜 내림차순으로 조회합니다.")
-//    public ApiResponse<List<DailyRecordResponse>> getRecentRecords(
-//            @RequestParam(defaultValue = "10") int limit) {
-//        Long userId = getUserId();
-//        List<DailyRecordResponse> responses = dailyRecordUseCases.getRecentRecords(userId, limit);
-//
-//        List<DailyRecordResponse> dtos = responses.stream()
-//            .map(response -> new DailyRecordResponse(
-//                response.id(),
-//                response.recordDate(),
-//                response.content(),
-//                response.imageUrl(),
-//                response.xpGranted(),
-//                response.xpAmount()
-//            ))
-//            .toList();
-//
-//        return ApiResponse.success("최근 기록 목록이 조회되었습니다.", dtos);
-//    }
+    @DeleteMapping("/{recordId}")
+    @Operation(summary = "오늘의 부업 활동 기록 삭제",
+            description = "부업 활동 기록을 삭제합니다.</br>" +
+                    "- 이 기록이 생성될 때 5XP가 지급되었다면, 삭제 시 5XP가 회수됩니다.</br>" +
+                    "- 기록에 이미지가 있으면 NCP Object Storage에서도 함께 삭제됩니다.")
+    public ApiResponse<DeleteRecordResponse> deleteRecord(@PathVariable Long recordId) {
+        Long userId = getUserId();
+        DeleteRecordResponse response = deleteRecordUseCase.deleteRecord(userId, recordId);
+        String message = response.getRecordDate() + "부업 활동 기록이 삭제되었습니다. 경험치 5XP가 회수되었습니다.";
+
+        return ApiResponse.success(message, response);
+    }
 
     private Long getUserId() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();

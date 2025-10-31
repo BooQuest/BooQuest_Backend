@@ -1,6 +1,5 @@
 package com.booquest.booquest_api.application.service.record;
 
-import com.booquest.booquest_api.adapter.in.record.web.dto.CreateRecordRequest;
 import com.booquest.booquest_api.adapter.in.record.web.dto.DailyRecordResponse;
 import com.booquest.booquest_api.application.port.in.character.UpdateCharacterExpUseCase;
 import com.booquest.booquest_api.application.port.in.record.CreateRecordUseCase;
@@ -11,13 +10,16 @@ import com.booquest.booquest_api.domain.character.enums.RewardType;
 import com.booquest.booquest_api.domain.record.model.DailyRecord;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.time.Duration;
+import java.time.Instant;
 import java.time.LocalDate;
-import java.util.Optional;
+import java.time.format.DateTimeFormatter;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -29,66 +31,88 @@ public class CreateRecordService implements CreateRecordUseCase {
     private final UpdateCharacterExpUseCase updateCharacterExpUseCase;
 
     private static final int DAILY_RECORD_XP = 5;
+    private static final Duration PRESIGNED_TTL = Duration.ofMinutes(10);
 
     @Override
-    public DailyRecordResponse createRecord(Long userId, CreateRecordRequest request) {
+    public DailyRecordResponse createRecord(Long userId, String content, MultipartFile file) {
         LocalDate today = LocalDate.now();
 
-        // 0) 입력 검증: 내용/이미지 모두 없으면 거절
-        if ((request.getContent() == null || request.getContent().isBlank())
-                && (request.getObjectKey() == null || request.getObjectKey().isBlank())) {
+        // 0) 입력 검증
+        boolean hasContent = content != null && !content.isBlank();
+        boolean hasFile = file != null && !file.isEmpty();
+        if (!hasContent && !hasFile) {
             throw new IllegalArgumentException("내용 또는 이미지는 최소 하나 이상 있어야 합니다.");
         }
 
-        // 1) 오늘 기록 존재 확인
-        Optional<DailyRecord> existingRecord = dailyRecordRepository.findByUserIdAndRecordDate(userId, today);
-        if (existingRecord.isPresent()) {
-            DailyRecord existing = existingRecord.get();
-            throw DailyRecordAlreadyExistsException.with(existing.getId(), existing.getRecordDate());
+        // 1) 오늘 기록 있는지 확인
+        dailyRecordRepository.findByUserIdAndRecordDate(userId, today)
+                .ifPresent(r -> { throw DailyRecordAlreadyExistsException.with(r.getId(), r.getRecordDate()); });
+
+        // 2) 파일 있으면 여기서 key 만들고 업로드
+        String objectKey = null;
+        String presignedUrl = null;
+        Instant presignedExpiresAt = null;
+
+        if (hasFile) {
+            String datePart = today.format(DateTimeFormatter.BASIC_ISO_DATE); // ex. 20251031
+            String ext = getExt(file.getOriginalFilename());
+            String key = String.format("records/%d/%s/%s%s",
+                    userId,
+                    datePart,
+                    UUID.randomUUID(),
+                    ext
+            );
+            try {
+                imageStoragePort.uploadObject(
+                        key,
+                        file.getInputStream(),
+                        file.getSize(),
+                        file.getContentType()
+                );
+            } catch (IOException e) {
+                throw new RuntimeException("이미지 업로드에 실패했습니다.", e);
+            }
+            objectKey = key;
+
+            presignedUrl = imageStoragePort.createPresignedGetUrl(objectKey, PRESIGNED_TTL);
+            presignedExpiresAt = Instant.now().plus(PRESIGNED_TTL);
         }
 
-        // 2) 이미지 presigned GET URL 변환 (있을 경우만)
-        String imageUrl = null;
-        if (request.getObjectKey() != null && !request.getObjectKey().isBlank()) {
-            imageUrl = imageStoragePort.createPresignedGetUrl(request.getObjectKey(), Duration.ofHours(1));
-        }
-
-        // 2) 새 레코드 구성 (xpGranted는 일단 false)
+        // 3) 엔티티 생성
         DailyRecord record = DailyRecord.builder()
                 .userId(userId)
                 .recordDate(today)
-                .content(request.getContent())
-                .imageUrl(imageUrl)
+                .content(content)
+                .imageObjectKey(objectKey)
+                .imagePresignedUrl(presignedUrl)
+                .imagePresignedExpiresAt(presignedExpiresAt)
                 .xpGranted(false)
                 .build();
 
         int xpAmount = 0;
-
-        try {
-            // 3) 저장 + XP 지급(최초 1회만)
-            // canGrantXp()가 true일 때만 지급하고, 지급 후 flag 세팅
-            if (record.canGrantXp()) {
-                updateCharacterExpUseCase.applyReward(userId, RewardType.DAILY_RECORD);
-                record.markXpGranted(); // true로 업데이트
-                xpAmount = DAILY_RECORD_XP;
-                log.info("Daily record XP granted: userId={}, xp={}", userId, xpAmount);
-            }
-
-            DailyRecord saved = dailyRecordRepository.save(record);
-
-            return new DailyRecordResponse(
-                    saved.getId(),
-                    saved.getRecordDate().toString(),
-                    saved.getContent(),
-                    saved.getImageUrl(),
-                    saved.isXpGranted(),
-                    xpAmount
-            );
-
-        } catch (DataIntegrityViolationException e) {
-            // 4) 동시성(유니크 제약) 충돌 -> 동일한 409로 변환
-            Optional<DailyRecord> exists = dailyRecordRepository.findByUserIdAndRecordDate(userId, today);
-            throw DailyRecordAlreadyExistsException.with(exists.map(DailyRecord::getId).orElse(null), today);
+        if (record.canGrantXp()) {
+            updateCharacterExpUseCase.applyReward(userId, RewardType.DAILY_RECORD);
+            record.markXpGranted();
+            xpAmount = DAILY_RECORD_XP;
         }
+
+        DailyRecord saved = dailyRecordRepository.save(record);
+
+        return new DailyRecordResponse(
+                saved.getId(),
+                saved.getRecordDate().toString(),
+                saved.getContent(),
+                saved.getImageObjectKey(),
+                saved.getImagePresignedUrl(),
+                saved.isXpGranted(),
+                xpAmount
+        );
+    }
+
+    private String getExt(String originalFilename) {
+        if (originalFilename == null) return ".jpg";
+        int idx = originalFilename.lastIndexOf('.');
+        if (idx == -1) return ".jpg";
+        return originalFilename.substring(idx);
     }
 }

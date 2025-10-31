@@ -40,6 +40,25 @@ public class CharacterRewardService implements UpdateCharacterExpUseCase {
         return userCharacter;
     }
 
+    @Override
+    @Transactional
+    public void revertReward(Long userId, RewardType rewardType) {
+        UserCharacter userCharacter = characterQueryPort.findByUserId(userId)
+                .orElseThrow(() -> new EntityNotFoundException("User character not found: " + userId));
+
+        if (rewardType == RewardType.NONE) {
+            return;
+        }
+
+        int delta = policy.expDeltaFor(rewardType);
+        if (delta != 0) {
+            // 지급의 반대 -> 음수로 넣어준다
+            int minusDelta = -delta;
+            userCharacter.applyExpDelta(minusDelta, levelingPolicy);
+            characterCommandPort.save(userCharacter);
+        }
+    }
+
     @Transactional(readOnly = true)
     public UserCharacter getCharacter(Long userId) {
         return characterQueryPort.findByUserId(userId)

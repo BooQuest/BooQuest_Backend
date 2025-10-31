@@ -4,6 +4,7 @@ import com.booquest.booquest_api.common.entity.AuditableEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.Instant;
 import java.time.LocalDate;
 
 @Entity
@@ -27,8 +28,14 @@ public class DailyRecord extends AuditableEntity {
     @Column(name = "content", columnDefinition = "TEXT")
     private String content;
 
-    @Column(name = "image_url")
-    private String imageUrl;
+    @Column(name = "image_object_key")
+    private String imageObjectKey;
+
+    @Column(name = "image_presigned_url", length = 1000)
+    private String imagePresignedUrl;
+
+    @Column(name = "image_presigned_expires_at")
+    private Instant imagePresignedExpiresAt;
 
     @Column(name = "xp_granted", nullable = false)
     private boolean xpGranted = false;
@@ -37,8 +44,8 @@ public class DailyRecord extends AuditableEntity {
         this.content = content;
     }
 
-    public void updateImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
+    public void updateImageObjectKey(String imageObjectKey) {
+        this.imageObjectKey = imageObjectKey;
     }
 
     public void markXpGranted() {
@@ -47,5 +54,10 @@ public class DailyRecord extends AuditableEntity {
 
     public boolean canGrantXp() {
         return !this.xpGranted;
+    }
+
+    public void refreshImagePresigned(String presignedUrl, Instant expiresAt) {
+        this.imagePresignedUrl = presignedUrl;
+        this.imagePresignedExpiresAt = expiresAt;
     }
 }
