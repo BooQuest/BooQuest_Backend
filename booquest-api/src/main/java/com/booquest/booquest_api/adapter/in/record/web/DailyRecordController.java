@@ -59,7 +59,7 @@ public class DailyRecordController {
         CalendarRecordResponse response = getCalendarRecordsUseCase.getCalendarRecords(userId, year, month);
         
         List<CalendarDayRecord> dayRecords = response.getRecords().stream()
-            .map(record -> new CalendarDayRecord(record.getDay(), record.isHasRecord(), record.getImageUrl(), record.isXpGranted()))
+            .map(record -> new CalendarDayRecord(record.getDay(), record.isHasRecord(), record.getImagePresignedUrl(), record.isXpGranted()))
             .toList();
         
         CalendarRecordResponse calendarRecordResponse = new CalendarRecordResponse(
