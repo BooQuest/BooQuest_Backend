@@ -34,18 +34,19 @@ public class CreateRecordService implements CreateRecordUseCase {
     private static final Duration PRESIGNED_TTL = Duration.ofMinutes(10);
 
     @Override
-    public DailyRecordResponse createRecord(Long userId, String content, MultipartFile file) {
-        LocalDate today = LocalDate.now();
+    public DailyRecordResponse createRecord(Long userId, String content, MultipartFile file, LocalDate recordDate) {
+        // 날짜가 null이면 오늘 날짜로 설정
+        LocalDate targetDate = recordDate != null ? recordDate : LocalDate.now();
 
         // 0) 입력 검증
         boolean hasContent = content != null && !content.isBlank();
-        boolean hasFile = file != null && !file.isEmpty();
+        boolean hasFile = file != null && !file.isEmpty() && !("".equals(file));
         if (!hasContent && !hasFile) {
             throw new IllegalArgumentException("내용 또는 이미지는 최소 하나 이상 있어야 합니다.");
         }
 
-        // 1) 오늘 기록 있는지 확인
-        dailyRecordRepository.findByUserIdAndRecordDate(userId, today)
+        // 1) 해당 날짜 기록 있는지 확인
+        dailyRecordRepository.findByUserIdAndRecordDate(userId, targetDate)
                 .ifPresent(r -> { throw DailyRecordAlreadyExistsException.with(r.getId(), r.getRecordDate()); });
 
         // 2) 파일 있으면 여기서 key 만들고 업로드
@@ -54,7 +55,7 @@ public class CreateRecordService implements CreateRecordUseCase {
         Instant presignedExpiresAt = null;
 
         if (hasFile) {
-            String datePart = today.format(DateTimeFormatter.BASIC_ISO_DATE); // ex. 20251031
+            String datePart = targetDate.format(DateTimeFormatter.BASIC_ISO_DATE); // ex. 20251031
             String ext = getExt(file.getOriginalFilename());
             String key = String.format("records/%d/%s/%s%s",
                     userId,
@@ -81,7 +82,7 @@ public class CreateRecordService implements CreateRecordUseCase {
         // 3) 엔티티 생성
         DailyRecord record = DailyRecord.builder()
                 .userId(userId)
-                .recordDate(today)
+                .recordDate(targetDate)
                 .content(content)
                 .imageObjectKey(objectKey)
                 .imagePresignedUrl(presignedUrl)

@@ -41,11 +41,18 @@ public class DailyRecordController {
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "오늘의 부업 활동 기록 생성",
-            description = "텍스트와 이미지 URL로 오늘의 부업 활동을 기록하고 경험치 5XP를 지급받습니다. 해당 경험치는 하루 1회만 받을 수 있습니다.")
+            description = "텍스트와 이미지로 부업 활동을 기록하고 경험치 5XP를 지급받습니다. 해당 경험치는 하루 1회만 받을 수 있습니다.</br></br>" +
+                    "- recordDate 파라미터를 제공하면 해당 날짜의 기록을 생성합니다. (날짜 형식: yyyy-MM-dd)</br>" +
+                    "- recordDate 파라미터가 null이면 오늘 날짜로 기록을 생성합니다.</br></br></br>" +
+                    "--- Swagger 이용 시 ---</br>" +
+                    "- 이미지를 업로드하지 않을 경우, </br>" +
+                    "&nbsp;&nbsp;&nbsp;file 필드는 'No file chosen' 상태로 두고 'Send empty value'는 체크 해제하고 요청을 보내면 됩니다. " +
+                    "('Send empty value'를 체크할 경우 빈 문자열이 전송되어 오류 발생)</br>" +
+                    "- content 및 recordDate는 'Send empty value' 옵션을 사용해도 무방합니다.")
     public ApiResponse<DailyRecordResponse> createRecord(@Valid @ModelAttribute CreateRecordRequest request) {
         Long userId = getUserId();
 
-        DailyRecordResponse response = createRecordUseCase.createRecord(userId, request.getContent(), request.getFile());
+        DailyRecordResponse response = createRecordUseCase.createRecord(userId, request.getContent(), request.getFile(), request.getRecordDate());
         String message = response.isXpGranted() ? "부업 활동 기록이 저장되고 경험치 5XP가 지급되었습니다." : "부업 활동 기록이 저장되었습니다.";
 
         return ApiResponse.success(message, response);
@@ -73,8 +80,7 @@ public class DailyRecordController {
 
     @GetMapping("/date/{date}")
     @Operation(summary = "오늘의 부업 활동 기록 상세 조회 (날짜 조회)",
-               description = "지정된 날짜의 기록을 조회합니다. 기록이 없으면 빈 응답을 반환합니다.</br></br>" +
-                       "Date 형식: 2025-10-30")
+               description = "지정된 날짜의 기록을 조회합니다. 기록이 없으면 빈 응답을 반환합니다. (날짜 형식: yyyy-MM-dd)</br></br>")
     public ApiResponse<DailyRecordResponse> getRecordByDate(@PathVariable LocalDate date) {
         Long userId = getUserId();
         DailyRecordResponse response = getRecordUseCase.getRecordByDate(userId, date);
@@ -84,11 +90,10 @@ public class DailyRecordController {
 
     @PutMapping(value = "/{recordId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "오늘의 부업 활동 기록 수정",
-            description = "부업 활동 기록을 수정합니다.</br>" +
+            description = "부업 활동 기록을 수정합니다. 경험치는 더이상 지급되지 않습니다.</br></br>" +
                     "- content만 보내면 내용만 수정되고 기존 이미지는 그대로 둡니다.</br>" +
                     "- file을 업로드하면 기존 이미지는 삭제되고 새 이미지로 교체됩니다. (removeImage=false 여야 함)</br>" +
-                    "- removeImage=true 를 보내면 기존 이미지를 삭제합니다. (file과 상관없이)</br>" +
-                    "경험치는 더이상 지급되지 않습니다.")
+                    "- removeImage=true 를 보내면 기존 이미지를 삭제합니다. (file과 상관없이)</br>")
     public ApiResponse<UpdateRecordResponse> updateRecord(@PathVariable Long recordId, @Valid @ModelAttribute UpdateRecordRequest request) {
         Long userId = getUserId();
 
@@ -99,7 +104,7 @@ public class DailyRecordController {
 
     @DeleteMapping("/{recordId}")
     @Operation(summary = "오늘의 부업 활동 기록 삭제",
-            description = "부업 활동 기록을 삭제합니다.</br>" +
+            description = "부업 활동 기록을 삭제합니다.</br></br>" +
                     "- 이 기록이 생성될 때 5XP가 지급되었다면, 삭제 시 5XP가 회수됩니다.</br>" +
                     "- 기록에 이미지가 있으면 NCP Object Storage에서도 함께 삭제됩니다.")
     public ApiResponse<DeleteRecordResponse> deleteRecord(@PathVariable Long recordId) {
