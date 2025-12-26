@@ -1,6 +1,6 @@
 package com.booquest.booquest_api.adapter.out.storage.persistence;
 
-import com.booquest.booquest_api.application.port.in.storage.ImageStoragePort;
+import com.booquest.booquest_api.application.port.in.storage.LocalImageStoragePort;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -17,7 +17,7 @@ import java.util.UUID;
 
 @Slf4j
 @Component
-public class LocalImageStorageAdapter implements ImageStoragePort {
+public class LocalImageStorageAdapter implements LocalImageStoragePort {
     private final String root;
 
     public LocalImageStorageAdapter(@Value("${app.upload.root:/var/lib/booquest/uploads}") String root) {

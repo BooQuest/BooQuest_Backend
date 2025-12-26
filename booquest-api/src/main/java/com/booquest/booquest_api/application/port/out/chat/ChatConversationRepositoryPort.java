@@ -12,4 +12,5 @@ public interface ChatConversationRepositoryPort {
     Optional<ChatConversation> findByIdAndUserId(UUID id, Long userId);
     List<ChatConversation> findByUserIdOrderByUpdatedAtDesc(Long userId);
     List<ChatConversation> findByUserIdAndCreatedAtBetween(Long userId, LocalDateTime start, LocalDateTime end);
+    long deleteByUserId(Long userId);
 }

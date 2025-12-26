@@ -22,6 +22,8 @@ public class DeleteAccountResponse {
     private long deletedStepProgress;
     private long deletedUserCharacters;
     private long deletedUserStats;
+    private long deletedChatMessages;
+    private long deletedChatConversations;
     private boolean userDeleted;
     private boolean socialUnlinked;
     private Instant deletedAt;

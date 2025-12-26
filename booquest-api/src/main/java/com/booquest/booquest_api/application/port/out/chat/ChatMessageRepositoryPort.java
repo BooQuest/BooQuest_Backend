@@ -9,4 +9,5 @@ public interface ChatMessageRepositoryPort {
     ChatMessage save(ChatMessage message);
     List<ChatMessage> findByConversationIdOrderByIdAsc(UUID conversationId);
     long countUserMessagesForUserBetween(Long userId, String role, LocalDateTime startInclusive, LocalDateTime endExclusive);
+    long deleteByUserId(Long userId);
 }

@@ -102,3 +102,16 @@ springdoc:
   swagger-ui:
     tags-sorter: alpha
     operations-sorter: alpha
+
+# --- 앱 설정 ---
+app:
+#  upload:
+#    root: ${APP_UPLOAD_ROOT}
+  oci:
+    access-key: ${OCI_ACCESS_KEY}
+    secret-key: ${OCI_SECRET_KEY}
+    region: ${OCI_REGION:ap-chuncheon-1}
+    namespace: ${OCI_NAMESPACE}
+    endpoint: ${OCI_ENDPOINT:}
+    bucket:
+      name: ${OCI_BUCKET_NAME}

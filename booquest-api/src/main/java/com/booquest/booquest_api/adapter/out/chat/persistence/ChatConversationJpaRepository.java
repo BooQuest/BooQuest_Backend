@@ -14,4 +14,5 @@ public interface ChatConversationJpaRepository extends JpaRepository<ChatConvers
     Optional<ChatConversation> findByIdAndUserId(UUID id, Long userId);
     List<ChatConversation> findByUserIdOrderByUpdatedAtDesc(Long userId);
     List<ChatConversation> findByUserIdAndCreatedAtBetweenOrderByCreatedAtDesc(Long userId, LocalDateTime start, LocalDateTime end);
+    long deleteByUserId(Long userId);
 }
