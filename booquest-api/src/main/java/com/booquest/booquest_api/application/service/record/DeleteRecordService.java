@@ -27,13 +27,13 @@ public class DeleteRecordService implements DeleteRecordUseCase {
         DailyRecord dailyRecord = dailyRecordRepository.findByIdAndUserId(recordId, userId)
                 .orElseThrow(() -> new EntityNotFoundException("Record not found: " + recordId));
 
-        // 1) 먼저 S3/NCP에서 이미지 삭제
+        // 1) 먼저 OCI Object Storage에서 이미지 삭제
         String objectKey = dailyRecord.getImageObjectKey();
         if (objectKey != null && !objectKey.isBlank()) {
             try {
                 imageStoragePort.deleteObject(objectKey);
             } catch (Exception e) {
-                log.error("Failed to delete object from NCP. objectKey={}, recordId={}", objectKey, recordId, e);
+                log.error("Failed to delete object from OCI Object Storage. objectKey={}, recordId={}", objectKey, recordId, e);
                 throw new RuntimeException("이미지 삭제에 실패했습니다. 기록은 삭제되지 않았습니다.", e);
             }
         }

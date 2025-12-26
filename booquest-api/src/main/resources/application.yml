@@ -107,10 +107,11 @@ springdoc:
 app:
 #  upload:
 #    root: ${APP_UPLOAD_ROOT}
-  ncp:
-    access-key: ${NCP_ACCESS_KEY}
-    secret-key: ${NCP_SECRET_KEY}
-    endpoint: ${NCP_ENDPOINT:https://kr.object.ncloudstorage.com}
-    region: ${NCP_REGION:kr-standard}
+  oci:
+    access-key: ${OCI_ACCESS_KEY}
+    secret-key: ${OCI_SECRET_KEY}
+    region: ${OCI_REGION:ap-chuncheon-1}
+    namespace: ${OCI_NAMESPACE}
+    endpoint: ${OCI_ENDPOINT:}
     bucket:
-      name: ${NCP_BUCKET_NAME}
+      name: ${OCI_BUCKET_NAME}

@@ -16,6 +16,6 @@ public class UpdateRecordRequest {
     @Schema(description = "이미지 File")
     private MultipartFile file;
 
-    @Schema(description = "기존 이미지를 지울 때 true로 보냅니다. true면 NCP에서도 삭제되고 DB에서도 이미지가 비워집니다. file이 와도 이 값이 우선합니다.", example = "false")
+    @Schema(description = "기존 이미지를 지울 때 true로 보냅니다. true면 OCI에서도 삭제되고 DB에서도 이미지가 비워집니다. file이 와도 이 값이 우선합니다.", example = "false")
     private Boolean removeImage;
 }

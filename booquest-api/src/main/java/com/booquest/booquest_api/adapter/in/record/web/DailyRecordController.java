@@ -106,7 +106,7 @@ public class DailyRecordController {
     @Operation(summary = "오늘의 부업 활동 기록 삭제",
             description = "부업 활동 기록을 삭제합니다.</br></br>" +
                     "- 이 기록이 생성될 때 5XP가 지급되었다면, 삭제 시 5XP가 회수됩니다.</br>" +
-                    "- 기록에 이미지가 있으면 NCP Object Storage에서도 함께 삭제됩니다.")
+                    "- 기록에 이미지가 있으면 OCI Object Storage에서도 함께 삭제됩니다.")
     public ApiResponse<DeleteRecordResponse> deleteRecord(@PathVariable Long recordId) {
         Long userId = getUserId();
         DeleteRecordResponse response = deleteRecordUseCase.deleteRecord(userId, recordId);

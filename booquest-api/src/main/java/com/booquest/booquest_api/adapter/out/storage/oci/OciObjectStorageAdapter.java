@@ -1,4 +1,4 @@
-package com.booquest.booquest_api.adapter.out.storage.ncp;
+package com.booquest.booquest_api.adapter.out.storage.oci;
 
 import com.amazonaws.HttpMethod;
 import com.amazonaws.services.s3.AmazonS3;
@@ -19,10 +19,10 @@ import java.util.Date;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class NcpObjectStorageAdapter implements ImageStoragePort {
+public class OciObjectStorageAdapter implements ImageStoragePort {
 
     private final AmazonS3 s3;
-    @Value("${app.ncp.bucket.name}")
+    @Value("${app.oci.bucket.name}")
     private String bucketName;
 
     @Override
@@ -63,9 +63,9 @@ public class NcpObjectStorageAdapter implements ImageStoragePort {
 
         try {
             s3.putObject(bucketName, objectKey, inputStream, metadata);
-            log.info("Uploaded object to NCP S3: key={}", objectKey);
+            log.info("Uploaded object to OCI Object Storage: key={}", objectKey);
         } catch (Exception e) {
-            log.error("Failed to upload object to NCP S3. key={}", objectKey, e);
+            log.error("Failed to upload object to OCI Object Storage. key={}", objectKey, e);
             throw new RuntimeException("이미지 업로드에 실패했습니다.");
         }
     }
@@ -77,10 +77,10 @@ public class NcpObjectStorageAdapter implements ImageStoragePort {
         }
         try {
             s3.deleteObject(bucketName, objectKey);
-            log.info("Deleted object from NCP: {}", objectKey);
+            log.info("Deleted object from OCI Object Storage: {}", objectKey);
         } catch (Exception e) {
             // 여기서 바로 예외 던져도 되고, 로깅만 하고 넘어가도 됨
-            log.error("Failed to delete object from NCP: {}", objectKey, e);
+            log.error("Failed to delete object from OCI Object Storage: {}", objectKey, e);
             throw new RuntimeException("이미지 삭제에 실패했습니다.", e);
         }
     }
